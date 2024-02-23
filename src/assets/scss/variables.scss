@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Glagolitic&display=swap');
+
+$white: #FFFFFF;
+$white-two: #F5F2F8;
+$white-three: #DFDFE2;
+$black: #000;
+$gray-shine: #3C3735;
+$gray: #35302D;
+$light-gray: #80808035;
+$purple: #9333E8;
+$font: 'Quicksand', sans-serif;
+
+@mixin phone {
+    @media (min-width: 375px) and (max-width: 540px) { @content; }
+}
+
+@mixin tablet {
+    @media (min-width: 541px) and (max-width: 1250px) { @content; }
+}
