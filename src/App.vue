@@ -1,18 +1,18 @@
 <template>
-    <Home />
+  <router-view />
 </template>
 
 <script>
-import Home from './components/Home.vue'
 export default {
-    name: 'App',
-    components: {
-        Home
-    },
+  name: "App",
 }
 </script>
 
 <style lang="scss">
-@import './assets/scss/variables.scss';
-@import './assets/scss/styles/reset.scss';
+@import "./assets/scss/variables.scss";
+@import "./assets/scss/styles/reset.scss";
+
+#app {
+  font-family: $font;
+}
 </style>
