@@ -1,18 +1,33 @@
 <template>
-  <div class="artist-detail">
-    <h1>
-      {{ artist.name !== "UNDEFINED" ? artist.name : "Artista não encontrado" }}
-    </h1>
+  <Sidebar />
+  <div class="detail">
+   <div>
+    <img class="detail__profile" :src="artist.picture_medium" alt="">
+   </div>
+    <div>
+      <div class="detail__text">
+      <h1 class="detail__name-artist">{{ artist.name !== "UNDEFINED" ? artist.name : "Artista não encontrado" }}</h1>
+      <p class="detail__fan">{{ artist.nb_fan }} fãs</p>
+    </div>
+    </div>
   </div>
+  <Accordion />
 </template>
 
 <script>
+import Sidebar from "./Header.vue"
+import Accordion from './Accordion.vue'
+
 export default {
   name: "Details",
   data() {
     return {
-      artist: {},
+      artist: [],
     }
+  },
+  components: {
+    Sidebar,
+    Accordion
   },
   mounted() {
     this.getDetails()
@@ -32,8 +47,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "../assets/scss/variables.scss";
+@import "../assets/scss/styles/details.scss";
 .artist-detail {
   text-align: center;
+
 }
 </style>

@@ -4,7 +4,7 @@
       <h1>deezer</h1>
     </div>
     <div class="header__nav-wrap">
-      <nav class="header__nav" role="navigation">
+      <div class="header__nav" role="navigation">
         <ul class="header__list hover">
           <li>
             <router-link to="/" class="header__link link">
@@ -23,8 +23,8 @@
             </router-link>
           </li>
         </ul>
-      </nav>
-      <ul class="header__social-links list-inline hover">
+      </div>
+      <!-- <ul class="header__social-links list-inline hover">
         <li>
           <a
             href="https://github.com/Vinicius-Boschi"
@@ -61,14 +61,14 @@
             <img :src="linkedin" alt="linkedin" />
           </a>
         </li>
-      </ul>
+      </ul> -->
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  name: "Sidebar",
+  name: "Header",
   data() {
     return {
       home: "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/cca4a60a-03c9-410e-84bd-7e831bd58f13",
@@ -89,5 +89,5 @@ export default {
 
 <style lang="scss">
 @import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/sidebar.scss";
+@import "../assets/scss/styles/header.scss";
 </style>

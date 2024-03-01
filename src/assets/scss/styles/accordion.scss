@@ -1,0 +1,40 @@
+.accordion {
+  &__about {
+    box-shadow: rgba(25, 25, 34, 0.16) 0px 2px 6px -4px;
+    box-sizing: border-box;
+    border-bottom: 1px solid $white-three;
+    height: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__tab-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  &__btn-container {
+
+    &__content {
+        position: relative;
+        overflow: hidden;
+    }
+
+    button {
+        padding-bottom: 16px;
+        transition-duration: .15s;
+        transition-property: border-color, color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+            transition: .15s ease color;
+            border-bottom: 5px solid $purple;
+            padding-bottom: 10px;
+        }
+    }
+  }
+  .active {
+    color: $purple;
+  }
+}

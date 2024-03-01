@@ -1,11 +1,14 @@
 .header {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 15em;
+  // position: fixed;
+  // left: 0;
+  // top: 0;
+  // bottom: 0;
+  // width: 15em;
   padding: 1rem;
   background-color: $white-two;
+  display: flex;
+    justify-content: space-around;
+    align-items: center;
 
   a {
     text-decoration: none;
@@ -28,12 +31,7 @@
 
   &__nav {
     ul {
-      border-top: 1px solid $light-gray;
 
-      li {
-        border-bottom: 1px solid $light-gray;
-        text-align: center;
-      }
 
       a {
         padding: 1.1em 0;
@@ -47,27 +45,31 @@
     }
   }
 
-  &__social-links {
-    border-bottom: 1px solid $light-gray;
-
-    li {
-        width: 25%;
-        border-left: 1px solid $light-gray;
-        border-right: 1px solid $light-gray;
-    }
-
-    a {
-        display: block;
-        height: 5.5em;
-        text-align: center;
-        color: $black;
-        font: 0.75em/5.5em $font;
-        
-        &:hover{
-          color: $purple;
-        }
-    }
+  &__list {
+    display: flex;
   }
+
+  // &__social-links {
+  //   border-bottom: 1px solid $light-gray;
+
+  //   li {
+  //       width: 25%;
+  //       border-left: 1px solid $light-gray;
+  //       border-right: 1px solid $light-gray;
+  //   }
+
+  //   a {
+  //       display: block;
+  //       height: 5.5em;
+  //       text-align: center;
+  //       color: $black;
+  //       font: 0.75em/5.5em $font;
+        
+  //       &:hover{
+  //         color: $purple;
+  //       }
+  //   }
+  // }
 
   & .hover{
     li {
@@ -111,16 +113,18 @@
     span {
         display: flex;
         align-items: center;
-        justify-content: center;
-        flex-direction: row-reverse;    
+        flex-direction: row-reverse; 
+        padding: 1rem;   
     }
 
     p {
         padding-left: .5rem;
+        
     }
 
     .active {
         color: $purple;
+        
     }
   }
 }
