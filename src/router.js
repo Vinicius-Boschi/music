@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 import Home from "./components/Home.vue"
 import Details from "./components/Details.vue"
+import Accordion from "./components/Accordion.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,7 +17,13 @@ const router = createRouter({
       component: Details,
       props: true,
     },
+    {
+      path: "/artist/:id/top",
+      name: "Accordion",
+      component: Accordion,
+      props: true,
+    },
   ],
 })
 
-export default router
+export default router;

@@ -41,6 +41,19 @@ app.get('/artist/:id', async (req, res) => {
   }
 });
 
+app.get('/artist/:id/top', async (req, res) => {
+  try {
+    const { id } = req.params
+    const limit = req.query.limit || 100
+    const response = await fetch(`https://api.deezer.com/artist/${id}/top?limit=${limit}`);
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro ao buscar as top músicas dos artista.');
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

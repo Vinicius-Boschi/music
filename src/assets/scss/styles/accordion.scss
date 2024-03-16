@@ -5,6 +5,48 @@
     border-bottom: 1px solid $white-three;
     height: 2rem;
     margin-bottom: 2rem;
+
+    &-content {
+      padding: 1rem;
+    }
+
+    &-text {
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.5;
+      color: $gray;
+      margin-bottom: 1rem;
+
+      button {
+        background: none;
+        border: 1px solid $light-gray;
+        border-radius: 5px;
+        color: $gray-shine;
+        font-size: 1rem;
+        font-weight: bold;
+        line-height: 1.5;
+        margin-left: 0.5rem;
+        padding: 0.3rem;
+        transition: 0.15s ease color;
+
+        &:hover {
+          background: $light-gray;
+          border: 1px solid $gray-shine;
+          color: $gray-shine;
+          cursor: pointer;
+          transition: 0.15s ease color;
+        }
+      }
+    }
+  }
+
+  &__title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 1.5;
+    color: $gray-shine;
   }
 
   &__tab-btn {
@@ -12,29 +54,109 @@
     border: none;
     font-size: 1rem;
     margin-bottom: 2rem;
+    margin-right: 2rem;
   }
 
   &__btn-container {
-
     &__content {
-        position: relative;
-        overflow: hidden;
+      position: relative;
+      overflow: hidden;
     }
 
     button {
-        padding-bottom: 16px;
-        transition-duration: .15s;
-        transition-property: border-color, color;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 0.15s;
+      transition-property: border-color, color;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
 
-        &:hover {
-            transition: .15s ease color;
-            border-bottom: 5px solid $purple;
-            padding-bottom: 10px;
-        }
+      &:hover {
+        transition: 0.15s ease color;
+        border-bottom: 3px solid $purple;
+        padding-bottom: 10px;
+      }
     }
   }
+
   .active {
     color: $purple;
+    border-bottom: 3px solid $purple;
+    padding-bottom: 10px;
+  }
+
+  &__container {
+    background: $light-gray;
+    width: 50%;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+  }
+
+  &__picture {
+    padding: 0.3rem;
+  }
+
+  &__track {
+    &-name,
+    &-album,
+    &-time {
+      padding: 1rem;
+      font-size: 0.8rem;
+    }
+
+    input {
+      width: 20%;
+      background: $light-gray;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      transition: border-color 1s;
+
+      &:focus {
+        border: 2px solid $purple;
+        outline: none;
+        box-shadow: 0 0 5px rgba(100, 149, 237, 0.5);
+        transition-duration: 0.5s;
+      }
+    }
+
+    &-bottom {
+      border-bottom: 1px solid $light-gray;
+
+      img {
+        width: 1rem;
+      }
+    }
+
+    &-list {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      border-collapse: collapse;
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        vertical-align: middle;
+        font-size: 0.8rem;
+      }
+    }
+
+    &-group {
+      display: flex;
+      align-items: center;
+
+      h1 {
+        margin-left: 1rem;
+      }
+
+      img {
+        cursor: pointer;
+      }
+    }
   }
 }
