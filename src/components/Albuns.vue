@@ -16,11 +16,15 @@
       >
         <swiper-slide v-for="(album, index) in albuns" :key="index">
           <div class="album__content">
+            <router-link
+              :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
+            >
             <img
               class="album__img"
               :src="album.cover_medium"
               :alt="album.title"
             />
+            </router-link>
             <p class="album__name">{{ album.title }}</p>
           </div>
         </swiper-slide>

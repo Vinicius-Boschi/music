@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Home from "./components/Home.vue"
 import Details from "./components/Details.vue"
 import Accordion from "./components/Accordion.vue"
+import DetailsAlbum from "./components/DetailsAlbum.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +22,12 @@ const router = createRouter({
       path: "/top/:id",
       name: "Accordion",
       component: Accordion,
+      props: true,
+    },
+    {
+      path: "/details/:id",
+      name: "DetailsAlbum",
+      component: DetailsAlbum,
       props: true,
     },
   ],

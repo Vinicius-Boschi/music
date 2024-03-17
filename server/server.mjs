@@ -105,6 +105,18 @@ app.get("/artist/:id/playlists", async (req, res) => {
   }
 })
 
+app.get("/album/:id/tracks", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/album/${id}/tracks`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes do artista.")
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
 })
