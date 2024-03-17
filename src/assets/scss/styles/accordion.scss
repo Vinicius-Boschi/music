@@ -85,7 +85,7 @@
 
   &__container {
     background: $light-gray;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     box-shadow: 0 0 5px rgba(4, 17, 42, 0.5);
     width: 50%;
     padding: 2rem;
@@ -161,6 +161,55 @@
       img {
         cursor: pointer;
       }
+    }
+  }
+
+  &__related {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    justify-items: center;
+    text-align: center;
+
+    &-picture {
+      border-radius: 50%;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0 0 5px rgba(4, 17, 42, 0.5);
+        opacity: 0.8;
+      }
+    }
+
+    &-text {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    &-fan,
+    &-album {
+      color: $gray-two;
+      font-size: 12px;
+      padding: 3px;
+    }
+  }
+
+  &__playlist {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+
+    &-picture {
+      border-radius: 5px;
+
+      &:hover {
+        box-shadow: 0 0 5px rgba(4, 17, 42, 0.5);
+        opacity: 0.8;
+      }
+    }
+
+    &-text {
+      margin-top: 0.5rem;
     }
   }
 }

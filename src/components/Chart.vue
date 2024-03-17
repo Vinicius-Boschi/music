@@ -34,7 +34,6 @@
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation } from "swiper/modules"
-import ArtistDetail from "./Details.vue"
 import "swiper/scss"
 import "swiper/scss/navigation"
 
@@ -43,7 +42,6 @@ export default {
   components: {
     Swiper,
     SwiperSlide,
-    ArtistDetail,
   },
   data() {
     return {

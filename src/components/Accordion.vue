@@ -36,11 +36,7 @@
         </div>
       </article>
       <article class="accordion__about-content">
-        <div
-          class="accordion__content"
-          id="about"
-          v-show="activeTab === 'discography'"
-        >
+        <div class="accordion__content" v-show="activeTab === 'discography'">
           <div class="accordion__about-text">
             <h1 class="accordion__title">Top Músicas</h1>
             <button @click="switchToTopMusics">Vizualizar tudo</button>
@@ -70,11 +66,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="accordion__content"
-          id="about"
-          v-show="activeTab === 'top_track'"
-        >
+        <div class="accordion__content" v-show="activeTab === 'top_track'">
           <div class="accordion__track">
             <div class="accordion__track-title">
               <h1 class="accordion__title">Top Músicas</h1>
@@ -129,6 +121,54 @@
             </table>
           </div>
         </div>
+        <div class="accordion__content" v-show="activeTab === 'related'">
+          <div class="accordion__about-text">
+            <h1 class="accordion__title">Artistas Semelhantes</h1>
+          </div>
+          <div class="accordion__related">
+            <div
+              class="accordion__related-container"
+              v-for="(related, index) in relateds"
+              :key="index"
+            >
+              <router-link
+                :to="{ name: 'Details', params: { id: related.id } }"
+              >
+                <img
+                  class="accordion__related-picture"
+                  :src="related.picture_medium"
+                  :alt="related.name"
+                />
+              </router-link>
+              <h1 class="accordion__related-text">{{ related.name }}</h1>
+              <p class="accordion__related-fan">
+                {{ formatNumber(related.nb_fan) }} fãs
+              </p>
+              <p class="accordion__related-album">
+                {{ related.nb_album }} álbuns
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="accordion__content" v-show="activeTab === 'playlists'">
+          <div class="accordion__about-text">
+            <h1 class="accordion__title">Playlists</h1>
+          </div>
+          <div class="accordion__playlist">
+            <div
+              class="accordion__playlist-container"
+              v-for="(playlist, index) in playlists"
+              :key="index"
+            >
+              <img
+                class="accordion__playlist-picture"
+                :src="playlist.picture_medium"
+                :alt="playlist.title"
+              />
+              <h1 class="accordion__playlist-text">{{ playlist.title }}</h1>
+            </div>
+          </div>
+        </div>
       </article>
     </div>
   </section>
@@ -141,14 +181,19 @@ export default {
     return {
       activeTab: "discography",
       tracks: [],
+      relateds: [],
+      playlists: [],
       currentTrackIndex: null,
       highlightedRow: null,
+      audioPlayers: [],
     }
   },
   mounted() {
     this.getTopTracks().then(() => {
       this.audioPlayers = this.$refs.audioPlayers
     })
+    this.getRelated()
+    this.getPlaylists()
   },
   methods: {
     switchToTopMusics() {
@@ -163,7 +208,31 @@ export default {
         const data = await response.json()
         this.tracks = data.data
       } catch (error) {
-        console.error("Erro ao buscar o artista", error)
+        console.error("Erro ao buscar o artista.", error)
+      }
+    },
+    async getRelated() {
+      try {
+        const id = this.$route.params.id
+        const response = await fetch(
+          `http://localhost:3000/artist/${id}/related`
+        )
+        const data = await response.json()
+        this.relateds = data.data
+      } catch (error) {
+        console.error("Erro ao buscar os artistas semelhantes.", error)
+      }
+    },
+    async getPlaylists() {
+      try {
+        const id = this.$route.params.id
+        const response = await fetch(
+          `http://localhost:3000/artist/${id}/playlists?limit=100`
+        )
+        const data = await response.json()
+        this.playlists = data.data
+      } catch (error) {
+        console.error("Erro ao buscar as playlists.", error)
       }
     },
     formatDuration(seconds) {

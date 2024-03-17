@@ -18,7 +18,7 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/artist/:id/top",
+      path: "/top/:id",
       name: "Accordion",
       component: Accordion,
       props: true,
