@@ -18,6 +18,20 @@
             >
               Top Músicas
             </button>
+            <button
+              class="accordion__tab-btn"
+              :class="{ active: activeTab === 'related' }"
+              @click="activeTab = 'related'"
+            >
+              Artistas Semelhantes
+            </button>
+            <button
+              class="accordion__tab-btn"
+              :class="{ active: activeTab === 'playlists' }"
+              @click="activeTab = 'playlists'"
+            >
+              Playlists
+            </button>
           </div>
         </div>
       </article>
@@ -32,37 +46,27 @@
             <button @click="switchToTopMusics">Vizualizar tudo</button>
           </div>
           <div class="accordion__container">
-            <div class="accordion__info">
+            <div
+              class="accordion__info"
+              v-for="(track, index) in tracks.slice(0, 4)"
+              :key="index"
+              @mouseover="highlightedRow = index"
+              @mouseleave="highlightedRow = null"
+              ref="trackRows"
+              :class="{ highlighted: highlightedRow === index }"
+            >
+              <audio ref="audioPlayers" :src="track.preview"></audio>
               <img
                 class="accordion__picture"
-                src="https://placehold.co/50x50"
-                alt=""
+                :src="track.album.cover_small"
+                :alt="track.title"
+                @click="playPreview(index)"
+                @mouseover="currentTrackIndex = index"
+                @mouseleave="currentTrackIndex = null"
               />
-              <h1 class="accordion__track-name">1. Estado Civil(Ao Vivo)</h1>
-            </div>
-            <div class="accordion__info">
-              <img
-                class="accordion__picture"
-                src="https://placehold.co/50x50"
-                alt=""
-              />
-              <h1 class="accordion__track-name">1. Estado Civil(Ao Vivo)</h1>
-            </div>
-            <div class="accordion__info">
-              <img
-                class="accordion__picture"
-                src="https://placehold.co/50x50"
-                alt=""
-              />
-              <h1 class="accordion__track-name">1. Estado Civil(Ao Vivo)</h1>
-            </div>
-            <div class="accordion__info">
-              <img
-                class="accordion__picture"
-                src="https://placehold.co/50x50"
-                alt=""
-              />
-              <h1 class="accordion__track-name">1. Estado Civil(Ao Vivo)</h1>
+              <h1 class="accordion__track-name">
+                {{ index + 1 }} - {{ track.title }}
+              </h1>
             </div>
           </div>
         </div>
@@ -89,24 +93,33 @@
                   <th>Música</th>
                   <th>Álbum</th>
                   <th>
-                    <img src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da" alt="" />
+                    <img
+                      src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
+                      alt=""
+                    />
                   </th>
                   <th>Rank</th>
                 </tr>
               </thead>
-              <tbody class="accordion__track-container"  
-              >
-                <tr v-for="(track, index) in tracks" :key="index"
-                @mouseover="highlightedRow  = index"
-                @mouseleave="highlightedRow  = null" 
-                ref="trackRows"
-                :class="{ 'highlighted': highlightedRow === index }"
+              <tbody class="accordion__track-container">
+                <tr
+                  v-for="(track, index) in tracks"
+                  :key="index"
+                  @mouseover="highlightedRow = index"
+                  @mouseleave="highlightedRow = null"
+                  ref="trackRows"
+                  :class="{ highlighted: highlightedRow === index }"
                 >
                   <audio ref="audioPlayers" :src="track.preview"></audio>
                   <td class="accordion__track-group">
-                    <img :src="track.album.cover_small" :alt="track.title" @click="playPreview(index)" @mouseover="currentTrackIndex = index"
-                  @mouseleave="currentTrackIndex = null"/>
-                    <h1> {{ index + 1 }} - {{ track.title }}</h1>
+                    <img
+                      :src="track.album.cover_small"
+                      :alt="track.title"
+                      @click="playPreview(index)"
+                      @mouseover="currentTrackIndex = index"
+                      @mouseleave="currentTrackIndex = null"
+                    />
+                    <h1>{{ index + 1 }} - {{ track.title }}</h1>
                   </td>
                   <td>{{ track.album.title }}</td>
                   <td>{{ formatDuration(track.duration) }}</td>
@@ -134,7 +147,7 @@ export default {
   },
   mounted() {
     this.getTopTracks().then(() => {
-      this.audioPlayers = this.$refs.audioPlayers;
+      this.audioPlayers = this.$refs.audioPlayers
     })
   },
   methods: {
@@ -143,30 +156,32 @@ export default {
     },
     async getTopTracks() {
       try {
-          const id = this.$route.params.id
-          const response = await fetch(`http://localhost:3000/artist/${id}/top?limit=100`)
-          const data = await response.json()
-          this.tracks = data.data
+        const id = this.$route.params.id
+        const response = await fetch(
+          `http://localhost:3000/artist/${id}/top?limit=100`
+        )
+        const data = await response.json()
+        this.tracks = data.data
       } catch (error) {
         console.error("Erro ao buscar o artista", error)
       }
     },
     formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      const formattedMinutes = String(minutes).padStart(2, '0'); 
-      const formattedSeconds = String(remainingSeconds).padStart(2, '0'); 
-      return `${formattedMinutes}:${formattedSeconds}`;
+      const minutes = Math.floor(seconds / 60)
+      const remainingSeconds = seconds % 60
+      const formattedMinutes = String(minutes).padStart(2, "0")
+      const formattedSeconds = String(remainingSeconds).padStart(2, "0")
+      return `${formattedMinutes}:${formattedSeconds}`
     },
     formatNumber(number) {
       if (number !== undefined && number !== null) {
-        return number.toLocaleString('pt-BR');
+        return number.toLocaleString("pt-BR")
       } else {
-        return '0';
+        return "0"
       }
     },
     playPreview(index) {
-      this.audioPlayers.forEach(player => player.pause())
+      this.audioPlayers.forEach((player) => player.pause())
       this.audioPlayers[index].play()
     },
   },
@@ -177,6 +192,6 @@ export default {
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/accordion.scss";
 .highlighted {
-  background-color: lightblue; 
+  background-color: lightblue;
 }
 </style>

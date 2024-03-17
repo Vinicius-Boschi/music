@@ -29,6 +29,28 @@ app.get('/chart', async (req, res) => {
   }
 });
 
+app.get("/chart/0/albums", async (req, res) => {
+  try {
+    const response = await fetch("https://api.deezer.com/chart/0/albums")
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os albums.")
+  }
+})
+
+app.get("/chart/0/playlists", async (req, res) => {
+  try {
+    const response = await fetch("https://api.deezer.com/chart/0/playlists")
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar as playlists.")
+  }
+})
+
 app.get('/artist/:id', async (req, res) => {
   try {
     const { id } = req.params

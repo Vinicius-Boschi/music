@@ -2,12 +2,16 @@
   <Header />
   <Gender />
   <Chart />
+  <Albuns />
+  <Playlist />
 </template>
 
 <script>
 import Header from "./Header.vue"
 import Gender from "./Gender.vue"
 import Chart from "./Chart.vue"
+import Albuns from "./Albuns.vue"
+import Playlist from "./Playlist.vue"
 
 export default {
   name: "Home",
@@ -15,6 +19,8 @@ export default {
     Header,
     Gender,
     Chart,
+    Albuns,
+    Playlist,
   },
 }
 </script>

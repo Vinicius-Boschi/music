@@ -85,7 +85,10 @@
 
   &__container {
     background: $light-gray;
+    border-radius: .5rem;
+    box-shadow: 0 0 5px rgba(4, 17, 42, 0.5);
     width: 50%;
+    padding: 2rem;
   }
 
   &__info {
@@ -95,6 +98,7 @@
 
   &__picture {
     padding: 0.3rem;
+    cursor: pointer;
   }
 
   &__track {

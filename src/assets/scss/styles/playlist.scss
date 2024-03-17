@@ -1,0 +1,28 @@
+.playlist {
+    &__text {
+        text-align: center;
+        margin: 2rem;
+    }
+
+    &__title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: .5rem;
+    }
+
+    &__subtitle {
+        font-size: .8rem;
+        color: $gray-two;
+        margin-bottom: 1rem;
+    }
+
+    &__img {
+        border-radius: 5px;
+    }
+
+    &__name {
+        font-size: 14px;
+        margin-top: 1rem;
+        text-align: center;
+    }
+}
