@@ -16,11 +16,16 @@
       >
         <swiper-slide v-for="(playlist, index) in playlists" :key="index">
           <div class="playlist__content">
-            <img
-              class="playlist__img"
-              :src="playlist.picture_medium"
-              :alt="playlist.title"
-            />
+            <p>{{ playlist.id }}</p>
+            <router-link
+              :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
+            >
+              <img
+                class="playlist__img"
+                :src="playlist.picture_medium"
+                :alt="playlist.title"
+              />
+            </router-link>
             <p class="playlist__name">{{ playlist.title }}</p>
           </div>
         </swiper-slide>

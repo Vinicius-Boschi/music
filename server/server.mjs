@@ -105,10 +105,22 @@ app.get("/artist/:id/playlists", async (req, res) => {
   }
 })
 
-app.get("/album/:id/tracks", async (req, res) => {
+app.get("/album/:id", async (req, res) => {
   try {
     const { id } = req.params
-    const response = await fetch(`https://api.deezer.com/album/${id}/tracks`)
+    const response = await fetch(`https://api.deezer.com/album/${id}`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes do artista.")
+  }
+})
+
+app.get("/playlist/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/playlist/${id}`)
     const data = await response.json()
     res.json(data)
   } catch (error) {

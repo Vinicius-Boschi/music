@@ -1,22 +1,22 @@
 <template>
   <Sidebar />
   <div class="details">
-    <img :src="details.cover_medium" :alt="details.title" />
+    <img :src="playlist.cover_medium" :alt="playlist.title" />
     <div class="details__container">
-      <h1>{{ details.title }}</h1>
-      <div class="details__singer" v-if="details.artist">
-        <img :src="details.artist.picture" />
+      <h1>{{ playlist.title }}</h1>
+      <div class="details__singer" >
+        <img :src="playlist.artist.picture" />
         <router-link
-          :to="{ name: 'Details', params: { id: details.artist.id } }"
+          :to="{ name: 'Details', params: { id: playlist.artist.id } }"
         >
-          <h2>{{ details.artist.name }}</h2>
+          <h2>{{ playlist.artist.name }}</h2>
         </router-link>
       </div>
       <div class="details__info">
-        <p>{{ details.nb_tracks }} faixas</p>
-        <p>{{ formatDuration(details.duration) }} minutos</p>
-        <p>{{ formatDate(details.release_date) }}</p>
-        <p>{{ formatNumber(details.fans) }} fãs</p>
+        <p>{{ playlist.nb_tracks }} faixas</p>
+        <p>{{ formatDuration(playlist.duration) }} minutos</p>
+        <p>{{ formatDate(playlist.release_date) }}</p>
+        <p>{{ formatNumber(playlist.fans) }} fãs</p>
       </div>
     </div>
   </div>
@@ -78,7 +78,7 @@ export default {
   name: "DetailsAlbum",
   data() {
     return {
-      details: [],
+      playlist: [],
       date: new Date(),
       currentTrackIndex: null,
       highlightedRow: null,
