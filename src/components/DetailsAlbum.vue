@@ -100,7 +100,6 @@ export default {
         const response = await fetch(`http://localhost:3000/album/${id}`)
         const data = await response.json()
         this.details = data
-        console.log(data)
       } catch (error) {
         console.error("Erro ao buscar o album", error)
       }

@@ -16,7 +16,6 @@
       >
         <swiper-slide v-for="(playlist, index) in playlists" :key="index">
           <div class="playlist__content">
-            <p>{{ playlist.id }}</p>
             <router-link
               :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
             >
