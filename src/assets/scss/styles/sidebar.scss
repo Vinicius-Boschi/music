@@ -1,0 +1,145 @@
+.sidebar {
+  display: flex;
+  background-color: #ffffff;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  width: 50vh;
+  border-right: 1px solid #d2d2d3;
+
+  &__logo {
+    padding: 1rem;
+
+    &-name {
+      display: grid;
+      background-color: #f3f4f6;
+      color: #4b5563;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      line-height: 1rem;
+      place-content: center;
+      width: 8rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__list {
+    margin-top: 1.5rem;
+    margin-top: 0.25rem;
+  }
+
+  &__icon {
+    width: 2rem;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+
+    &-text {
+      margin-left: .3rem;
+      font-weight: bold;
+    }
+  }
+
+  &__summary {
+    display: flex;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: #6b7280;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0.5rem;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f3f4f6;
+      color: #374151;
+    }
+  }
+
+  &__text {
+    font-size: .875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+
+  &__arrow {
+    transition-property: background-color, border-color, color, fill, stroke,
+      opacity, box-shadow, transform;
+    transition-duration: 300ms;
+
+    &-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  &__details-hide {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  &__hover {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+
+    &:hover {
+      background-color: #f3f4f6;
+      color: #374151;
+    }
+  }
+  
+  &__photo {
+    position: sticky;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    border-top-width: 1px;
+    border-color: #f3f4f6;
+
+    &-link {
+      display: flex;
+      padding: 1rem;
+      background-color: #ffffff;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  &__user-photo {
+    object-fit: cover;
+    border-radius: 9999px;
+    width: 5rem;
+  }
+
+  &__name {
+    font-size: 0.75rem;
+    line-height: 1rem;
+
+    &-strong {
+      display: block;
+      font-weight: 500;
+    }
+  }
+}

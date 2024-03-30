@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import Sidebar from "./Header.vue"
+import Sidebar from "./Sidebar.vue"
 
 export default {
   name: "DetailsPlaylist",

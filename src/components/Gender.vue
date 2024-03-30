@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div class="gender">
     <div class="gender__text">
       <h1 class="gender__title">Flow: toque oque você sente</h1>
@@ -30,6 +31,7 @@
 </template>
 
 <script>
+import Header from "../components/Header.vue"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation } from "swiper/modules"
 import "swiper/scss"
@@ -38,6 +40,7 @@ import "swiper/scss/navigation"
 export default {
   name: "Gender",
   components: {
+    Header,
     Swiper,
     SwiperSlide,
   },

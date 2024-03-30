@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Sidebar from "./Header.vue"
+import Sidebar from "./Sidebar.vue"
 import Accordion from './Accordion.vue'
 
 export default {
