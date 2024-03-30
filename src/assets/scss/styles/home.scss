@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.content {
+  width: 100% !important;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.mySwiper {
+  margin: 2rem;
+}

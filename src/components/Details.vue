@@ -1,22 +1,32 @@
 <template>
-  <Sidebar />
-  <div class="detail">
-   <div>
-    <img class="detail__profile" :src="artist.picture_medium" alt="">
-   </div>
-    <div>
-      <div class="detail__text">
-        <h1 class="detail__name-artist">{{ artist && artist.name !== undefined ? artist.name : "Artista não encontrado" }}</h1>
-        <p class="detail__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
+  <div class="container">
+    <Sidebar />
+    <div class="content">
+      <div class="detail">
+        <div>
+          <img class="detail__profile" :src="artist.picture_medium" alt="" />
+        </div>
+        <div>
+          <div class="detail__text">
+            <h1 class="detail__name-artist">
+              {{
+                artist && artist.name !== undefined
+                  ? artist.name
+                  : "Artista não encontrado"
+              }}
+            </h1>
+            <p class="detail__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
+          </div>
+        </div>
       </div>
+      <Accordion :artist="artist" />
     </div>
   </div>
-  <Accordion :artist="artist"/>
 </template>
 
 <script>
 import Sidebar from "./Sidebar.vue"
-import Accordion from './Accordion.vue'
+import Accordion from "./Accordion.vue"
 
 export default {
   name: "Details",
@@ -27,7 +37,7 @@ export default {
   },
   components: {
     Sidebar,
-    Accordion
+    Accordion,
   },
   mounted() {
     this.getDetails()
@@ -45,14 +55,17 @@ export default {
     },
     formatNumber(number) {
       if (number !== undefined && number !== null) {
-        return number.toLocaleString('pt-BR');
+        return number.toLocaleString("pt-BR")
       } else {
-        return '0';
+        return "0"
       }
     },
     navigateToAccordion() {
-      this.$router.push({ name: 'Accordion', params: { id: this.$route.params.id } });
-    }
+      this.$router.push({
+        name: "Accordion",
+        params: { id: this.$route.params.id },
+      })
+    },
   },
 }
 </script>

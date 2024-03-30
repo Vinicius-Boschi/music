@@ -75,7 +75,7 @@
         </ul>
 
         <ul class="header__details-hide border">
-          <li class="header__hover">
+          <li class="header__hover justify">
             <a class="header__user-link" href="#">Modo noturno</a>
             <label class="header__switch">
               <input type="checkbox" checked />
@@ -105,8 +105,17 @@
           </li>
         </ul>
       </div>
-      <div v-if="showNotification" class="header__notification">
-        <span class="header__text">Você não possui nenhuma notificação.</span>
+      <div v-if="showNotification" class="header__user-menu">
+        <h1 class="header__notification-title">Notificações</h1>
+        <div class="header__notification">
+          <img
+            src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/43b34444-348d-4bb1-beab-7c4dfe86d8b7"
+            alt=""
+            class="header__notification-photo"
+          />
+          <p class="header__notification-text">Não fique sozinho.</p>
+          <button class="header__notification-button">Adicione artistas</button>
+        </div>
       </div>
     </div>
   </header>
@@ -119,19 +128,19 @@ export default {
     return {
       showModal: false,
       showNotification: false,
-    };
+    }
   },
   methods: {
     toggleModal() {
-      this.showModal = !this.showModal;
-      this.showNotification = false;
+      this.showModal = !this.showModal
+      this.showNotification = false
     },
     toggleNotification() {
-      this.showNotification = !this.showNotification;
-      this.showModal = false;
+      this.showNotification = !this.showNotification
+      this.showModal = false
     },
   },
-};
+}
 </script>
 
 <style lang="scss">

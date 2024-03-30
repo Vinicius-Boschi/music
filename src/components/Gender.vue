@@ -76,7 +76,7 @@ export default {
 @import "../assets/scss/styles/gender.scss";
 
 .swiper {
-  width: 65%;
+  width: calc(100% - 80px);
   height: 100%;
 }
 
@@ -84,11 +84,13 @@ export default {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
-  font-size: 30px;
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-40%);
+  z-index: 10;
 }
 </style>

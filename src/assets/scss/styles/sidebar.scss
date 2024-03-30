@@ -1,11 +1,13 @@
 .sidebar {
   display: flex;
-  background-color: $white;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  width: 50vh;
+  width: 25%;
+  min-width: 200px;
+  max-width: 300px;
   border-right: 1px solid $white-three;
+  background-color: $white-two;
 
   &__logo {
     padding: 1rem;
@@ -73,7 +75,7 @@
     border-radius: 0.5rem;
 
     &:hover {
-      background-color: $white-two;
+      background-color: $white-three;
     }
 
     &.active {
@@ -81,13 +83,58 @@
     }
   }
 
+  &__announcement {
+    background-color: $purple;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 95%;
+    margin-top: 0.5rem;
+
+    &-text {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: $white;
+      margin-bottom: 1rem;
+    }
+
+    &-button {
+      background-color: $purple-two;
+      color: $white;
+      font-size: 0.875rem;
+      font-weight: bold;
+      padding: 0.4rem;
+      border-radius: 5px;
+      border: 1px solid $white;
+      cursor: pointer;
+      width: 40%;
+    }
+  }
+
+  &__playlist {
+    margin-top: 1rem;
+    border-top: 1px solid $white-three;
+
+    &-title {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 0.5rem;
+    }
+
+    &-text {
+      font-weight: normal;
+      font-size: 1rem;
+      margin-left: 0.3rem;
+    }
+  }
+
   &__photo {
     &-link {
       display: flex;
       padding: 1rem;
-      background-color: $white;
       align-items: center;
       gap: 0.5rem;
+      border-top: 1px solid $white-three;
     }
   }
 

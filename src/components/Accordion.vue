@@ -90,7 +90,6 @@
                       alt=""
                     />
                   </th>
-                  <th>Rank</th>
                 </tr>
               </thead>
               <tbody class="accordion__track-container">
@@ -115,13 +114,15 @@
                   </td>
                   <td>
                     <router-link
-                      :to="{ name: 'DetailsAlbum', params: { id: track.album.id } }"
+                      :to="{
+                        name: 'DetailsAlbum',
+                        params: { id: track.album.id },
+                      }"
                     >
                       {{ track.album.title }}
                     </router-link>
                   </td>
                   <td>{{ formatDuration(track.duration) }}</td>
-                  <td>{{ formatNumber(track.rank) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -166,7 +167,9 @@
               v-for="(playlist, index) in playlists"
               :key="index"
             >
-              <router-link :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }">
+              <router-link
+                :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
+              >
                 <img
                   class="accordion__playlist-picture"
                   :src="playlist.picture_medium"
@@ -215,7 +218,6 @@ export default {
         )
         const data = await response.json()
         this.tracks = data.data
-        console.log(data.data)
       } catch (error) {
         console.error("Erro ao buscar o artista.", error)
       }
