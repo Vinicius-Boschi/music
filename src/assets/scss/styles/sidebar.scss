@@ -1,21 +1,20 @@
 .sidebar {
   display: flex;
-  background-color: #ffffff;
+  background-color: $white;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
   width: 50vh;
-  border-right: 1px solid #d2d2d3;
+  border-right: 1px solid $white-three;
 
   &__logo {
     padding: 1rem;
 
     &-name {
       display: grid;
-      background-color: #f3f4f6;
-      color: #4b5563;
-      font-size: 1.3rem;
-      font-weight: bold;
+      color: $black;
+      font-size: 1.6rem;
+      font-weight: 900;
       text-transform: uppercase;
       line-height: 1rem;
       place-content: center;
@@ -35,43 +34,13 @@
     width: 2rem;
   }
 
-  &__link {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    background-color: #f3f4f6;
-    color: #374151;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-
-    &-text {
-      margin-left: .3rem;
-      font-weight: bold;
-    }
-  }
-
-  &__summary {
-    display: flex;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    color: #6b7280;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0.5rem;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #f3f4f6;
-      color: #374151;
-    }
+  &__link-text {
+    margin-left: 0.3rem;
+    font-weight: bold;
   }
 
   &__text {
-    font-size: .875rem;
+    font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 500;
   }
@@ -98,30 +67,25 @@
     display: flex;
     align-items: center;
     padding: 1rem;
-    color: #6b7280;
-    font-size: 0.875rem;
+    font-size: 1.2rem;
     line-height: 1.25rem;
     font-weight: 500;
     border-radius: 0.5rem;
 
     &:hover {
-      background-color: #f3f4f6;
-      color: #374151;
+      background-color: $white-two;
+    }
+
+    &.active {
+      color: $purple;
     }
   }
-  
-  &__photo {
-    position: sticky;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    border-top-width: 1px;
-    border-color: #f3f4f6;
 
+  &__photo {
     &-link {
       display: flex;
       padding: 1rem;
-      background-color: #ffffff;
+      background-color: $white;
       align-items: center;
       gap: 0.5rem;
     }
@@ -129,8 +93,9 @@
 
   &__user-photo {
     object-fit: cover;
-    border-radius: 9999px;
-    width: 5rem;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
   }
 
   &__name {

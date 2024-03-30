@@ -14,54 +14,100 @@
           class="header__user-icon"
           src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/ddde9c36-3bed-4f13-989a-23e7f5972d5b"
           alt="icon ring"
+          @click="toggleNotification"
         />
         <summary class="header__summary">
           <span class="header__text">
             <div class="header__icon-container">
               <img
-                src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/236c34c5-1ba6-477d-88ba-a4e8d8c2d1d5"
+                src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
                 alt="user photo"
                 class="header__user"
                 @click="toggleModal"
               />
             </div>
           </span>
-
-          <span class="header__arrow">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="header__arrow-icon"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </span>
         </summary>
       </div>
 
-      <ul v-if="showModal" class="header__user-menu">
-        <li>
-          <details class="header__details">
-            <summary class="header__summary">
-              <span class="header__text">User Info</span>
-            </summary>
-            <ul class="header__details-hide">
-              <li>
-                <a href="#" class="header__hover"> Banned Users </a>
-              </li>
+      <div v-if="showModal" class="header__user-menu">
+        <ul class="header__details-hide">
+          <li class="header__hover">
+            <img
+              src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+              alt="user photo"
+              class="header__user"
+            />
+            <a class="header__user-link" href="#">Eric Frusciante</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__announcement" href="#">
+              <span class="header__announcement-text"
+                >Escolha oque você ouve. Sem anúncios.</span
+              >
+              <span class="header__announcement-description"
+                >1 mês grátis; a partir daí R$ 24,90/mês. Experimente
+                agora.</span
+              >
+            </a>
+          </li>
+        </ul>
 
-              <li>
-                <a href="#" class="header__hover"> Calendar </a>
-              </li>
-            </ul>
-          </details>
-        </li>
-      </ul>
+        <ul class="header__details-hide border">
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Configurações da conta</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Gerenciar minha assinatura</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Gerenciar minhas exclusões</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Comprar um vale presente</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Ativar um código</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Desconectar</a>
+          </li>
+        </ul>
+
+        <ul class="header__details-hide border">
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Modo noturno</a>
+            <label class="header__switch">
+              <input type="checkbox" checked />
+              <span class="header__slider round"></span>
+            </label>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Suporte</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Community e feedback</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Planos</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Recursos</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Sobre nós</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Jobs</a>
+          </li>
+          <li class="header__hover">
+            <a class="header__user-link" href="#">Legal</a>
+          </li>
+        </ul>
+      </div>
+      <div v-if="showNotification" class="header__notification">
+        <span class="header__text">Você não possui nenhuma notificação.</span>
+      </div>
     </div>
   </header>
 </template>
@@ -72,21 +118,35 @@ export default {
   data() {
     return {
       showModal: false,
-    }
+      showNotification: false,
+    };
   },
   methods: {
     toggleModal() {
-      this.showModal = !this.showModal
+      this.showModal = !this.showModal;
+      this.showNotification = false;
+    },
+    toggleNotification() {
+      this.showNotification = !this.showNotification;
+      this.showModal = false;
     },
   },
-}
+};
 </script>
 
-<style>
+<style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/header.scss";
 
 .header__user-container:hover .header__user-menu {
   display: block;
+}
+
+.header__user-container:hover .header__notification {
+  display: block;
+}
+
+a {
+  text-decoration: none !important;
 }
 </style>

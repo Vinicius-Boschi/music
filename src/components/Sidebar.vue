@@ -5,7 +5,7 @@
 
       <ul class="sidebar__list">
         <li>
-          <a href="#" class="sidebar__link">
+          <a href="#" class="sidebar__hover active">
             <img
               class="sidebar__icon"
               src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/5554d011-9384-419c-938b-81edd1f3cbde"
@@ -35,62 +35,6 @@
             <p class="sidebar__link-text">Favoritos</p>
           </a>
         </li>
-
-        <!-- <li>
-          <details class="sidebar__details">
-            <summary
-              class="sidebar__summary"
-            >
-              <span class="sidebar__text"> Account </span>
-  
-              <span class="sidebar__arrow">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="sidebar__arrow-icon"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </span>
-            </summary>
-  
-            <ul class="sidebar__details-hide">
-              <li>
-                <a
-                  href="#"
-                  class="sidebar__hover"
-                >
-                  Details
-                </a>
-              </li>
-  
-              <li>
-                <a
-                  href="#"
-                  class="sidebar__hover"
-                >
-                  Security
-                </a>
-              </li>
-  
-              <li>
-                <form action="#">
-                  <button
-                    type="submit"
-                    class="sidebar__hover"
-                  >
-                    Logout
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </details>
-        </li> -->
       </ul>
     </div>
 

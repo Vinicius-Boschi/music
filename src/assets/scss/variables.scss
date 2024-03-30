@@ -9,7 +9,7 @@ $gray: #35302D;
 $gray-two: #6F6D71;
 $light-gray: #80808035;
 $purple: #9333E8;
-$font: 'Quicksand', sans-serif;
+$font: 'Inter', sans-serif;
 
 @mixin phone {
     @media (min-width: 375px) and (max-width: 540px) { @content; }

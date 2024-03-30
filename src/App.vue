@@ -15,4 +15,13 @@ export default {
 #app {
   font-family: $font;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $light-gray; 
+  border-radius: 10px;
+}
 </style>
