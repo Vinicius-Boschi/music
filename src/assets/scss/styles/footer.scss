@@ -1,0 +1,107 @@
+.footer {
+  background-color: $black;
+  color: $white;
+  margin-left: 250px;
+
+  &__container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+    max-width: 1280px;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__logo {
+    height: 2rem;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1.5rem;
+  }
+
+  &__media {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    &-link {
+      color: $black;
+      transition: opacity 0.3s;
+
+      &:hover {
+        opacity: 0.75;
+      }
+    }
+
+    &-icon {
+      fill: $white;
+    }
+  }
+
+  &__services {
+    display: grid;
+    padding-top: 4rem;
+    border-top-width: 1px;
+    border-color: $white;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+
+    &-text {
+      color: $gray-two;
+      font-weight: 500;
+    }
+
+    &-list {
+      margin-top: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    &-link {
+      transition: opacity 0.3s;
+      line-height: 3;
+
+      &:hover {
+        opacity: 0.75;
+      }
+
+      &.line {
+        line-height: 2;
+      }
+    }
+  }
+
+  &__infos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+  }
+
+  &__rights {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__copy {
+    color: #6b7280;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  &__language {
+    font-size: 0.75rem;
+  }
+}

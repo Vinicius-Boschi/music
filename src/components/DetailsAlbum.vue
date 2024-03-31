@@ -1,78 +1,84 @@
 <template>
-  <Sidebar />
-  <div class="details">
-    <img :src="details.cover_medium" :alt="details.title" />
-    <div class="details__container">
-      <h1>{{ details.title }}</h1>
-      <div class="details__singer" v-if="details.artist">
-        <img :src="details.artist.picture" />
-        <router-link
-          :to="{ name: 'Details', params: { id: details.artist.id } }"
+  <div class="container">
+    <Sidebar />
+    <div class="content">
+      <div class="details">
+        <img :src="details.cover_medium" :alt="details.title" />
+        <div class="details__container">
+          <h1>{{ details.title }}</h1>
+          <div class="details__singer" v-if="details.artist">
+            <img :src="details.artist.picture" />
+            <router-link
+              :to="{ name: 'Details', params: { id: details.artist.id } }"
+            >
+              <h2>{{ details.artist.name }}</h2>
+            </router-link>
+          </div>
+          <div class="details__info">
+            <p>{{ details.nb_tracks }} faixas</p>
+            <p>{{ formatDuration(details.duration) }} minutos</p>
+            <p>{{ formatDate(details.release_date) }}</p>
+            <p>{{ formatNumber(details.fans) }} fãs</p>
+          </div>
+        </div>
+      </div>
+      <table class="accordion__track-list">
+        <thead>
+          <tr class="accordion__track-bottom">
+            <th>Música</th>
+            <th>Álbum</th>
+            <th>Gênero</th>
+            <th>
+              <img
+                src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
+                alt=""
+              />
+            </th>
+            <th>Rank</th>
+          </tr>
+        </thead>
+        <tbody
+          class="accordion__track-container"
+          v-if="details.tracks && details.tracks.data"
         >
-          <h2>{{ details.artist.name }}</h2>
-        </router-link>
-      </div>
-      <div class="details__info">
-        <p>{{ details.nb_tracks }} faixas</p>
-        <p>{{ formatDuration(details.duration) }} minutos</p>
-        <p>{{ formatDate(details.release_date) }}</p>
-        <p>{{ formatNumber(details.fans) }} fãs</p>
-      </div>
+          <tr
+            v-for="(detail, index) in details.tracks.data"
+            :key="index"
+            @mouseover="highlightedRow = index"
+            @mouseleave="highlightedRow = null"
+            ref="trackRows"
+            :class="{ highlighted: highlightedRow === index }"
+          >
+            <audio ref="audioPlayers" :src="detail.preview"></audio>
+            <td class="accordion__track-group">
+              <img
+                :src="detail.album.cover_small"
+                :alt="detail.title"
+                @click="playPreview(index)"
+                @mouseover="currentTrackIndex = index"
+                @mouseleave="currentTrackIndex = null"
+              />
+              <h1>{{ index + 1 }} - {{ detail.title }}</h1>
+            </td>
+            <td>{{ detail.album.title }}</td>
+            <td>
+              <span v-for="(genre, index) in details.genres.data" :key="index">
+                {{ genre.name }}
+              </span>
+            </td>
+            <td>{{ formatDuration(detail.duration) }}</td>
+            <td>{{ formatNumber(detail.rank) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  <table class="accordion__track-list">
-    <thead>
-      <tr class="accordion__track-bottom">
-        <th>Música</th>
-        <th>Álbum</th>
-        <th>Gênero</th>
-        <th>
-          <img
-            src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
-            alt=""
-          />
-        </th>
-        <th>Rank</th>
-      </tr>
-    </thead>
-    <tbody
-      class="accordion__track-container"
-      v-if="details.tracks && details.tracks.data"
-    >
-      <tr
-        v-for="(detail, index) in details.tracks.data"
-        :key="index"
-        @mouseover="highlightedRow = index"
-        @mouseleave="highlightedRow = null"
-        ref="trackRows"
-        :class="{ highlighted: highlightedRow === index }"
-      >
-        <audio ref="audioPlayers" :src="detail.preview"></audio>
-        <td class="accordion__track-group">
-          <img
-            :src="detail.album.cover_small"
-            :alt="detail.title"
-            @click="playPreview(index)"
-            @mouseover="currentTrackIndex = index"
-            @mouseleave="currentTrackIndex = null"
-          />
-          <h1>{{ index + 1 }} - {{ detail.title }}</h1>
-        </td>
-        <td>{{ detail.album.title }}</td>
-        <td>
-          <span v-for="(genre, index) in details.genres.data" :key="index">
-            {{ genre.name }}
-          </span>
-        </td>
-        <td>{{ formatDuration(detail.duration) }}</td>
-        <td>{{ formatNumber(detail.rank) }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <Footer />
 </template>
 
 <script>
 import Sidebar from "./Sidebar.vue"
+import Footer from "./Footer.vue"
 
 export default {
   name: "DetailsAlbum",
@@ -87,6 +93,7 @@ export default {
   },
   components: {
     Sidebar,
+    Footer,
   },
   mounted() {
     this.getDetailsAlbum().then(() => {

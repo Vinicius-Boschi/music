@@ -22,11 +22,13 @@
       <Accordion :artist="artist" />
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
 import Sidebar from "./Sidebar.vue"
 import Accordion from "./Accordion.vue"
+import Footer from "./Footer.vue"
 
 export default {
   name: "Details",
@@ -38,6 +40,7 @@ export default {
   components: {
     Sidebar,
     Accordion,
+    Footer,
   },
   mounted() {
     this.getDetails()

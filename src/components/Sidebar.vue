@@ -1,5 +1,6 @@
 <template>
-  <div class="sidebar">
+  <div class="container">
+    <div class="sidebar">
     <div class="sidebar__logo">
       <span class="sidebar__logo-name"> Deezer </span>
       <ul class="sidebar__list">
@@ -86,6 +87,7 @@
       </a>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -109,4 +111,9 @@ export default {
 <style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/sidebar.scss";
+
+  .container {
+    display: flex;
+  }
+
 </style>

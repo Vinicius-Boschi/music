@@ -82,10 +82,12 @@
       </table>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
 import Sidebar from "./Sidebar.vue"
+import Footer from "./Footer.vue"
 
 export default {
   name: "DetailsPlaylist",
@@ -96,10 +98,11 @@ export default {
       currentTrackIndex: null,
       highlightedRow: null,
       audioPlayers: [],
-    }
+    };
   },
   components: {
     Sidebar,
+    Footer,
   },
   mounted() {
     this.getDetailsPlaylist().then(() => {
@@ -109,7 +112,7 @@ export default {
   methods: {
     async getDetailsPlaylist() {
       try {
-        const id = this.$route.params.id;
+        const id = this.$route.params.id
         const response = await fetch(`http://localhost:3000/playlist/${id}`)
         const data = await response.json()
         this.playlist = data

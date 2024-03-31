@@ -8,6 +8,7 @@
       <Playlist />
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
@@ -16,6 +17,7 @@ import Gender from "./Gender.vue"
 import Chart from "./Chart.vue"
 import Albuns from "./Albuns.vue"
 import Playlist from "./Playlist.vue"
+import Footer from "./Footer.vue"
 
 export default {
   name: "Home",
@@ -25,8 +27,9 @@ export default {
     Chart,
     Albuns,
     Playlist,
+    Footer
   },
-};
+}
 </script>
 
 <style>
