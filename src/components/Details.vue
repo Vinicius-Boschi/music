@@ -42,6 +42,12 @@ export default {
     Accordion,
     Footer,
   },
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   mounted() {
     this.getDetails()
   },

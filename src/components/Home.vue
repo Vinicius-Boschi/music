@@ -1,12 +1,10 @@
 <template>
-  <div class="container">
-    <Sidebar />
-    <div class="content">
-      <Gender />
-      <Chart />
-      <Albuns />
-      <Playlist />
-    </div>
+  <Sidebar />
+  <div class="content">
+    <Gender />
+    <Chart />
+    <Albuns />
+    <Playlist />
   </div>
   <Footer />
 </template>
@@ -27,7 +25,7 @@ export default {
     Chart,
     Albuns,
     Playlist,
-    Footer
+    Footer,
   },
 }
 </script>

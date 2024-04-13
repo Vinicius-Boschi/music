@@ -96,7 +96,7 @@ app.get("/artist/:id/playlists", async (req, res) => {
     const limit = req.query.limit || 100
     const response = await fetch(
       `https://api.deezer.com/artist/${id}/playlists?limit=${limit}`
-    );
+    )
     const data = await response.json()
     res.json(data)
   } catch (error) {
@@ -126,6 +126,34 @@ app.get("/playlist/:id", async (req, res) => {
   } catch (error) {
     console.error(error)
     res.status(500).send("Erro ao buscar os detalhes do artista.")
+  }
+})
+
+app.get("/search", async (req, res) => {
+  try {
+    const searchQuery = req.query.q
+    const response = await fetch(
+      `https://api.deezer.com/search?q=${searchQuery}`
+    )
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes do artista.")
+  }
+})
+
+app.get("/search/playlist", async (req, res) => {
+  try {
+    const searchQuery = req.query.q
+    const response = await fetch(
+      `https://api.deezer.com/search/playlist?q=${searchQuery}`
+    )
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes da playlist.")
   }
 })
 

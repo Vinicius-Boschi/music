@@ -98,7 +98,7 @@ export default {
       currentTrackIndex: null,
       highlightedRow: null,
       audioPlayers: [],
-    };
+    }
   },
   components: {
     Sidebar,
@@ -117,7 +117,7 @@ export default {
         const data = await response.json()
         this.playlist = data
       } catch (error) {
-        console.error("Erro ao buscar o album", error)
+        console.error("Erro ao buscar a playlist", error)
       }
     },
     formatNumber(number) {

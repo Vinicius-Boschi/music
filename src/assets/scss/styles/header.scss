@@ -1,8 +1,10 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid $white-three;
+  &__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $white-three;
+  }
 
   &__label {
     display: block;

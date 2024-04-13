@@ -26,7 +26,7 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/details/:id",
+      path: "/album/:id",
       name: "DetailsAlbum",
       component: DetailsAlbum,
       props: true,
@@ -40,4 +40,4 @@ const router = createRouter({
   ],
 })
 
-export default router;
+export default router

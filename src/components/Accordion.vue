@@ -213,9 +213,7 @@ export default {
     async getTopTracks() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(
-          `http://localhost:3000/artist/${id}/top?limit=100`
-        )
+        const response = await fetch(`http://localhost:3000/artist/${id}/top?`)
         const data = await response.json()
         this.tracks = data.data
       } catch (error) {
