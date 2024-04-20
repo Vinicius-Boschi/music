@@ -49,7 +49,7 @@
                   >Escolha oque você ouve. Sem anúncios.</span
                 >
                 <span class="header__announcement-description"
-                  >1 mês grátis; a partir daí R$ 24,90/mês. Experimente
+                  >1 mês grátis a partir daí R$ 24,90/mês. Experimente
                   agora.</span
                 >
               </a>
@@ -141,6 +141,7 @@ export default {
       searchQuery: "",
       searchResults: [],
       playlistResults: [],
+      error: null,
     }
   },
   methods: {
@@ -154,50 +155,82 @@ export default {
     },
     async performSearch() {
       try {
-        const response = await fetch(`http://localhost:3000/search?q=${this.searchQuery}`)
-        const playlistResponse = await fetch(`http://localhost:3000/search/playlist?q=${this.searchQuery}`)
+        const response = await fetch(
+          `http://localhost:3000/search?q=${this.searchQuery}`
+        )
+        const playlistResponse = await fetch(
+          `http://localhost:3000/search/playlist?q=${this.searchQuery}`
+        )
         const data = await response.json()
         const playlistData = await playlistResponse.json()
+
         this.searchResults = data.data
         this.playlistResults = playlistData.data
 
-        if (this.searchResults.length > 0 ||this.playlistResults.length > 0 || this.playlistResults.length > 0) {
+        if (this.searchResults.length > 0) {
+          const artistMatch = this.searchArtists()
+          const playlistMatch = this.searchPlaylists()
+          const albumMatch = this.searchAlbums()
 
-          const searchQueryLowercase = this.searchQuery.toLowerCase()
-
-          for (const playlist of this.playlistResults) {
-            if (playlist.title.toLowerCase() === searchQueryLowercase) {
-              this.$router.push(`/playlist/${playlist.id}`)
-              return
-            }
-          }
-
-          for (const track of this.searchResults) {
-            if (
-              track.artist &&
-              track.artist.type === "artist" &&
-              track.artist.name.toLowerCase() === searchQueryLowercase
+          if (artistMatch) {
+            const url = `/artist/${artistMatch}`
+            this.$router.push(url)
+          } else if (albumMatch && playlistMatch) {
+            if (window.confirm(
+                "Um álbum e uma playlist correspondente foram encontrados. Você gostaria de ir para a playlist?"
+              )
             ) {
-              this.$router.push(`/artist/${track.artist.id}`)
-              return
-            } else if (
-              track.album &&
-              track.album.type === "album" &&
-              track.album.title.toLowerCase() === searchQueryLowercase
-            ) {
-              this.$router.push(`/album/${track.album.id}`)
-              return
+              const url = `/playlist/${playlistMatch}`
+              this.$router.push(url)
+            } else {
+              const url = `/album/${albumMatch}`
+              this.$router.push(url)
             }
+          } else {
+            console.log("Nenhum resultado de artista, álbum ou playlist encontrado")
           }
-          console.log("Nenhum resultado de artista, álbum ou playlist encontrado")
         } else {
           console.log("Nenhum resultado encontrado")
         }
       } catch (error) {
         console.error("Erro ao buscar resultados:", error)
-        this.searchResults = []
-        this.playlistResults = []
+        this.error = error.message
       }
+    },
+    searchArtists() {
+      const searchQueryLowercase = this.searchQuery.toLowerCase()
+      for (const track of this.searchResults) {
+        if (
+          track.artist &&
+          track.artist.type === "artist" &&
+          track.artist.name.toLowerCase() === searchQueryLowercase
+        ) {
+          return track.artist.id
+        }
+      }
+      return null
+    },
+    searchPlaylists() {
+      const searchQueryLowercase = this.searchQuery.toLowerCase()
+      for (const playlist of this.playlistResults) {
+        if (playlist.title.toLowerCase() === searchQueryLowercase) {
+          return playlist.id
+        }
+      }
+      return null
+    },
+    searchAlbums() {
+      const searchQueryLowercase = this.searchQuery.toLowerCase()
+      for (const track of this.searchResults) {
+        if (
+          track.album &&
+          track.album.type === "album" &&
+          track.album.title.toLowerCase() === searchQueryLowercase
+        ) {
+          return track.album.id
+        }
+      }
+      return null
     },
   },
 }

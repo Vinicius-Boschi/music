@@ -91,6 +91,7 @@ import Footer from "./Footer.vue"
 
 export default {
   name: "DetailsPlaylist",
+  props: ["id"],
   data() {
     return {
       playlist: [],
