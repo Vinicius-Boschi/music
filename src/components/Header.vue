@@ -128,6 +128,20 @@
         </div>
       </div>
     </nav>
+    <div class="header__modal">
+      <div v-if="showConfirmModal" class="header__modal-alert">
+      <div class="header__modal-content">
+        <p class="header__modal-text">
+          Um álbum e uma playlist foram encontrados. Você
+          gostaria de ir para qual?
+        </p>
+        <div class="header__modal-buttons">
+          <button @click="goToPlaylist">Playlist</button>
+          <button @click="goToAlbum">Album</button>
+        </div>
+      </div>
+    </div>
+    </div>
   </header>
 </template>
 
@@ -142,6 +156,7 @@ export default {
       searchResults: [],
       playlistResults: [],
       error: null,
+      showConfirmModal: false,
     }
   },
   methods: {
@@ -176,18 +191,11 @@ export default {
             const url = `/artist/${artistMatch}`
             this.$router.push(url)
           } else if (albumMatch && playlistMatch) {
-            if (window.confirm(
-                "Um álbum e uma playlist correspondente foram encontrados. Você gostaria de ir para a playlist?"
-              )
-            ) {
-              const url = `/playlist/${playlistMatch}`
-              this.$router.push(url)
-            } else {
-              const url = `/album/${albumMatch}`
-              this.$router.push(url)
-            }
+            this.showConfirmationModal(albumMatch, playlistMatch)
           } else {
-            console.log("Nenhum resultado de artista, álbum ou playlist encontrado")
+            console.log(
+              "Nenhum resultado de artista, álbum ou playlist encontrado"
+            )
           }
         } else {
           console.log("Nenhum resultado encontrado")
@@ -231,6 +239,23 @@ export default {
         }
       }
       return null
+    },
+    goToPlaylist() {
+      const url = `/playlist/${this.playlistMatch}`
+      console.log("Redirecting to", url)
+      this.$router.push(url)
+      this.showConfirmModal = false
+    },
+    goToAlbum() {
+      const url = `/album/${this.albumMatch}`
+      console.log("Redirecting to", url)
+      this.$router.push(url)
+      this.showConfirmModal = false
+    },
+    showConfirmationModal(albumMatch, playlistMatch) {
+      this.showConfirmModal = true
+      this.albumMatch = albumMatch
+      this.playlistMatch = playlistMatch
     },
   },
 }

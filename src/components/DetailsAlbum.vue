@@ -18,7 +18,7 @@
         </div>
         <div class="details__info">
           <p>{{ details.nb_tracks }} faixas</p>
-          <p>{{ formatDuration(details.duration) }} minutos</p>
+          <p>{{ formatHours(details.duration) }} minutos</p>
           <p>{{ formatDate(details.release_date) }}</p>
           <p>{{ formatNumber(details.fans) }} fãs</p>
         </div>
@@ -123,6 +123,13 @@ export default {
       } else {
         return "0"
       }
+    },
+    formatHours(seconds) {
+      const hours = Math.floor(seconds / 3600)
+      const minutes = Math.floor((seconds % 3600) / 60)
+      const formattedHours = String(hours).padStart(2)
+      const formattedMinutes = String(minutes).padStart(2, "0")
+      return `${formattedHours} hrs ${formattedMinutes}`
     },
     formatDuration(seconds) {
       const minutes = Math.floor(seconds / 60)

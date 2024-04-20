@@ -203,4 +203,49 @@
       width: 12rem;
     }
   }
+
+  &__modal {
+    display: flex;
+    justify-content: center;
+    margin-left: -5rem;
+
+    &-alert {
+      display: flex;  
+      align-items: center;
+      position: fixed;
+      top: -5rem;
+      margin: 5rem;
+      padding: 20px;
+      width: 40%;
+      height: 50%;
+      background: $light-modal;  
+      box-shadow: 0 15px 30px #0d111747, 0 10px 10px #0d111747;  
+      color: $white;
+      z-index: 1000;
+    }
+
+    &-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  
+    &-buttons {
+      display: flex;
+      justify-content: space-evenly;
+  
+      button {
+        border: none;
+        background-color: $purple;
+        color: $white;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: .6rem;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 8rem;
+      }
+    }
+  }
 }
