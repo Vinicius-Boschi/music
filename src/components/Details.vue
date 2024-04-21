@@ -1,31 +1,31 @@
 <template>
-  <div class="container">
+  <div class="content">
+    <Header />
     <Sidebar />
-    <div class="content">
-      <div class="detail">
-        <div>
-          <img class="detail__profile" :src="artist.picture_medium" alt="" />
-        </div>
-        <div>
-          <div class="detail__text">
-            <h1 class="detail__name-artist">
-              {{
-                artist && artist.name !== undefined
-                  ? artist.name
-                  : "Artista não encontrado"
-              }}
-            </h1>
-            <p class="detail__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
-          </div>
+    <div class="detail">
+      <div>
+        <img class="detail__profile" :src="artist.picture_medium" alt="" />
+      </div>
+      <div>
+        <div class="detail__text">
+          <h1 class="detail__name-artist">
+            {{
+              artist && artist.name !== undefined
+                ? artist.name
+                : "Artista não encontrado"
+            }}
+          </h1>
+          <p class="detail__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
         </div>
       </div>
-      <Accordion :artist="artist" />
     </div>
+    <Accordion :artist="artist" />
   </div>
   <Footer />
 </template>
 
 <script>
+import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Accordion from "./Accordion.vue"
 import Footer from "./Footer.vue"
@@ -38,6 +38,7 @@ export default {
     }
   },
   components: {
+    Header,
     Sidebar,
     Accordion,
     Footer,

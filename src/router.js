@@ -4,6 +4,7 @@ import Details from "./components/Details.vue"
 import Accordion from "./components/Accordion.vue"
 import DetailsAlbum from "./components/DetailsAlbum.vue"
 import DetailsPlaylist from "./components/DetailsPlaylist.vue"
+import DetailsTrack from "./components/DetailsTrack.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,6 +36,12 @@ const router = createRouter({
       path: "/playlist/:id",
       name: "DetailsPlaylist",
       component: DetailsPlaylist,
+      props: true,
+    },
+    {
+      path: "/track/:id",
+      name: "DetailsTrack",
+      component: DetailsTrack,
       props: true,
     },
   ],

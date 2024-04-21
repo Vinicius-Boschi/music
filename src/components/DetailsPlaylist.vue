@@ -1,91 +1,87 @@
 <template>
-  <div class="container">
+  <div class="content">
+    <Header />
     <Sidebar />
-    <div class="content">
-      <div class="details">
-        <img :src="playlist.picture_medium" :alt="playlist.title" />
-        <div class="details__container">
-          <h1>{{ playlist.title }}</h1>
-          <div
-            class="details__singer"
-            v-if="playlist.tracks && playlist.tracks.data"
-          ></div>
-          <div class="details__info">
-            <p>{{ playlist.nb_tracks }} faixas</p>
-            <p>{{ formatHours(playlist.duration) }} minutos</p>
-            <p>{{ formatNumber(playlist.fans) }} fãs</p>
-          </div>
-          <div>
-            <p>{{ playlist.description }}</p>
-          </div>
+    <div class="details">
+      <img :src="playlist.picture_medium" :alt="playlist.title" />
+      <div class="details__container">
+        <h1>{{ playlist.title }}</h1>
+        <div class="details__info">
+          <p>{{ playlist.nb_tracks }} faixas</p>
+          <p>{{ formatHours(playlist.duration) }} minutos</p>
+          <p>{{ formatNumber(playlist.fans) }} fãs</p>
+        </div>
+        <div>
+          <p>{{ playlist.description }}</p>
         </div>
       </div>
-      <table class="accordion__track-list">
-        <thead>
-          <tr class="accordion__track-bottom">
-            <th>Música</th>
-            <th>Artista</th>
-            <th>Álbum</th>
-            <th>Adicionada</th>
-            <th>
-              <img
-                src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
-                alt=""
-              />
-            </th>
-          </tr>
-        </thead>
-        <tbody
-          class="accordion__track-container"
-          v-if="playlist.tracks && playlist.tracks.data"
-        >
-          <tr
-            v-for="(playlist, index) in playlist.tracks.data"
-            :key="index"
-            @mouseover="highlightedRow = index"
-            @mouseleave="highlightedRow = null"
-            ref="trackRows"
-            :class="{ highlighted: highlightedRow === index }"
-          >
-            <audio ref="audioPlayers" :src="playlist.preview"></audio>
-            <td class="accordion__track-group">
-              <img
-                :src="playlist.album.cover_small"
-                :alt="playlist.title"
-                @click="playPreview(index)"
-                @mouseover="currentTrackIndex = index"
-                @mouseleave="currentTrackIndex = null"
-              />
-              <h1>{{ index + 1 }} - {{ playlist.title }}</h1>
-            </td>
-            <td>
-              <router-link
-                :to="{ name: 'Details', params: { id: playlist.artist.id } }"
-              >
-                {{ playlist.artist.name }}
-              </router-link>
-            </td>
-            <td>
-              <router-link
-                :to="{
-                  name: 'DetailsAlbum',
-                  params: { id: playlist.album.id },
-                }"
-              >
-                {{ playlist.album.title }}
-              </router-link>
-            </td>
-            <td>{{ formatDate(playlist.time_add) }}</td>
-            <td>{{ formatDuration(playlist.duration) }}</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
+    <table class="accordion__track-list">
+      <thead>
+        <tr class="accordion__track-bottom">
+          <th>Música</th>
+          <th>Artista</th>
+          <th>Álbum</th>
+          <th>Adicionada</th>
+          <th>
+            <img
+              src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
+              alt=""
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="accordion__track-container"
+        v-if="playlist.tracks && playlist.tracks.data"
+      >
+        <tr
+          v-for="(playlist, index) in playlist.tracks.data"
+          :key="index"
+          @mouseover="highlightedRow = index"
+          @mouseleave="highlightedRow = null"
+          ref="trackRows"
+          :class="{ highlighted: highlightedRow === index }"
+        >
+          <audio ref="audioPlayers" :src="playlist.preview"></audio>
+          <td class="accordion__track-group">
+            <img
+              :src="playlist.album.cover_small"
+              :alt="playlist.title"
+              @click="playPreview(index)"
+              @mouseover="currentTrackIndex = index"
+              @mouseleave="currentTrackIndex = null"
+            />
+            <h1>{{ index + 1 }} - {{ playlist.title }}</h1>
+          </td>
+          <td>
+            <router-link
+              :to="{ name: 'Details', params: { id: playlist.artist.id } }"
+            >
+              {{ playlist.artist.name }}
+            </router-link>
+          </td>
+          <td>
+            <router-link
+              :to="{
+                name: 'DetailsAlbum',
+                params: { id: playlist.album.id },
+              }"
+            >
+              {{ playlist.album.title }}
+            </router-link>
+          </td>
+          <td>{{ formatDate(playlist.time_add) }}</td>
+          <td>{{ formatDuration(playlist.duration) }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <Footer />
 </template>
 
 <script>
+import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
 
@@ -102,6 +98,7 @@ export default {
     }
   },
   components: {
+    Header,
     Sidebar,
     Footer,
   },

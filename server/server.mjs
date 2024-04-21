@@ -129,6 +129,18 @@ app.get("/playlist/:id", async (req, res) => {
   }
 })
 
+app.get("/track/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/track/${id}`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes do artista.")
+  }
+})
+
 app.get("/search", async (req, res) => {
   try {
     const searchQuery = req.query.q
@@ -148,6 +160,20 @@ app.get("/search/playlist", async (req, res) => {
     const searchQuery = req.query.q
     const response = await fetch(
       `https://api.deezer.com/search/playlist?q=${searchQuery}`
+    )
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes da playlist.")
+  }
+})
+
+app.get("/search/track", async (req, res) => {
+  try {
+    const searchQuery = req.query.q
+    const response = await fetch(
+      `https://api.deezer.com/search/track?q=${searchQuery}`
     )
     const data = await response.json()
     res.json(data)

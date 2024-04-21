@@ -1,6 +1,7 @@
 <template>
-  <Sidebar />
   <div class="content">
+    <Header />
+    <Sidebar />
     <div class="details">
       <img :src="details.cover_medium" :alt="details.title" />
       <div class="details__container">
@@ -76,6 +77,7 @@
 </template>
 
 <script>
+import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
 
@@ -91,6 +93,7 @@ export default {
     }
   },
   components: {
+    Header,
     Sidebar,
     Footer,
   },

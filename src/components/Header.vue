@@ -9,6 +9,7 @@
           class="header__input"
           v-model="searchQuery"
           @keyup.enter="performSearch"
+          
         />
       </label>
       <div class="header__account">
@@ -186,9 +187,13 @@ export default {
           const artistMatch = this.searchArtists()
           const playlistMatch = this.searchPlaylists()
           const albumMatch = this.searchAlbums()
+          const trackMatch = this.searchTracks()
 
           if (artistMatch) {
             const url = `/artist/${artistMatch}`
+            this.$router.push(url)
+          } else if(trackMatch) {
+            const url = `/track/${trackMatch}`
             this.$router.push(url)
           } else if (albumMatch && playlistMatch) {
             this.showConfirmationModal(albumMatch, playlistMatch)
@@ -240,15 +245,22 @@ export default {
       }
       return null
     },
+    searchTracks() {
+      const searchQueryLowercase = this.searchQuery.toLowerCase()
+      for (const track of this.searchResults) {
+        if (track.title.toLowerCase() === searchQueryLowercase) {
+          return track.id
+        }
+      }
+      return null
+    },
     goToPlaylist() {
       const url = `/playlist/${this.playlistMatch}`
-      console.log("Redirecting to", url)
       this.$router.push(url)
       this.showConfirmModal = false
     },
     goToAlbum() {
       const url = `/album/${this.albumMatch}`
-      console.log("Redirecting to", url)
       this.$router.push(url)
       this.showConfirmModal = false
     },

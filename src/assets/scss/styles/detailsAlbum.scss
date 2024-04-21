@@ -8,7 +8,7 @@
 
     &__container {
         padding: 1rem;
-        line-height: 2;
+        line-height: 1.3;
 
         h1 {
             font-weight: bold;
@@ -44,6 +44,7 @@
 
     &__info {
         display: flex;
+        align-items: center;
 
         p {
             border-right: 2px solid $gray-two;
