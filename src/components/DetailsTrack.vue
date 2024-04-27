@@ -74,6 +74,9 @@
         </div>
       </div>
     </div>
+    <div class="details__lyrics">
+      <h1 v-if="lyrics">{{ lyrics }}</h1>
+    </div>
   </div>
   <Footer />
 </template>
@@ -92,6 +95,7 @@ export default {
       audioPlayers: [],
       showModal: false,
       highlightedRow: null,
+      lyrics: "",
       items: [
         {
           icon: "https://github.com/Vinicius-Boschi/music/assets/74377158/d1950296-7fb2-485b-b5f7-d5c4132685e9",
@@ -155,12 +159,51 @@ export default {
     toggleModal() {
       this.showModal = !this.showModal
     },
+    async getSpotifyTrackId(title) {
+      const url = `https://spotify-scraper.p.rapidapi.com/v1/track/search?name=${title}`
+      const options = {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key":
+            "ad0b053ae2msh460b0f1df992efep15ac17jsn58813852fbb4",
+        },
+      }
+      try {
+        const response = await fetch(url, options)
+        const result = await response.json()
+        return result.id
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getLyrics(title) {
+      const trackId = await this.getSpotifyTrackId(title)
+      const url = `https://spotify-scraper.p.rapidapi.com/v1/track/lyrics?trackId=${trackId}`
+      const options = {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key":
+            "ad0b053ae2msh460b0f1df992efep15ac17jsn58813852fbb4",
+        },
+      }
+      try {
+        const response = await fetch(url, options)
+        let result = await response.text()
+        result = result.replace(/\[\d{2}:\d{2}\.\d{2}\]/g, "")
+        this.lyrics = result
+      } catch (error) {
+        console.error(error)
+      }
+    },
     async getDetailsTrack() {
       try {
         const id = this.$route.params.id
         const response = await fetch(`http://localhost:3000/track/${id}`)
         const data = await response.json()
         this.track = data
+        if (this.track.id) {
+          await this.getLyrics(this.track.title)
+        }
       } catch (error) {
         console.error("Erro ao buscar a música", error)
       }
