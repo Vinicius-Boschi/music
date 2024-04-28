@@ -1,7 +1,6 @@
 <template>
   <Sidebar />
   <div class="content">
-    <Gender />
     <Chart />
     <Albuns />
     <Playlist />
@@ -11,7 +10,6 @@
 
 <script>
 import Sidebar from "./Sidebar.vue"
-import Gender from "./Gender.vue"
 import Chart from "./Chart.vue"
 import Albuns from "./Albuns.vue"
 import Playlist from "./Playlist.vue"
@@ -21,7 +19,6 @@ export default {
   name: "Home",
   components: {
     Sidebar,
-    Gender,
     Chart,
     Albuns,
     Playlist,

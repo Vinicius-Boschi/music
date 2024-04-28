@@ -1,7 +1,11 @@
 import express from "express"
 import fetch from "node-fetch"
 import cors from "cors"
+import Genius from "genius-lyrics"
 
+const Client = new Genius.Client(
+  "k9I8sEt0VO5kqb1U-KpF_AJ2ZbfCgwxJaA5Y422oZ6HGaR2SiQ770QmFEigBPEMv"
+)
 const app = express()
 const PORT = process.env.PORT || 3000
 app.use(express.json())
@@ -180,6 +184,18 @@ app.get("/search/track", async (req, res) => {
   } catch (error) {
     console.error(error)
     res.status(500).send("Erro ao buscar os detalhes da playlist.")
+  }
+})
+
+app.get("/lyrics/:title", async (req, res) => {
+  try {
+    const searches = await Client.songs.search(req.params.title)
+    const firstSong = searches[0]
+    const lyrics = await firstSong.lyrics()
+    res.json({ lyrics })
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a letra da música.")
   }
 })
 

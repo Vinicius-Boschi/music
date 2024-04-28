@@ -52,7 +52,13 @@
               @mouseover="currentTrackIndex = index"
               @mouseleave="currentTrackIndex = null"
             />
-            <h1>{{ index + 1 }} - {{ playlist.title }}</h1>
+            <h1>
+              <router-link
+                :to="{ name: 'DetailsTrack', params: { id: playlist.id } }"
+              >
+                {{ index + 1 }} - {{ playlist.title }}
+              </router-link>
+            </h1>
           </td>
           <td>
             <router-link

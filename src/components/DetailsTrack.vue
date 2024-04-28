@@ -74,9 +74,7 @@
         </div>
       </div>
     </div>
-    <div class="details__lyrics">
-      <h1 v-if="lyrics">{{ lyrics }}</h1>
-    </div>
+    <div class="details__lyrics" v-html="lyrics"></div>
   </div>
   <Footer />
 </template>
@@ -159,40 +157,18 @@ export default {
     toggleModal() {
       this.showModal = !this.showModal
     },
-    async getSpotifyTrackId(title) {
-      const url = `https://spotify-scraper.p.rapidapi.com/v1/track/search?name=${title}`
-      const options = {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key":
-            "ad0b053ae2msh460b0f1df992efep15ac17jsn58813852fbb4",
-        },
-      }
-      try {
-        const response = await fetch(url, options)
-        const result = await response.json()
-        return result.id
-      } catch (error) {
-        console.error(error)
-      }
-    },
     async getLyrics(title) {
-      const trackId = await this.getSpotifyTrackId(title)
-      const url = `https://spotify-scraper.p.rapidapi.com/v1/track/lyrics?trackId=${trackId}`
-      const options = {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key":
-            "ad0b053ae2msh460b0f1df992efep15ac17jsn58813852fbb4",
-        },
-      }
-      try {
-        const response = await fetch(url, options)
-        let result = await response.text()
-        result = result.replace(/\[\d{2}:\d{2}\.\d{2}\]/g, "")
-        this.lyrics = result
-      } catch (error) {
-        console.error(error)
+      const response = await fetch(
+        `http://localhost:3000/lyrics/${encodeURI(title)}`
+      )
+      const data = await response.json()
+      if (data && data.lyrics) {
+        const lines = data.lyrics
+          .split("\n")
+          .filter((line) => line.trim() !== "")
+        this.lyrics = this.processLyrics(lines)
+      } else {
+        console.error("Nenhuma letra foi encontrada", title)
       }
     },
     async getDetailsTrack() {
@@ -207,6 +183,37 @@ export default {
       } catch (error) {
         console.error("Erro ao buscar a música", error)
       }
+    },
+    processLyrics(lyrics) {
+      let sections = []
+      let section = []
+
+      lyrics.forEach((line) => {
+        if (line) {
+          section.push(line)
+        } else if (section.length) {
+          sections.push(section)
+          section = []
+        }
+      })
+
+      if (section.length) {
+        sections.push(section)
+      }
+
+      return sections
+        .map((section) => {
+          return `<div class="section">${section
+            .map((line) => {
+              if (line.startsWith("[") && line.endsWith("]")) {
+                return `<p class="details__lyrics-background">${line}</p>`
+              } else {
+                return `<p class="details__lyrics-paragraph">${line}</p>`
+              }
+            })
+            .join("")}</div>`
+        })
+        .join("")
     },
     formatDuration(seconds) {
       const minutes = Math.floor(seconds / 60)

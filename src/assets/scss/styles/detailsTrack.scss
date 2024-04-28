@@ -96,4 +96,26 @@
     margin: 0 16px;
     font-size: 1rem;
   }
+
+  &__lyrics {
+    margin: 0 16px;
+    font-size: 1rem;
+
+    &-paragraph {
+      line-height: 1.5;
+      font-size: 1.2rem;
+      background-color: #f9f9f9;
+      padding: 5px;
+      width: 55%;
+    }
+
+    &-background {
+      background-color: transparent;
+      line-height: 1.5;
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+  }
 }

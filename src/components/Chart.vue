@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div class="chart">
     <div class="chart__text">
       <h1 class="chart__title">Artistas</h1>
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+import Header from "./Header.vue"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation } from "swiper/modules"
 import "swiper/scss"
@@ -40,6 +42,7 @@ import "swiper/scss/navigation"
 export default {
   name: "Chart",
   components: {
+    Header,
     Swiper,
     SwiperSlide,
   },
@@ -73,4 +76,23 @@ export default {
 <style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/chart.scss";
+
+.swiper {
+  width: calc(100% - 80px);
+  height: 100%;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-45%);
+  z-index: 10;
+}
 </style>

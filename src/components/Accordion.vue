@@ -61,7 +61,11 @@
                 @mouseleave="currentTrackIndex = null"
               />
               <h1 class="accordion__track-name">
-                {{ index + 1 }} - {{ track.title }}
+                <router-link
+                  :to="{ name: 'DetailsTrack', params: { id: track.id } }"
+                >
+                  {{ index + 1 }} - {{ track.title }}
+                </router-link>
               </h1>
             </div>
           </div>
@@ -110,7 +114,13 @@
                       @mouseover="currentTrackIndex = index"
                       @mouseleave="currentTrackIndex = null"
                     />
-                    <h1>{{ index + 1 }} - {{ track.title }}</h1>
+                    <h1>
+                      <router-link
+                        :to="{ name: 'DetailsTrack', params: { id: track.id } }"
+                      >
+                        {{ index + 1 }} - {{ track.title }}
+                      </router-link>
+                    </h1>
                   </td>
                   <td>
                     <router-link

@@ -198,7 +198,7 @@ export default {
           } else if (albumMatch && playlistMatch) {
             this.showConfirmationModal(albumMatch, playlistMatch)
           } else {
-            console.log(
+            alert(
               "Nenhum resultado de artista, álbum ou playlist encontrado"
             )
           }
