@@ -94,6 +94,18 @@ app.get("/artist/:id/related", async (req, res) => {
   }
 })
 
+app.get("/artist/:id/albums", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/artist/${id}/albums`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os albums semelhantes.")
+  }
+})
+
 app.get("/artist/:id/playlists", async (req, res) => {
   try {
     const { id } = req.params
@@ -187,9 +199,9 @@ app.get("/search/track", async (req, res) => {
   }
 })
 
-app.get("/lyrics/:title", async (req, res) => {
+app.get("/lyrics/:title/:artist", async (req, res) => {
   try {
-    const searches = await Client.songs.search(req.params.title)
+    const searches = await Client.songs.search(req.params.title, req.params.artist)
     const firstSong = searches[0]
     const lyrics = await firstSong.lyrics()
     res.json({ lyrics })

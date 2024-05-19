@@ -6,6 +6,7 @@
 
   &__group {
     display: flex;
+    position: absolute;
   }
 
   &__button {
@@ -57,8 +58,6 @@
   }
 
   &__modal {
-    position: absolute;
-    right: 3.5rem;
     padding: 0.5rem;
     background-color: $white-two;
     border-radius: 0.5rem;
@@ -84,7 +83,6 @@
 
   &__items {
     padding: 1rem;
-    height: 65vh;
   }
 
   &__icon {
@@ -98,7 +96,7 @@
   }
 
   &__lyrics {
-    margin: 0 16px;
+    margin: 4rem 0 0 2rem;
     font-size: 1rem;
 
     &-paragraph {

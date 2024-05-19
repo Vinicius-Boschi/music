@@ -16,6 +16,7 @@
             }}
           </h1>
           <p class="detail__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
+          <p class="detail__album">{{ artist.nb_album }} álbuns</p>
         </div>
       </div>
     </div>

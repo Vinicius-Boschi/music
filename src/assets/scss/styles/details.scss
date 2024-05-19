@@ -31,9 +31,9 @@
     margin-bottom: 0.5rem;
   }
 
-  &__fan {
+  &__fan, &__album {
     font-size: 0.9rem;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
     color: $gray-two;
   }
 }

@@ -20,6 +20,13 @@
             </button>
             <button
               class="accordion__tab-btn"
+              :class="{ active: activeTab === 'top_albums' }"
+              @click="activeTab = 'top_albums'"
+            >
+              Top Albums
+            </button>
+            <button
+              class="accordion__tab-btn"
               :class="{ active: activeTab === 'related' }"
               @click="activeTab = 'related'"
             >
@@ -138,6 +145,29 @@
             </table>
           </div>
         </div>
+        <div class="accordion__content" v-show="activeTab === 'top_albums'">
+          <div class="accordion__about-text">
+            <h1 class="accordion__title">Albums</h1>
+          </div>
+          <div class="accordion__playlist">
+            <div
+              class="accordion__playlist-container"
+              v-for="(album, index) in albums"
+              :key="index"
+            >
+              <router-link
+                :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
+              >
+                <img
+                  class="accordion__playlist-picture"
+                  :src="album.cover_medium"
+                  :alt="album.title"
+                />
+              </router-link>
+              <h1 class="accordion__playlist-text">{{ album.title }}</h1>
+            </div>
+          </div>
+        </div>
         <div class="accordion__content" v-show="activeTab === 'related'">
           <div class="accordion__about-text">
             <h1 class="accordion__title">Artistas Semelhantes</h1>
@@ -204,6 +234,7 @@ export default {
       tracks: [],
       relateds: [],
       playlists: [],
+      albums: [],
       audioPlayers: [],
       currentTrackIndex: null,
       highlightedRow: null,
@@ -215,6 +246,7 @@ export default {
     })
     this.getRelated()
     this.getPlaylists()
+    this.getTopAlbums()
   },
   methods: {
     switchToTopMusics() {
@@ -226,6 +258,17 @@ export default {
         const response = await fetch(`http://localhost:3000/artist/${id}/top?`)
         const data = await response.json()
         this.tracks = data.data
+      } catch (error) {
+        console.error("Erro ao buscar o artista.", error)
+      }
+    },
+    async getTopAlbums() {
+      try {
+        const id = this.$route.params.id
+        const response = await fetch(`http://localhost:3000/artist/${id}/albums`)
+        const data = await response.json()
+        this.albums = data.data
+        console.log(this.albums)
       } catch (error) {
         console.error("Erro ao buscar o artista.", error)
       }

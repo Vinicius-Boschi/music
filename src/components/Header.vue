@@ -9,7 +9,6 @@
           class="header__input"
           v-model="searchQuery"
           @keyup.enter="performSearch"
-          
         />
       </label>
       <div class="header__account">
@@ -86,7 +85,7 @@
             <li class="header__hover justify">
               <a class="header__user-link" href="#">Modo noturno</a>
               <label class="header__switch">
-                <input type="checkbox" />
+                <input type="checkbox" @click="toggleDarkMode" />
                 <span class="header__slider round"></span>
               </label>
             </li>
@@ -131,17 +130,17 @@
     </nav>
     <div class="header__modal">
       <div v-if="showConfirmModal" class="header__modal-alert">
-      <div class="header__modal-content">
-        <p class="header__modal-text">
-          Um álbum e uma playlist foram encontrados. Você
-          gostaria de ir para qual?
-        </p>
-        <div class="header__modal-buttons">
-          <button @click="goToPlaylist">Playlist</button>
-          <button @click="goToAlbum">Album</button>
+        <div class="header__modal-content">
+          <p class="header__modal-text">
+            Um álbum e uma playlist foram encontrados. Você gostaria de ir para
+            qual?
+          </p>
+          <div class="header__modal-buttons">
+            <button @click="goToPlaylist">Playlist</button>
+            <button @click="goToAlbum">Album</button>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   </header>
 </template>
@@ -158,6 +157,7 @@ export default {
       playlistResults: [],
       error: null,
       showConfirmModal: false,
+      isDarkMode: false,
     }
   },
   methods: {
@@ -168,6 +168,17 @@ export default {
     toggleNotification() {
       this.showNotification = !this.showNotification
       this.showModal = false
+    },
+    toggleDarkMode() {
+      this.isDarkMode = !this.isDarkMode
+      this.updateBodyClass()
+    },
+    updateBodyClass() {
+      if (this.isDarkMode) {
+        document.body.classList.add("dark-mode")
+      } else {
+        document.body.classList.remove("dark-mode")
+      }
     },
     async performSearch() {
       try {
@@ -192,18 +203,16 @@ export default {
           if (artistMatch) {
             const url = `/artist/${artistMatch}`
             this.$router.push(url)
-          } else if(trackMatch) {
+          } else if (trackMatch) {
             const url = `/track/${trackMatch}`
             this.$router.push(url)
           } else if (albumMatch && playlistMatch) {
             this.showConfirmationModal(albumMatch, playlistMatch)
           } else {
-            alert(
-              "Nenhum resultado de artista, álbum ou playlist encontrado"
-            )
+            alert("Nenhum resultado de artista, álbum ou playlist encontrado")
           }
         } else {
-          console.log("Nenhum resultado encontrado")
+          alert("Nenhum resultado encontrado")
         }
       } catch (error) {
         console.error("Erro ao buscar resultados:", error)
@@ -287,5 +296,20 @@ export default {
 
 a {
   text-decoration: none !important;
+}
+
+.dark-mode {
+  background: black;
+  color: white;
+}
+
+.dark-mode .sidebar {
+  background: black;
+  color: white;
+}
+
+.dark-mode .header__user-menu {
+  background: black;
+  color: white;
 }
 </style>

@@ -157,9 +157,11 @@ export default {
     toggleModal() {
       this.showModal = !this.showModal
     },
-    async getLyrics(title) {
+    async getLyrics(title, artist) {
       const response = await fetch(
-        `http://localhost:3000/lyrics/${encodeURI(title)}`
+        `http://localhost:3000/lyrics/${encodeURIComponent(
+          title
+        )}/${encodeURIComponent(artist)}`
       )
       const data = await response.json()
       if (data && data.lyrics) {
@@ -178,7 +180,7 @@ export default {
         const data = await response.json()
         this.track = data
         if (this.track.id) {
-          await this.getLyrics(this.track.title)
+          await this.getLyrics(this.track.title, this.track.artist.name)
         }
       } catch (error) {
         console.error("Erro ao buscar a música", error)
