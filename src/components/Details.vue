@@ -2,21 +2,21 @@
   <div class="content">
     <Header />
     <Sidebar />
-    <div class="detail">
+    <div class="details">
       <div>
-        <img class="detail__profile" :src="artist.picture_medium" alt="" />
+        <img class="details__profile" :src="artist.picture_medium" alt="" />
       </div>
       <div>
-        <div class="detail__text">
-          <h1 class="detail__name-artist">
+        <div class="details__text">
+          <h1 class="details__name-artist">
             {{
               artist && artist.name !== undefined
                 ? artist.name
                 : "Artista não encontrado"
             }}
           </h1>
-          <p class="detail__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
-          <p class="detail__album">{{ artist.nb_album }} álbuns</p>
+          <p class="details__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
+          <p class="details__album">{{ artist.nb_album }} álbuns</p>
         </div>
       </div>
     </div>

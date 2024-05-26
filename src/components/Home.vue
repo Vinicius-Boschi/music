@@ -4,6 +4,7 @@
     <Chart />
     <Albuns />
     <Playlist />
+    <Podcasts />
   </div>
   <Footer />
 </template>
@@ -13,6 +14,7 @@ import Sidebar from "./Sidebar.vue"
 import Chart from "./Chart.vue"
 import Albuns from "./Albuns.vue"
 import Playlist from "./Playlist.vue"
+import Podcasts from "./Podcasts.vue"
 import Footer from "./Footer.vue"
 
 export default {
@@ -22,6 +24,7 @@ export default {
     Chart,
     Albuns,
     Playlist,
+    Podcasts,
     Footer,
   },
 }

@@ -55,6 +55,17 @@ app.get("/chart/0/playlists", async (req, res) => {
   }
 })
 
+app.get("/chart/0/podcasts", async (req, res) => {
+  try {
+    const response = await fetch("https://api.deezer.com/chart/0/podcasts")
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar as playlists.")
+  }
+})
+
 app.get("/artist/:id", async (req, res) => {
   try {
     const { id } = req.params
@@ -201,13 +212,42 @@ app.get("/search/track", async (req, res) => {
 
 app.get("/lyrics/:title/:artist", async (req, res) => {
   try {
-    const searches = await Client.songs.search(req.params.title, req.params.artist)
+    const searches = await Client.songs.search(
+      req.params.title,
+      req.params.artist
+    )
     const firstSong = searches[0]
     const lyrics = await firstSong.lyrics()
     res.json({ lyrics })
   } catch (error) {
     console.error(error)
     res.status(500).send("Erro ao buscar a letra da música.")
+  }
+})
+
+app.get("/podcast/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/podcast/${id}`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os podcasts.")
+  }
+})
+
+app.get("/podcast/:id/episodes", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(
+      `https://api.deezer.com/podcast/${id}/episodes`
+    )
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os podcasts.")
   }
 })
 

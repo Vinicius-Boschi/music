@@ -1,9 +1,9 @@
 <template>
   <div class="carousel">
     <div class="carousel__text">
-      <h1 class="carousel__title">Álbuns</h1>
+      <h1 class="carousel__title">Podcasts</h1>
       <p class="carousel__subtitle">
-        Escolha o álbum que você mais curta e se divirta!
+        Escolha o podcast que você mais curta e se divirta!
       </p>
     </div>
     <div>
@@ -14,18 +14,18 @@
         :modules="modules"
         class="mySwiper"
       >
-        <swiper-slide v-for="(album, index) in albuns" :key="index">
+        <swiper-slide v-for="(podcast, index) in podcasts" :key="index">
           <div class="carousel__content">
             <router-link
-              :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
+              :to="{ name: 'DetailsPodcasts', params: { id: podcast.id } }"
             >
-            <img
-              class="carousel__img"
-              :src="album.cover_medium"
-              :alt="album.title"
-            />
+              <img
+                class="carousel__img"
+                :src="podcast.picture_medium"
+                :alt="podcast.title"
+              />
             </router-link>
-            <p class="carousel__name">{{ album.title }}</p>
+            <p class="carousel__name">{{ podcast.title }}</p>
           </div>
         </swiper-slide>
       </swiper>
@@ -41,14 +41,14 @@ import "swiper/scss"
 import "swiper/scss/navigation"
 
 export default {
-  name: "Albuns",
+  name: "Podcasts",
   components: {
     Swiper,
     SwiperSlide,
   },
   data() {
     return {
-      albuns: [],
+      podcasts: [],
     }
   },
   setup() {
@@ -57,16 +57,16 @@ export default {
     }
   },
   mounted() {
-    this.getAlbuns()
+    this.getPodcasts()
   },
   methods: {
-    async getAlbuns() {
+    async getPodcasts() {
       try {
-        const response = await fetch("http://localhost:3000/chart/0/albums")
+        const response = await fetch("http://localhost:3000/chart/0/podcasts")
         const data = await response.json()
-        this.albuns = data.data
+        this.podcasts = data.data
       } catch (error) {
-        console.error("Erro ao buscar os álbuns.", error)
+        console.error(error)
       }
     },
   },

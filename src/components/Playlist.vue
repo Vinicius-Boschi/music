@@ -1,8 +1,8 @@
 <template>
-  <div class="playlist">
-    <div class="playlist__text">
-      <h1 class="playlist__title">Playlist</h1>
-      <p class="playlist__subtitle">
+  <div class="carousel">
+    <div class="carousel__text">
+      <h1 class="carousel__title">Playlist</h1>
+      <p class="carousel__subtitle">
         Escolha a playlist que você mais curta e se divirta!
       </p>
     </div>
@@ -15,17 +15,17 @@
         class="mySwiper"
       >
         <swiper-slide v-for="(playlist, index) in playlists" :key="index">
-          <div class="playlist__content">
+          <div class="carousel__content">
             <router-link
               :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
             >
               <img
-                class="playlist__img"
+                class="carousel__img"
                 :src="playlist.picture_medium"
                 :alt="playlist.title"
               />
             </router-link>
-            <p class="playlist__name">{{ playlist.title }}</p>
+            <p class="carousel__name">{{ playlist.title }}</p>
           </div>
         </swiper-slide>
       </swiper>
@@ -75,5 +75,5 @@ export default {
 
 <style lang="scss">
 @import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/playlist.scss";
+@import "../assets/scss/styles/carousel.scss";
 </style>
