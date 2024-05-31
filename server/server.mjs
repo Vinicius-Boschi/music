@@ -66,6 +66,17 @@ app.get("/chart/0/podcasts", async (req, res) => {
   }
 })
 
+app.get("/chart/0/tracks", async (req, res) => {
+  try {
+    const response = await fetch("https://api.deezer.com/chart/0/tracks")
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar as músicas.")
+  }
+})
+
 app.get("/artist/:id", async (req, res) => {
   try {
     const { id } = req.params

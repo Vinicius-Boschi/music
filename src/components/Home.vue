@@ -1,7 +1,8 @@
 <template>
   <Sidebar />
   <div class="content">
-    <Chart />
+    <Artist />
+    <Musics />
     <Albuns />
     <Playlist />
     <Podcasts />
@@ -11,7 +12,8 @@
 
 <script>
 import Sidebar from "./Sidebar.vue"
-import Chart from "./Chart.vue"
+import Artist from "./Artist.vue"
+import Musics from "./Musics.vue"
 import Albuns from "./Albuns.vue"
 import Playlist from "./Playlist.vue"
 import Podcasts from "./Podcasts.vue"
@@ -21,7 +23,8 @@ export default {
   name: "Home",
   components: {
     Sidebar,
-    Chart,
+    Artist,
+    Musics,
     Albuns,
     Playlist,
     Podcasts,
