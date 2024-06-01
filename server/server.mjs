@@ -143,6 +143,18 @@ app.get("/artist/:id/playlists", async (req, res) => {
   }
 })
 
+app.get("/artist/:id/radio", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/artist/${id}/radio`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a rádio.")
+  }
+})
+
 app.get("/album/:id", async (req, res) => {
   try {
     const { id } = req.params

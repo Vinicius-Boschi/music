@@ -39,6 +39,13 @@
             >
               Playlists
             </button>
+            <button
+              class="accordion__tab-btn"
+              :class="{ active: activeTab === 'radio' }"
+              @click="activeTab = 'radio'"
+            >
+              Radio
+            </button>
           </div>
         </div>
       </article>
@@ -220,6 +227,74 @@
             </div>
           </div>
         </div>
+        <div class="accordion__content" v-show="activeTab === 'radio'">
+          <div class="accordion__track">
+            <div class="accordion__track-title">
+              <h1 class="accordion__title">Rádio</h1>
+            </div>
+            <div class="accordion__track-input">
+              <input
+                type="search"
+                name="search"
+                id=""
+                placeholder="Buscar nas faixas"
+              />
+            </div>
+            <table class="accordion__track-list">
+              <thead>
+                <tr class="accordion__track-bottom">
+                  <th>Música</th>
+                  <th>Álbum</th>
+                  <th>
+                    <img
+                      src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
+                      alt=""
+                    />
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="accordion__track-container">
+                <tr
+                  v-for="(radio, index) in radios"
+                  :key="index"
+                  @mouseover="highlightedRow = index"
+                  @mouseleave="highlightedRow = null"
+                  ref="trackRows"
+                  :class="{ highlighted: highlightedRow === index }"
+                >
+                  <audio ref="audioPlayers" :src="radio.preview"></audio>
+                  <td class="accordion__track-group">
+                    <img
+                      :src="radio.album.cover_small"
+                      :alt="radio.title"
+                      @click="playPreview(index)"
+                      @mouseover="currentTrackIndex = index"
+                      @mouseleave="currentTrackIndex = null"
+                    />
+                    <h1>
+                      <router-link
+                        :to="{ name: 'DetailsTrack', params: { id: radio.id } }"
+                      >
+                        {{ index + 1 }} - {{ radio.title }}
+                      </router-link>
+                    </h1>
+                  </td>
+                  <td>
+                    <router-link
+                      :to="{
+                        name: 'DetailsAlbum',
+                        params: { id: radio.album.id },
+                      }"
+                    >
+                      {{ radio.album.title }}
+                    </router-link>
+                  </td>
+                  <td>{{ formatDuration(radio.duration) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </article>
     </div>
   </section>
@@ -235,6 +310,7 @@ export default {
       relateds: [],
       playlists: [],
       albums: [],
+      radios: [],
       audioPlayers: [],
       currentTrackIndex: null,
       highlightedRow: null,
@@ -247,6 +323,7 @@ export default {
     this.getRelated()
     this.getPlaylists()
     this.getTopAlbums()
+    this.getRadio()
   },
   methods: {
     switchToTopMusics() {
@@ -265,10 +342,11 @@ export default {
     async getTopAlbums() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`http://localhost:3000/artist/${id}/albums`)
+        const response = await fetch(
+          `http://localhost:3000/artist/${id}/albums`
+        )
         const data = await response.json()
         this.albums = data.data
-        console.log(this.albums)
       } catch (error) {
         console.error("Erro ao buscar o artista.", error)
       }
@@ -295,6 +373,18 @@ export default {
         this.playlists = data.data
       } catch (error) {
         console.error("Erro ao buscar as playlists.", error)
+      }
+    },
+    async getRadio() {
+      try {
+        const id = this.$route.params.id
+        const response = await fetch(
+          `http://localhost:3000/artist/${id}/radio`
+        )
+        const data = await response.json()
+        this.radios = data.data
+      } catch (error) {
+        console.error("Erro ao buscar a rádio.", error)
       }
     },
     formatDuration(seconds) {
