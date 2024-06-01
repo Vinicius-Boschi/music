@@ -1,8 +1,8 @@
 <template>
   <div class="chart">
     <div class="chart__text">
-      <h1 class="chart__title">Músicas</h1>
-      <p class="chart__subtitle">Escolha uma música e se divirta.</p>
+      <h1 class="chart__title">Radio</h1>
+      <p class="chart__subtitle">Escolha uma rádio.</p>
     </div>
     <swiper
       :navigation="true"
@@ -11,19 +11,19 @@
       :modules="modules"
       class="mySwiper"
     >
-      <swiper-slide v-for="(music, index) in musics" :key="index">
+      <swiper-slide v-for="(radio, index) in radios" :key="index">
         <div class="chart__content">
           <div class="chart__content__item">
             <router-link
-              :to="{ name: 'DetailsTrack', params: { id: music.id } }"
+              :to="{ name: 'DetailsRadio', params: { id: radio.id } }"
             >
               <img
-                class="chart__img music"
-                :src="music.album.cover_medium"
-                :alt="music.title"
+                class="chart__img"
+                :src="radio.picture_medium"
+                :alt="radio.title"
               />
             </router-link>
-            <p class="chart__name">{{ music.title }}</p>
+            <p class="chart__name">{{ radio.title }}</p>
           </div>
         </div>
       </swiper-slide>
@@ -38,14 +38,14 @@ import "swiper/scss"
 import "swiper/scss/navigation"
 
 export default {
-  name: "Musics",
+  name: "Radio",
   components: {
     Swiper,
     SwiperSlide,
   },
   data() {
     return {
-      musics: [],
+      radios: [],
     }
   },
   setup() {
@@ -54,27 +54,23 @@ export default {
     }
   },
   mounted() {
-    this.getMusics()
+    this.getRadio()
   },
   methods: {
-    async getMusics() {
+    async getRadio() {
       try {
-        const response = await fetch("http://localhost:3000/chart/0/tracks")
+        const response = await fetch("http://localhost:3000/radio")
         const data = await response.json()
-        this.musics = data.data
+        this.radios = data.data
       } catch (error) {
-        console.error("Erro ao buscar os charts.", error)
+        console.error("Erro ao buscar a rádio.", error)
       }
     },
   },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/chart.scss";
-
-.music {
-  border-radius: 5px;
-}
 </style>

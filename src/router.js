@@ -6,6 +6,7 @@ import DetailsAlbum from "./components/DetailsAlbum.vue"
 import DetailsPlaylist from "./components/DetailsPlaylist.vue"
 import DetailsTrack from "./components/DetailsTrack.vue"
 import DetailsPodcasts from "./components/DetailsPodcasts.vue"
+import DetailsRadio from "./components/DetailsRadio.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -49,6 +50,12 @@ const router = createRouter({
       path: "/podcast/:id",
       name: "DetailsPodcasts",
       component: DetailsPodcasts,
+      props: true,
+    },
+    {
+      path: "/radio/:id/tracks",
+      name: "DetailsRadio",
+      component: DetailsRadio,
       props: true,
     },
   ],

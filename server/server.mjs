@@ -262,6 +262,40 @@ app.get("/podcast/:id/episodes", async (req, res) => {
   }
 })
 
+app.get("/radio", async (req, res) => {
+  try {
+    const response = await fetch("https://api.deezer.com/radio")
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a rádio.")
+  }
+})
+
+app.get("/radio/top", async (req, res) => {
+  try {
+    const response = await fetch("https://api.deezer.com/radio/top")
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a top rádio.")
+  }
+})
+
+app.get("/radio/:id/tracks", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/radio/${id}/tracks`)
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a top rádio.")
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
 })
