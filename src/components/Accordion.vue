@@ -86,17 +86,6 @@
         </div>
         <div class="accordion__content" v-show="activeTab === 'top_track'">
           <div class="accordion__track">
-            <div class="accordion__track-title">
-              <h1 class="accordion__title">Top Músicas</h1>
-            </div>
-            <div class="accordion__track-input">
-              <input
-                type="search"
-                name="search"
-                id=""
-                placeholder="Buscar nas faixas"
-              />
-            </div>
             <table class="accordion__track-list">
               <thead>
                 <tr class="accordion__track-bottom">
@@ -153,9 +142,6 @@
           </div>
         </div>
         <div class="accordion__content" v-show="activeTab === 'top_albums'">
-          <div class="accordion__about-text">
-            <h1 class="accordion__title">Albums</h1>
-          </div>
           <div class="accordion__playlist">
             <div
               class="accordion__playlist-container"
@@ -176,9 +162,6 @@
           </div>
         </div>
         <div class="accordion__content" v-show="activeTab === 'related'">
-          <div class="accordion__about-text">
-            <h1 class="accordion__title">Artistas Semelhantes</h1>
-          </div>
           <div class="accordion__related">
             <div
               class="accordion__related-container"
@@ -205,9 +188,6 @@
           </div>
         </div>
         <div class="accordion__content" v-show="activeTab === 'playlists'">
-          <div class="accordion__about-text">
-            <h1 class="accordion__title">Playlists</h1>
-          </div>
           <div class="accordion__playlist">
             <div
               class="accordion__playlist-container"
@@ -229,17 +209,6 @@
         </div>
         <div class="accordion__content" v-show="activeTab === 'radio'">
           <div class="accordion__track">
-            <div class="accordion__track-title">
-              <h1 class="accordion__title">Rádio</h1>
-            </div>
-            <div class="accordion__track-input">
-              <input
-                type="search"
-                name="search"
-                id=""
-                placeholder="Buscar nas faixas"
-              />
-            </div>
             <table class="accordion__track-list">
               <thead>
                 <tr class="accordion__track-bottom">

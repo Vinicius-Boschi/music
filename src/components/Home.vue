@@ -8,6 +8,7 @@
     <Podcasts />
     <Radio />
     <Top />
+    <Genre />
   </div>
   <Footer />
 </template>
@@ -21,6 +22,7 @@ import Playlist from "./Playlist.vue"
 import Podcasts from "./Podcasts.vue"
 import Radio from "./Radio.vue"
 import Top from "./Top.vue"
+import Genre from "./Genre.vue"
 import Footer from "./Footer.vue"
 
 export default {
@@ -34,6 +36,7 @@ export default {
     Podcasts,
     Radio,
     Top,
+    Genre,
     Footer,
   },
 }

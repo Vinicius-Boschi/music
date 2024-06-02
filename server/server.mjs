@@ -18,7 +18,19 @@ app.get("/genre", async (req, res) => {
     res.send(data)
   } catch (error) {
     console.error(error)
-    res.status(500).send("Erro ao buscar os gêneros")
+    res.status(500).send("Erro ao buscar os gêneros.")
+  }
+})
+
+app.get("/genre/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/genre/${id}`)
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar o id dos gêneros.")
   }
 })
 
@@ -171,6 +183,20 @@ app.get("/playlist/:id", async (req, res) => {
   try {
     const { id } = req.params
     const response = await fetch(`https://api.deezer.com/playlist/${id}`)
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes do artista.")
+  }
+})
+
+app.get("/playlist/:id/tracks", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(
+      `https://api.deezer.com/playlist/${id}/tracks`
+    )
     const data = await response.json()
     res.json(data)
   } catch (error) {

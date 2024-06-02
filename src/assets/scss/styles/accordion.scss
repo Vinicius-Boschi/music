@@ -109,24 +109,6 @@
       font-size: 0.8rem;
     }
 
-    input {
-      width: 20%;
-      background: $light-gray;
-      border: none;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      transition: border-color 1s;
-
-      &:focus {
-        border: 2px solid $purple;
-        outline: none;
-        box-shadow: 0 0 5px rgba(100, 149, 237, 0.5);
-        transition-duration: 0.5s;
-      }
-    }
-
     &-bottom {
       border-bottom: 1px solid $light-gray;
 
