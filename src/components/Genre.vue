@@ -13,7 +13,10 @@
     >
       <swiper-slide v-for="(genre, index) in genres" :key="index">
         <div class="chart__content">
-          <div class="chart__content__item">
+          <div
+            class="chart__content__item background"
+            :style="{ backgroundColor: getGenreColor(genre.name) }"
+          >
             <router-link
               :to="{ name: 'DetailsGenre', params: { id: genre.id } }"
             >
@@ -61,8 +64,50 @@ export default {
         console.error("Erro ao buscar os gêneros.", error)
       }
     },
+    getGenreColor(genre) {
+      const genreColors = {
+        "Rap/Funk Brasileiro": "#FF8564",
+        Pop: "#3448FC",
+        Rock: "#FF3D3D",
+        Sertanejo: "#DB452C",
+        "Samba/Pagode": "#CC4BCF",
+        "Axé/Forró": "#AA3933",
+        MPB: "#FFB64D",
+        "Música Religiosa": "#A1C4FD",
+        Reggae: "#707237",
+        Reggaeton: "#90931E",
+        "Soul & Funk": "#90931E",
+        Blues: "#5896A6",
+        Jazz: "#A238FF",
+        Clássica: "#AF6E33",
+        Folk: "#0A1578",
+        Metal: "#950800",
+        "Rap/Hip Hop": "#4E0193",
+        Dance: "#C03AD1",
+        "R&B": "#C01FC3",
+        Alternativo: "#4D4F05",
+        Electro: "#FF673D",
+        "Filmes/Games": "#3448FC",
+        Cumbia: "#FCBF49",
+        Infantil: "#FF6F61",
+        "Música Africana": "#F4A261",
+        "Música Indiana": "#E5989B",
+        "Música asiática": "#9D8189",
+      }
+      return genreColors[genre] || "#000000"
+    },
   },
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.background {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: white;
+}
+
+.chart__name {
+  margin-top: 0;
+}
+</style>

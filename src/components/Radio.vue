@@ -59,7 +59,7 @@ export default {
   methods: {
     async getRadio() {
       try {
-        const response = await fetch("http://localhost:3000/radio")
+        const response = await fetch("http://localhost:3000/radio/lists")
         const data = await response.json()
         this.radios = data.data
       } catch (error) {

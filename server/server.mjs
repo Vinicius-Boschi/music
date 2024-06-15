@@ -311,14 +311,14 @@ app.get("/radio", async (req, res) => {
   }
 })
 
-app.get("/radio/top", async (req, res) => {
+app.get("/radio/lists", async (req, res) => {
   try {
-    const response = await fetch("https://api.deezer.com/radio/top")
+    const response = await fetch("https://api.deezer.com/radio/lists")
     const data = await response.json()
     res.send(data)
   } catch (error) {
     console.error(error)
-    res.status(500).send("Erro ao buscar a top rádio.")
+    res.status(500).send("Erro ao buscar a rádio.")
   }
 })
 

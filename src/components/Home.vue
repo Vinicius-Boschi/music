@@ -7,7 +7,6 @@
     <Playlist />
     <Podcasts />
     <Radio />
-    <Top />
     <Genre />
   </div>
   <Footer />
@@ -21,7 +20,6 @@ import Albuns from "./Albuns.vue"
 import Playlist from "./Playlist.vue"
 import Podcasts from "./Podcasts.vue"
 import Radio from "./Radio.vue"
-import Top from "./Top.vue"
 import Genre from "./Genre.vue"
 import Footer from "./Footer.vue"
 
@@ -35,7 +33,6 @@ export default {
     Playlist,
     Podcasts,
     Radio,
-    Top,
     Genre,
     Footer,
   },
