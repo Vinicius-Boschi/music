@@ -10,6 +10,7 @@
   &__container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
   }
 
   &__img {
@@ -21,9 +22,15 @@
     }
   }
 
+  &__name {
+    &.center {
+      text-align: center;
+    }
+  }
+
   &__tracks {
     color: $gray-two;
     font-size: 12px;
-    margin: 0.5rem 0 1rem;
+    margin-top: .5rem;
   }
 }

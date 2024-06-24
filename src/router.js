@@ -8,6 +8,7 @@ import DetailsTrack from "./components/DetailsTrack.vue"
 import DetailsPodcasts from "./components/DetailsPodcasts.vue"
 import DetailsGenre from "./components/DetailsGenre.vue"
 import AllPlaylists from "./components/AllPlaylists.vue"
+import AllGenres from "./components/AllGenres.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -63,6 +64,12 @@ const router = createRouter({
       path: "/all-playlists",
       name: "AllPlaylists",
       component: AllPlaylists,
+      props: true,
+    },
+    {
+      path: "/all-genres",
+      name: "AllGenres",
+      component: AllGenres,
       props: true,
     },
   ],
