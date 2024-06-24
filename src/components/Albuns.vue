@@ -1,10 +1,14 @@
 <template>
-  <div class="carousel">
-    <div class="carousel__text">
-      <h1 class="carousel__title">Álbuns</h1>
-      <p class="carousel__subtitle">
-        Escolha o álbum que você mais curta e se divirta!
-      </p>
+  <div class="chart">
+    <div class="chart__text">
+      <div class="chart__container">
+        <div>
+          <h1 class="chart__title">Álbuns</h1>
+        </div>
+        <div class="chart__button">
+          <button>Visualizar tudo</button>
+        </div>
+      </div>
     </div>
     <div>
       <swiper
@@ -15,17 +19,17 @@
         class="mySwiper"
       >
         <swiper-slide v-for="(album, index) in albuns" :key="index">
-          <div class="carousel__content">
+          <div class="chart__content">
             <router-link
               :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
             >
-            <img
-              class="carousel__img"
-              :src="album.cover_medium"
-              :alt="album.title"
-            />
+              <img
+                class="chart__img"
+                :src="album.cover_medium"
+                :alt="album.title"
+              />
             </router-link>
-            <p class="carousel__name">{{ album.title }}</p>
+            <p class="chart__name">{{ album.title }}</p>
           </div>
         </swiper-slide>
       </swiper>
@@ -75,5 +79,5 @@ export default {
 
 <style lang="scss">
 @import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/carousel.scss";
+@import "../assets/scss/styles/chart.scss";
 </style>

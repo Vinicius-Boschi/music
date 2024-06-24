@@ -2,8 +2,11 @@
   <Header />
   <div class="chart">
     <div class="chart__text">
-      <h1 class="chart__title">Artistas</h1>
-      <p class="chart__subtitle">Escolha um artista e de play no seu dia.</p>
+      <div class="chart__container">
+        <div>
+          <h1 class="chart__title">Artistas</h1>
+        </div>
+      </div>
     </div>
     <swiper
       :navigation="true"
@@ -19,7 +22,7 @@
               :to="{ name: 'Details', params: { id: chart.artist.id } }"
             >
               <img
-                class="chart__img"
+                class="chart__img rounded"
                 :src="chart.artist.picture_medium"
                 :alt="chart.artist.name"
               />

@@ -1,10 +1,14 @@
 <template>
-  <div class="carousel">
-    <div class="carousel__text">
-      <h1 class="carousel__title">Playlist</h1>
-      <p class="carousel__subtitle">
-        Escolha a playlist que você mais curta e se divirta!
-      </p>
+  <div class="chart">
+    <div class="chart__text">
+      <div class="chart__container">
+        <div>
+          <h1 class="chart__title">Playlists que você vai amar</h1>
+        </div>
+        <div class="chart__button">
+          <button @click="viewAllInfos">Vizualizar tudo</button>
+        </div>
+      </div>
     </div>
     <div>
       <swiper
@@ -15,17 +19,17 @@
         class="mySwiper"
       >
         <swiper-slide v-for="(playlist, index) in playlists" :key="index">
-          <div class="carousel__content">
+          <div class="chart__content">
             <router-link
               :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
             >
               <img
-                class="carousel__img"
+                class="chart__img"
                 :src="playlist.picture_medium"
                 :alt="playlist.title"
               />
             </router-link>
-            <p class="carousel__name">{{ playlist.title }}</p>
+            <p class="chart__name">{{ playlist.title }}</p>
           </div>
         </swiper-slide>
       </swiper>
@@ -69,11 +73,14 @@ export default {
         console.error("Erro ao buscar os álbuns.", error)
       }
     },
+    viewAllInfos() {
+      this.$router.push({ name: "AllPlaylists" })
+    },
   },
 }
 </script>
 
 <style lang="scss">
 @import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/carousel.scss";
+@import "../assets/scss/styles/chart.scss";
 </style>

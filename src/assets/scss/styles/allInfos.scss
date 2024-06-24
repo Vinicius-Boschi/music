@@ -1,0 +1,29 @@
+.page {
+  padding: 2rem;
+
+  &__title {
+    font-weight: bold;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &__img {
+    box-shadow: 0 0 5px rgba(4, 17, 42, 0.23);
+    margin-bottom: 0.5rem;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__tracks {
+    color: $gray-two;
+    font-size: 12px;
+    margin: 0.5rem 0 1rem;
+  }
+}

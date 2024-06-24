@@ -1,8 +1,14 @@
 <template>
   <div class="chart">
     <div class="chart__text">
-      <h1 class="chart__title">Músicas</h1>
-      <p class="chart__subtitle">Escolha uma música e se divirta.</p>
+      <div class="chart__container">
+        <div>
+          <h1 class="chart__title">Músicas</h1>
+        </div>
+        <div class="chart__button">
+          <button>Visualizar tudo</button>
+        </div>
+      </div>
     </div>
     <swiper
       :navigation="true"
@@ -13,18 +19,14 @@
     >
       <swiper-slide v-for="(music, index) in musics" :key="index">
         <div class="chart__content">
-          <div class="chart__content__item">
-            <router-link
-              :to="{ name: 'DetailsTrack', params: { id: music.id } }"
-            >
-              <img
-                class="chart__img music"
-                :src="music.album.cover_medium"
-                :alt="music.title"
-              />
-            </router-link>
-            <p class="chart__name">{{ music.title }}</p>
-          </div>
+          <router-link :to="{ name: 'DetailsTrack', params: { id: music.id } }">
+            <img
+              class="chart__img"
+              :src="music.album.cover_medium"
+              :alt="music.title"
+            />
+          </router-link>
+          <p class="chart__name">{{ music.title }}</p>
         </div>
       </swiper-slide>
     </swiper>
@@ -70,11 +72,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/chart.scss";
-
-.music {
-  border-radius: 5px;
-}
 </style>

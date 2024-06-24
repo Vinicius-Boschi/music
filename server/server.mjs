@@ -11,29 +11,6 @@ const PORT = process.env.PORT || 3000
 app.use(express.json())
 app.use(cors())
 
-app.get("/genre", async (req, res) => {
-  try {
-    const response = await fetch("https://api.deezer.com/genre")
-    const data = await response.json()
-    res.send(data)
-  } catch (error) {
-    console.error(error)
-    res.status(500).send("Erro ao buscar os gêneros.")
-  }
-})
-
-app.get("/genre/:id", async (req, res) => {
-  try {
-    const { id } = req.params
-    const response = await fetch(`https://api.deezer.com/genre/${id}`)
-    const data = await response.json()
-    res.send(data)
-  } catch (error) {
-    console.error(error)
-    res.status(500).send("Erro ao buscar o id dos gêneros.")
-  }
-})
-
 app.get("/chart", async (req, res) => {
   try {
     const response = await fetch("https://api.deezer.com/chart")
@@ -311,6 +288,18 @@ app.get("/radio", async (req, res) => {
   }
 })
 
+app.get("/radio/top", async (req, res) => {
+  try {
+    const limit = req.query.limit || 100
+    const response = await fetch(`https://api.deezer.com/radio/top?limit=${limit}`)
+    const data = await response.json()
+    res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a rádio.")
+  }
+})
+
 app.get("/radio/lists", async (req, res) => {
   try {
     const response = await fetch("https://api.deezer.com/radio/lists")
@@ -322,10 +311,10 @@ app.get("/radio/lists", async (req, res) => {
   }
 })
 
-app.get("/radio/:id/tracks", async (req, res) => {
+app.get("/radio/:id", async (req, res) => {
   try {
     const { id } = req.params
-    const response = await fetch(`https://api.deezer.com/radio/${id}/tracks`)
+    const response = await fetch(`https://api.deezer.com/radio/${id}`)
     const data = await response.json()
     res.send(data)
   } catch (error) {

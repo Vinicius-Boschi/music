@@ -1,32 +1,51 @@
 .chart {
-    &__text {
-        margin: 2rem;
+  &__text {
+    margin: 2rem;
+  }
+
+  &__container {
+    display: flex;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  &__button {
+    margin-left: 1rem;
+
+    button {
+      background: none;
+      border-radius: 5px;
+      padding: 0.4rem;
+      border-color: $light-gray;
+      cursor: pointer;
+    }
+  }
+
+  &__subtitle {
+    font-size: 1rem;
+    color: $gray-two;
+    margin-bottom: 1rem;
+  }
+
+  &__img {
+    box-shadow: 0 0 5px rgba(4, 17, 42, 0.23);
+
+    &:hover {
+      opacity: 0.8;
     }
 
-    &__title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: .5rem;
+    &.rounded {
+      border-radius: 50%;
     }
+  }
 
-    &__subtitle {
-        font-size: 1rem;
-        color: $gray-two;
-        margin-bottom: 1rem;
-    }
-
-    &__img {
-        border-radius: 50%;
-
-        &:hover {
-            box-shadow: 0 0 5px rgba(4, 17, 42, 0.5);
-            opacity: .8;
-        }
-    }
-
-    &__name {
-        font-size: 14px;
-        margin-top: 1rem;
-        text-align: center;
-    }
+  &__name {
+    font-size: 14px;
+    margin-top: 1rem;
+    text-align: center;
+  }
 }

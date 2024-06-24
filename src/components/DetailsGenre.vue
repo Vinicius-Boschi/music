@@ -64,12 +64,12 @@ export default {
   methods: {
     async getGenreName() {
       try {
-        const response = await fetch(`http://localhost:3000/genre/${this.id}`)
+        const response = await fetch(`http://localhost:3000/radio/${this.id}`)
         if (!response.ok) {
           throw new Error(`Erro ao buscar o nome do gênero com ID ${this.id}`)
         }
         const data = await response.json()
-        this.genre = data.name
+        this.genre = data.title
         this.getArtistsBySelectedGenre()
       } catch (error) {
         console.error("Erro:", error)
