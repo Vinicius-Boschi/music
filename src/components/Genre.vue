@@ -12,7 +12,7 @@
     </div>
     <swiper
       :navigation="true"
-      :slidesPerView="6"
+      :slidesPerView="5"
       :spaceBetween="30"
       :modules="modules"
       class="mySwiper"
@@ -83,7 +83,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .background {
   border-radius: 0.5rem;
   color: white;

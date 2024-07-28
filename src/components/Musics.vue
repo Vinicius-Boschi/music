@@ -12,7 +12,7 @@
     </div>
     <swiper
       :navigation="true"
-      :slidesPerView="6"
+      :slidesPerView="5"
       :spaceBetween="30"
       :modules="modules"
       class="mySwiper"

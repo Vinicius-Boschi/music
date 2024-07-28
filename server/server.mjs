@@ -222,6 +222,20 @@ app.get("/search/playlist", async (req, res) => {
   }
 })
 
+app.get("/search/album", async (req, res) => {
+  try {
+    const searchQuery = req.query.q
+    const response = await fetch(
+      `https://api.deezer.com/search/album?q=${searchQuery}`
+    )
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar os detalhes dos albums.")
+  }
+})
+
 app.get("/search/track", async (req, res) => {
   try {
     const searchQuery = req.query.q
@@ -291,7 +305,9 @@ app.get("/radio", async (req, res) => {
 app.get("/radio/top", async (req, res) => {
   try {
     const limit = req.query.limit || 100
-    const response = await fetch(`https://api.deezer.com/radio/top?limit=${limit}`)
+    const response = await fetch(
+      `https://api.deezer.com/radio/top?limit=${limit}`
+    )
     const data = await response.json()
     res.send(data)
   } catch (error) {

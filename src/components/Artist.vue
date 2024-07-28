@@ -10,7 +10,7 @@
     </div>
     <swiper
       :navigation="true"
-      :slidesPerView="6"
+      :slidesPerView="5"
       :spaceBetween="30"
       :modules="modules"
       class="mySwiper"
@@ -81,7 +81,7 @@ export default {
 @import "../assets/scss/styles/chart.scss";
 
 .swiper {
-  width: calc(100% - 80px);
+  width: calc(100% - 100px);
   height: 100%;
 }
 

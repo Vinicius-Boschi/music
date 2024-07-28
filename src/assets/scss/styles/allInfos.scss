@@ -10,7 +10,11 @@
   &__container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 3rem;
+  }
+
+  &__content {
+    border-radius: 10px;
   }
 
   &__img {
@@ -25,12 +29,14 @@
   &__name {
     &.center {
       text-align: center;
+      padding: 2rem;
+      color: $white;
     }
   }
 
   &__tracks {
     color: $gray-two;
     font-size: 12px;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }

@@ -21,7 +21,7 @@
           <p>{{ details.nb_tracks }} faixas</p>
           <p>{{ formatHours(details.duration) }} minutos</p>
           <p>{{ formatDate(details.release_date) }}</p>
-          <p>{{ formatNumber(details.fans) }} fãs</p>
+          <p>{{ numberReformed(details.fans) }} fãs</p>
         </div>
       </div>
     </div>
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { formatNumber } from "../untils/formatNumber.js";
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -123,13 +124,8 @@ export default {
         console.error("Erro ao buscar o álbum", error)
       }
     },
-
-    formatNumber(number) {
-      if (number !== undefined && number !== null) {
-        return number.toLocaleString("pt-BR")
-      } else {
-        return "0"
-      }
+    numberReformed(number) {
+      return formatNumber(number)
     },
     formatHours(seconds) {
       const hours = Math.floor(seconds / 3600)
