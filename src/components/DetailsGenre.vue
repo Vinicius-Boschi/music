@@ -27,10 +27,7 @@
                 />
                 <p class="chart__name left">{{ playlist.title }}</p>
               </router-link>
-              <p class="chart__tracks">
-                {{ playlist.nb_tracks }} faixas -
-                {{ playlist.nb_fan || playlist.fans }} fãs
-              </p>
+              <p class="chart__tracks">{{ playlist.nb_tracks }} faixas</p>
             </div>
           </div>
         </swiper-slide>
@@ -59,7 +56,9 @@
                 />
               </router-link>
               <p class="chart__name">{{ artist.name }}</p>
-              <p class="chart__tracks center">{{ artist.fans }} fãs</p>
+              <p class="chart__tracks center">
+                {{ numberReformed(artist.fans) }} fãs
+              </p>
             </div>
           </div>
         </swiper-slide>
@@ -98,7 +97,7 @@
     </div>
     <div>
       <div class="chart__text">
-        <h2 class="chart__title genre">Lançamentos do funk</h2>
+        <h2 class="chart__title genre">Lançamentos do {{ genre }}</h2>
       </div>
       <swiper
         :navigation="true"
@@ -131,12 +130,13 @@
 </template>
 
 <script>
-import Header from "./Header.vue"
-import Sidebar from "./Sidebar.vue"
-import { Swiper, SwiperSlide } from "swiper/vue"
-import { Navigation } from "swiper/modules"
-import "swiper/scss"
-import "swiper/scss/navigation"
+import Header from "./Header.vue";
+import Sidebar from "./Sidebar.vue";
+import { formatNumber } from "../untils/formatNumber.js";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation } from "swiper/modules";
+import "swiper/scss";
+import "swiper/scss/navigation";
 
 export default {
   props: {
@@ -151,183 +151,229 @@ export default {
   data() {
     return {
       genre: "",
+      genres: [],
       artists: [],
       playlists: [],
       albums: [],
       releases: [],
-    }
+    };
   },
   setup() {
     return {
       modules: [Navigation],
-    }
+    };
   },
   mounted() {
-    this.getGenreName().then(() => {
-      this.getArtistsBySelectedGenre()
-      this.getPlaylistsByGenre()
-      this.getAlbums()
-      this.getReleases()
-    })
+    this.initializePageData();
   },
   watch: {
     $route(to, from) {
-      this.getArtistsBySelectedGenre()
-      this.getPlaylistsByGenre()
-      this.getAlbums()
-      this.getReleases()
+      if (to.params.id !== from.params.id) {
+        this.initializePageData();
+      }
     },
   },
   methods: {
+    async initializePageData() {
+      try {
+        await this.getGenres();
+        await this.getGenreName();
+        await Promise.all([
+          this.getArtistsBySelectedGenre(),
+          this.getPlaylistsByGenre(),
+          this.getAlbums(),
+          this.getReleases(),
+        ]);
+      } catch (error) {
+        console.error("Erro na inicialização:", error);
+      }
+    },
+
+    async getGenres() {
+      try {
+        const response = await fetch("http://localhost:3000/radio/top");
+        if (!response.ok) throw new Error("Erro ao buscar gêneros");
+        const data = await response.json();
+        this.genres = data.data || [];
+      } catch (error) {
+        console.error("Erro ao carregar gêneros:", error);
+      }
+    },
+
     async getGenreName() {
       try {
-        const response = await fetch(`http://localhost:3000/radio/${this.id}`)
+        const response = await fetch(`http://localhost:3000/radio/${this.id}`);
         if (!response.ok) {
-          throw new Error(`Erro ao buscar o nome do gênero com ID ${this.id}`)
+          throw new Error(`Erro ao buscar o nome do gênero com ID ${this.id}`);
         }
-        const data = await response.json()
-        this.genre = data.title
+        const data = await response.json();
+        this.genre = data.title;
       } catch (error) {
-        console.error("Erro:", error)
+        console.error("Erro:", error);
       }
     },
     async getPlaylistsByGenre() {
       try {
         if (!this.genre) {
-          console.error("Erro: Gênero não definido")
-          return
+          console.error("Erro: Gênero não definido");
+          return;
         }
         const response = await fetch(
           `http://localhost:3000/search/playlist?q=${this.genre}`
-        )
+        );
         if (!response.ok) {
-          throw new Error(`Erro ao buscar playlists de ${this.genre}`)
+          throw new Error(`Erro ao buscar playlists de ${this.genre}`);
         }
-        const data = await response.json()
-        this.playlists = data.data || []
+        const data = await response.json();
+        this.playlists = data.data || [];
       } catch (error) {
-        console.error("Erro:", error)
+        console.error("Erro:", error);
       }
     },
     async getArtistsBySelectedGenre() {
       try {
         if (!this.genre) {
-          console.error("Erro: Gênero não definido")
-          return
+          console.error("Erro: Gênero não definido");
+          return;
         }
         const response = await fetch(
           `http://localhost:3000/search/playlist?q=${this.genre}`
-        )
+        );
         if (!response.ok) {
-          throw new Error(`Erro ao buscar playlists de ${this.genre}`)
+          throw new Error(`Erro ao buscar playlists de ${this.genre}`);
         }
-        const data = await response.json()
-        const playlists = data.data || []
+        const data = await response.json();
+        const playlists = data.data || [];
 
-        let artistPromises = []
+        let artistPromises = [];
         for (const playlist of playlists) {
-          artistPromises.push(this.getArtistsFromPlaylist(playlist.id))
+          artistPromises.push(this.getArtistsFromPlaylist(playlist.id));
         }
 
-        const artistResults = await Promise.all(artistPromises)
-        let artists = []
+        const artistResults = await Promise.all(artistPromises);
+        let artists = [];
         artistResults.forEach((result) => {
-          artists = artists.concat(result)
-        })
+          artists = artists.concat(result);
+        });
 
-        this.artists = artists
+        this.artists = artists;
       } catch (error) {
-        console.error("Erro:", error)
+        console.error("Erro:", error);
       }
     },
     async getArtistsFromPlaylist(id) {
       try {
         const response = await fetch(
           `http://localhost:3000/playlist/${id}/tracks`
-        )
+        );
         if (!response.ok) {
-          throw new Error(`Erro ao buscar faixas da playlist ${id}`)
+          throw new Error(`Erro ao buscar faixas da playlist ${id}`);
         }
-        const data = await response.json()
-        const tracks = data.data || []
-        let uniqueArtists = new Set()
-        let artistPromises = []
+        const data = await response.json();
+        const tracks = data.data || [];
+        let uniqueArtists = new Set();
+        let artistPromises = [];
 
         for (const track of tracks) {
-          const artistName = track.artist.name
+          const artistName = track.artist.name;
           if (!uniqueArtists.has(artistName)) {
-            uniqueArtists.add(artistName)
-            artistPromises.push(this.getArtistDetails(track.artist.id))
+            uniqueArtists.add(artistName);
+            artistPromises.push(this.getArtistDetails(track.artist.id));
           }
         }
 
-        const artistDetails = await Promise.all(artistPromises)
+        const artistDetails = await Promise.all(artistPromises);
         let artists = artistDetails.map((details) => ({
           name: details.name,
           picture: details.picture_big,
           id: details.id,
           fans: details.nb_fan,
-        }))
+        }));
 
-        return artists
+        return artists;
       } catch (error) {
-        console.error("Erro:", error)
-        return []
+        console.error("Erro:", error);
+        return [];
       }
     },
     async getArtistDetails(id) {
       try {
-        const response = await fetch(`http://localhost:3000/artist/${id}`)
+        const response = await fetch(`http://localhost:3000/artist/${id}`);
         if (!response.ok) {
-          throw new Error(`Erro ao buscar detalhes do artista com ID ${id}`)
+          throw new Error(`Erro ao buscar detalhes do artista com ID ${id}`);
         }
-        const data = await response.json()
-        return data
+        const data = await response.json();
+        return data;
       } catch (error) {
-        console.error("Erro:", error)
-        return {}
+        console.error("Erro:", error);
+        return {};
       }
     },
     async getAlbums() {
       try {
         if (!this.genre) {
-          console.error("Erro: Album não encontrado")
-          return
+          console.error("Erro: Album não encontrado");
+          return;
         }
         const response = await fetch(
           `http://localhost:3000/search/album?q=${this.genre}`
-        )
+        );
         if (!response.ok) {
-          throw new Error(`Erro ao buscar álbuns de ${this.genre}`)
+          throw new Error(`Erro ao buscar álbuns de ${this.genre}`);
         }
-        const data = await response.json()
-        this.albums = data.data || []
+        const data = await response.json();
+        this.albums = data.data || [];
       } catch (error) {
-        console.error("Erro:", error)
+        console.error("Erro:", error);
       }
     },
     async getReleases() {
       try {
-        if (!this.genre) {
-          console.error("Erro: Músicas não encontradas")
-          return
+        if (!this.genre || this.genre.trim() === "") {
+          console.error("Erro: Gênero não definido");
+          return;
         }
-        const id = "5210448324"
+
+        if (!this.genres || this.genres.length === 0) {
+          console.error("Erro: Lista de gêneros não carregada");
+          return;
+        }
+
+        const genreData = this.genres.find(
+          (g) => g.name.trim().toLowerCase() === this.genre.trim().toLowerCase()
+        );
+
+        if (!genreData) {
+          console.error(
+            "Erro: Não foi possível encontrar o gênero correspondente.",
+            "Gênero selecionado:",
+            this.genre,
+            "Lista de gêneros:",
+            this.genres.map((g) => g.name)
+          );
+          return;
+        }
+
+        const id = genreData.id;
+
         const response = await fetch(
           `http://localhost:3000/playlist/${id}/tracks`
-        )
+        );
         if (!response.ok) {
-          throw new Error(`Erro ao buscar as músicas`)
+          throw new Error(`Erro ao buscar músicas para o gênero ${this.genre}`);
         }
-        const data = await response.json()
-        console.log(data)
-        this.releases = data.data || []
+
+        const data = await response.json();
+        this.releases = data.data || [];
       } catch (error) {
-        console.error("Erro:", error)
+        console.error("Erro ao buscar lançamentos:", error);
       }
     },
+    numberReformed(number) {
+      return formatNumber(number);
+    },
   },
-}
+};
 </script>
 
 <style></style>

@@ -2,34 +2,43 @@
   <div class="chart">
     <div class="chart__text">
       <div class="chart__container">
-        <div>
-          <h1 class="chart__title">Músicas</h1>
+        <div class="chart__header">
+          <div class="chart__button">
+            <h1 class="chart__title">Músicas</h1>
+            <button>Visualizar tudo</button>
+          </div>
+          <div class="chart__navigation">
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
         </div>
-        <div class="chart__button">
-          <button>Visualizar tudo</button>
-        </div>
+        <swiper
+          :navigation="{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          }"
+          :slidesPerView="5"
+          :spaceBetween="20"
+          :modules="modules"
+          class="chart__swiper"
+        >
+          <swiper-slide v-for="(music, index) in musics" :key="index">
+            <div class="chart__content">
+              <router-link
+                :to="{ name: 'DetailsTrack', params: { id: music.id } }"
+              >
+                <img
+                  class="chart__img"
+                  :src="music.album.cover_medium"
+                  :alt="music.title"
+                />
+              </router-link>
+              <p class="chart__name">{{ music.title }}</p>
+            </div>
+          </swiper-slide>
+        </swiper>
       </div>
     </div>
-    <swiper
-      :navigation="true"
-      :slidesPerView="5"
-      :spaceBetween="30"
-      :modules="modules"
-      class="mySwiper"
-    >
-      <swiper-slide v-for="(music, index) in musics" :key="index">
-        <div class="chart__content">
-          <router-link :to="{ name: 'DetailsTrack', params: { id: music.id } }">
-            <img
-              class="chart__img"
-              :src="music.album.cover_medium"
-              :alt="music.title"
-            />
-          </router-link>
-          <p class="chart__name">{{ music.title }}</p>
-        </div>
-      </swiper-slide>
-    </swiper>
   </div>
 </template>
 

@@ -7,7 +7,7 @@
       <div class="details__container">
         <h1>{{ podcast.title }}</h1>
         <div class="details__info">
-          <p>{{ formatNumber(podcast.fans) }} fãs</p>
+          <p>{{ numberReformed(podcast.fans) }} fãs</p>
         </div>
         <div class="details__description">
           <p>{{ podcast.description }}</p>
@@ -46,8 +46,8 @@
             />
             <h1>{{ detail.title }}</h1>
           </td>
-          <td>{{ formatDate(detail.release_date) }}</td>
-          <td>{{ formatHours(detail.duration) }}</td>
+          <td>{{ dateReformed(detail.release_date) }}</td>
+          <td>{{ hoursReformed(detail.duration) }} min</td>
         </tr>
       </tbody>
     </table>
@@ -56,6 +56,9 @@
 </template>
 
 <script>
+import { formatDate } from "../untils/formatDate.js"
+import { formatNumber } from "../untils/formatNumber.js"
+import { formatHours } from "../untils/formatHours.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -127,26 +130,17 @@ export default {
         console.error("Erro ao carregar episódios", error)
       }
     },
-    formatNumber(number) {
-      if (number !== undefined && number !== null) {
-        return number.toLocaleString("pt-BR")
-      } else {
-        return "0"
-      }
+    numberReformed(number) {
+      return formatNumber(number)
     },
-    formatHours(seconds) {
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds % 3600) / 60)
-      const formattedHours = String(hours).padStart(2)
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      return `${formattedHours} hrs ${formattedMinutes} min`
+    hoursReformed(seconds) {
+      return formatHours(seconds)
     },
-    formatDate(dateString) {
-      const date = new Date(dateString)
-      const year = date.getFullYear()
-      const month = String(date.getMonth() + 1).padStart(2, "0")
-      const day = String(date.getDate()).padStart(2, "0")
-      return `${day}/${month}/${year}`
+    dateReformed(data) {
+      console.log("Data original:", data);
+      const formattedDate = formatDate(data);
+      console.log("Data formatada:", formattedDate);
+      return formatDate(data)
     },
   },
 }

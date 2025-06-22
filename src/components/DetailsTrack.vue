@@ -27,7 +27,7 @@
             src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
             alt="icon watch"
           />
-          <p>{{ formatDuration(track.duration) }} minutos</p>
+          <p>{{ durationReformed(track.duration) }} minutos</p>
         </div>
       </div>
     </div>
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import { formatDuration } from "../untils/formatDuration.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -217,12 +218,8 @@ export default {
         })
         .join("")
     },
-    formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60)
-      const remainingSeconds = seconds % 60
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      const formattedSeconds = String(remainingSeconds).padStart(2, "0")
-      return `${formattedMinutes}:${formattedSeconds}`
+    durationReformed(seconds) {
+      return formatDuration(seconds)
     },
     playPreview() {
       this.audioPlayers.pause()

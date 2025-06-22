@@ -135,7 +135,7 @@
                       {{ track.album.title }}
                     </router-link>
                   </td>
-                  <td>{{ formatDuration(track.duration) }}</td>
+                  <td>{{ durationReformed(track.duration) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -179,7 +179,7 @@
               </router-link>
               <h1 class="accordion__related-text">{{ related.name }}</h1>
               <p class="accordion__related-fan">
-                {{ formatNumber(related.nb_fan) }} fãs
+                {{ numberReformed(related.nb_fan) }} fãs
               </p>
               <p class="accordion__related-album">
                 {{ related.nb_album }} álbuns
@@ -258,7 +258,7 @@
                       {{ radio.album.title }}
                     </router-link>
                   </td>
-                  <td>{{ formatDuration(radio.duration) }}</td>
+                  <td>{{ durationReformed(radio.duration) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -270,6 +270,9 @@
 </template>
 
 <script>
+import { formatDuration } from "../untils/formatDuration.js"
+import { formatNumber } from "../untils/formatNumber.js"
+
 export default {
   name: "Accordion",
   data() {
@@ -356,19 +359,11 @@ export default {
         console.error("Erro ao buscar a rádio.", error)
       }
     },
-    formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60)
-      const remainingSeconds = seconds % 60
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      const formattedSeconds = String(remainingSeconds).padStart(2, "0")
-      return `${formattedMinutes}:${formattedSeconds}`
+    durationReformed(seconds) {
+      return formatDuration(seconds)
     },
-    formatNumber(number) {
-      if (number !== undefined && number !== null) {
-        return number.toLocaleString("pt-BR")
-      } else {
-        return "0"
-      }
+    numberReformed(number) {
+      return formatNumber(number)
     },
     playPreview(index) {
       this.audioPlayers.forEach((player) => player.pause())

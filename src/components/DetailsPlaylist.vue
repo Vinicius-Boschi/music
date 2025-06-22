@@ -8,8 +8,8 @@
         <h1>{{ playlist.title }}</h1>
         <div class="details__info">
           <p>{{ playlist.nb_tracks }} faixas</p>
-          <p>{{ formatHours(playlist.duration) }} minutos</p>
-          <p>{{ formatNumber(playlist.fans) }} fãs</p>
+          <p>{{ hoursReformed(playlist.duration) }} minutos</p>
+          <p>{{ numberReformed(playlist.fans) }} fãs</p>
         </div>
         <div>
           <p>{{ playlist.description }}</p>
@@ -77,8 +77,8 @@
               {{ playlist.album.title }}
             </router-link>
           </td>
-          <td>{{ formatDate(playlist.time_add) }}</td>
-          <td>{{ formatDuration(playlist.duration) }}</td>
+          <td>{{ dateReformed(playlist.time_add) }}</td>
+          <td>{{ durationReformed(playlist.duration) }}</td>
         </tr>
       </tbody>
     </table>
@@ -87,6 +87,10 @@
 </template>
 
 <script>
+import { formatNumber } from "../untils/formatNumber.js"
+import { formatHours } from "../untils/formatHours.js"
+import { formatDuration } from "../untils/formatDuration.js"
+import { formatDate } from "../untils/formatDate.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -124,35 +128,21 @@ export default {
         console.error("Erro ao buscar a playlist", error)
       }
     },
-    formatNumber(number) {
-      if (number !== undefined && number !== null) {
-        return number.toLocaleString("pt-BR")
-      } else {
-        return "0"
-      }
+    numberReformed(number) {
+      return formatNumber(number)
     },
-    formatHours(seconds) {
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds % 3600) / 60)
-      const formattedHours = String(hours).padStart(2)
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      return `${formattedHours} hrs ${formattedMinutes}`
+    hoursReformed(seconds) {
+      return formatHours(seconds)
     },
-    formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60)
-      const remainingSeconds = seconds % 60
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      const formattedSeconds = String(remainingSeconds).padStart(2, "0")
-      return `${formattedMinutes}:${formattedSeconds}`
+    durationReformed(seconds) {
+      return formatDuration(seconds)
     },
     getAlbumImageUrl(imageId) {
       const baseUrl = `https://e-cdns-images.dzcdn.net/images/artist/${imageId}/250x250-000000-80-0-0.jpg`
       return `${baseUrl}`
     },
-    formatDate(data) {
-      const milliseconds = data * 1000
-      const dateObject = new Date(milliseconds)
-      return dateObject.toLocaleDateString("pt-BR")
+    dateReformed(data) {
+      return formatDate(data)
     },
     playPreview(index) {
       this.audioPlayers.forEach((player) => player.pause())

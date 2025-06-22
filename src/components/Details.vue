@@ -15,7 +15,7 @@
                 : "Artista não encontrado"
             }}
           </h1>
-          <p class="details__fan">{{ formatNumber(artist.nb_fan) }} fãs</p>
+          <p class="details__fan">{{ numberReformed(artist.nb_fan) }} fãs</p>
           <p class="details__album">{{ artist.nb_album }} álbuns</p>
         </div>
       </div>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { formatNumber } from "../untils/formatNumber.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Accordion from "./Accordion.vue"
@@ -64,12 +65,8 @@ export default {
         console.error("Erro ao buscar o artista", error)
       }
     },
-    formatNumber(number) {
-      if (number !== undefined && number !== null) {
-        return number.toLocaleString("pt-BR")
-      } else {
-        return "0"
-      }
+    numberReformed(number) {
+      return formatNumber(number)
     },
     navigateToAccordion() {
       this.$router.push({

@@ -3,35 +3,45 @@
   <div class="chart">
     <div class="chart__text">
       <div class="chart__container">
-        <div>
-          <h1 class="chart__title">Artistas</h1>
-        </div>
-      </div>
-    </div>
-    <swiper
-      :navigation="true"
-      :slidesPerView="5"
-      :spaceBetween="30"
-      :modules="modules"
-      class="mySwiper"
-    >
-      <swiper-slide v-for="(chart, index) in charts" :key="index">
-        <div class="chart__content">
-          <div class="chart__content__item">
-            <router-link
-              :to="{ name: 'Details', params: { id: chart.artist.id } }"
-            >
-              <img
-                class="chart__img rounded"
-                :src="chart.artist.picture_medium"
-                :alt="chart.artist.name"
-              />
-            </router-link>
-            <p class="chart__name">{{ chart.artist.name }}</p>
+        <div class="chart__header">
+          <div class="chart__button">
+            <h1 class="chart__title">Artistas</h1>
+            <button>Visualizar tudo</button>
+          </div>
+          <div class="chart__navigation">
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
           </div>
         </div>
-      </swiper-slide>
-    </swiper>
+        <swiper
+          :navigation="{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          }"
+          :slidesPerView="5"
+          :spaceBetween="20"
+          :modules="modules"
+          class="chart__swiper"
+        >
+          <swiper-slide v-for="(chart, index) in charts" :key="index">
+            <div class="chart__content">
+              <div class="chart__content__item">
+                <router-link
+                  :to="{ name: 'Details', params: { id: chart.artist.id } }"
+                >
+                  <img
+                    class="chart__img rounded"
+                    :src="chart.artist.picture_medium"
+                    :alt="chart.artist.name"
+                  />
+                </router-link>
+                <p class="chart__name">{{ chart.artist.name }}</p>
+              </div>
+            </div>
+          </swiper-slide>
+        </swiper>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -79,23 +89,4 @@ export default {
 <style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/chart.scss";
-
-.swiper {
-  width: calc(100% - 100px);
-  height: 100%;
-}
-
-.swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.swiper-button-next,
-.swiper-button-prev {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-45%);
-  z-index: 10;
-}
 </style>

@@ -19,8 +19,8 @@
         </div>
         <div class="details__info">
           <p>{{ details.nb_tracks }} faixas</p>
-          <p>{{ formatHours(details.duration) }} minutos</p>
-          <p>{{ formatDate(details.release_date) }}</p>
+          <p>{{ hoursReformed(details.duration) }} minutos</p>
+          <p>{{ dateReformed(details.release_date) }}</p>
           <p>{{ numberReformed(details.fans) }} fãs</p>
         </div>
       </div>
@@ -72,7 +72,7 @@
               {{ genre.name }}
             </span>
           </td>
-          <td>{{ formatDuration(detail.duration) }}</td>
+          <td>{{ durationReformed(detail.duration) }}</td>
         </tr>
       </tbody>
     </table>
@@ -81,7 +81,10 @@
 </template>
 
 <script>
-import { formatNumber } from "../untils/formatNumber.js";
+import { formatNumber } from "../untils/formatNumber.js"
+import { formatHours } from "../untils/formatHours.js"
+import { formatDuration } from "../untils/formatDuration.js"
+import { formatDate } from "../untils/formatDate.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -127,28 +130,18 @@ export default {
     numberReformed(number) {
       return formatNumber(number)
     },
-    formatHours(seconds) {
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds % 3600) / 60)
-      const formattedHours = String(hours).padStart(2)
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      return `${formattedHours} hrs ${formattedMinutes}`
+    hoursReformed(seconds) {
+      return formatHours(seconds)
     },
-    formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60)
-      const remainingSeconds = seconds % 60
-      const formattedMinutes = String(minutes).padStart(2, "0")
-      const formattedSeconds = String(remainingSeconds).padStart(2, "0")
-      return `${formattedMinutes}:${formattedSeconds}`
+    durationReformed(seconds) {
+      return formatDuration(seconds)
     },
     getAlbumImageUrl(imageId) {
       const baseUrl = `https://e-cdns-images.dzcdn.net/images/artist/${imageId}/250x250-000000-80-0-0.jpg`
       return `${baseUrl}`
     },
-    formatDate(data) {
-      if (!data) return "-"
-      const [year, month, day] = data.split("-")
-      return `${day}/${month}/${year}`
+    dateReformed(data) {
+      return formatDate(data)
     },
     playPreview(index) {
       this.audioPlayers.forEach((player) => player.pause())
