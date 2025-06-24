@@ -6,7 +6,7 @@
         <div class="chart__header">
           <div class="chart__button">
             <h1 class="chart__title">Artistas</h1>
-            <button>Visualizar tudo</button>
+            <button @click="viewAllInfos">Visualizar tudo</button>
           </div>
           <div class="chart__navigation">
             <div class="swiper-button-prev"></div>
@@ -82,6 +82,9 @@ export default {
         console.error("Erro ao buscar os charts.", error)
       }
     },
+    viewAllInfos() {
+      this.$router.push({ name: "AllArtists" })
+    }
   },
 }
 </script>

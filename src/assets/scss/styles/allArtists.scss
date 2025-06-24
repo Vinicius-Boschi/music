@@ -1,0 +1,175 @@
+.page {
+  &__snackbar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: $gray;
+    color: $white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    max-width: 90%;
+    width: max-content;
+    white-space: nowrap;
+    opacity: 0;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: snackbar-fadein 0.3s forwards,
+      snackbar-fadeout 0.3s 1.7s forwards;
+    z-index: 9999;
+  }
+
+  &__title {
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+    text-align: center;
+    animation: fadein 0.4s ease;
+
+    &-img {
+      width: 180px;
+      max-width: 80%;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    &-text {
+      font-size: 1.1rem;
+      color: $gray;
+      margin-bottom: 16px;
+    }
+  }
+
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  &__content {
+    background: $white;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 1rem;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 20px auto 10px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__infos {
+    padding: 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $gray;
+    margin: 0.5rem 0 0.2rem;
+    text-align: center;
+  }
+
+  &__artist-followers {
+    font-size: 0.85rem;
+    color: $gray;
+    margin: 0.8rem;
+  }
+
+  &__favorite-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.3 ease;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+
+    svg {
+      transition: transform 0.3s ease;
+    }
+
+    &.active svg path {
+      fill: #e53935 !important;
+    }
+  }
+
+  &__remove {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #e53935;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    svg {
+      fill: white;
+    }
+
+    &:hover {
+      background-color: #c62828;
+      transform: scale(1.03);
+    }
+  }
+
+  @keyframes snackbar-fadein {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -10px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  @keyframes snackbar-fadeout {
+    from {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -10px);
+    }
+  }
+}

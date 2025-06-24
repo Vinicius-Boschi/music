@@ -99,8 +99,4 @@ export default {
   justify-content: center;
   flex-direction: column;
 }
-
-.chart__name {
-  margin-top: 0;
-}
 </style>

@@ -36,7 +36,9 @@
                 src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/84ae12a9-2b9f-44f9-b81e-2283432f3d08"
                 alt="icon sidebar"
               />
-              <p class="sidebar__link-text">Favoritos</p>
+              <router-link to="/favorites" class="sidebar__link-text"
+                >Favoritos</router-link
+              >
             </a>
           </li>
         </ul>
