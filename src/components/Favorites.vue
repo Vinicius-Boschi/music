@@ -19,47 +19,46 @@
           🎧 Você ainda não adicionou nenhum artista aos favoritos. 🎧
         </p>
       </div>
-      <div class="page__container">
+
+      <transition-group name="fade" tag="div" appear class="page__container">
         <div
           class="page__content"
           v-for="artist in favoriteArtists"
           :key="artist.id"
         >
-          <transition-group name="fade" tag="div" appear>
-            <router-link :to="{ name: 'Details', params: { id: artist.id } }">
-              <img
-                class="page__img"
-                :src="artist.picture_medium"
-                :alt="artist.name"
-              />
-            </router-link>
+          <router-link :to="{ name: 'Details', params: { id: artist.id } }">
+            <img
+              class="page__img"
+              :src="artist.picture_medium"
+              :alt="artist.name"
+            />
+          </router-link>
 
-            <div class="page__infos">
-              <p class="page__name">{{ artist.name }}</p>
-              <p class="page__artist-followers">
-                {{
-                  artist.nb_fan
-                    ? `${artist.nb_fan.toLocaleString()} fãs`
-                    : "Popular agora"
-                }}
-              </p>
-              <button class="page__remove" @click="removeFavorite(artist.id)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </transition-group>
+          <div class="page__infos">
+            <p class="page__name">{{ artist.name }}</p>
+            <p class="page__artist-followers">
+              {{
+                artist.nb_fan
+                  ? `${artist.nb_fan.toLocaleString()} fãs`
+                  : "Popular agora"
+              }}
+            </p>
+            <button class="page__remove" @click="removeFavorite(artist.id)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="white"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
+      </transition-group>
     </div>
   </div>
   <Footer />
