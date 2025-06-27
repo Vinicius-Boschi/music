@@ -2,10 +2,13 @@ import express from "express"
 import fetch from "node-fetch"
 import cors from "cors"
 import Genius from "genius-lyrics"
+import axios from "axios"
+import * as cheerio from "cheerio"
 
 const Client = new Genius.Client(
   "k9I8sEt0VO5kqb1U-KpF_AJ2ZbfCgwxJaA5Y422oZ6HGaR2SiQ770QmFEigBPEMv"
 )
+
 const app = express()
 const PORT = process.env.PORT || 3000
 app.use(express.json())
@@ -250,18 +253,23 @@ app.get("/search/track", async (req, res) => {
   }
 })
 
-app.get("/lyrics/:title/:artist", async (req, res) => {
+app.get("/lyrics", async (req, res) => {
   try {
-    const searches = await Client.songs.search(
-      req.params.title,
-      req.params.artist
-    )
-    const firstSong = searches[0]
-    const lyrics = await firstSong.lyrics()
+    const { title, artist } = req.query
+    console.log("🎤 Buscando letra para:", title, artist)
+
+    const searches = await Client.songs.search(`${title} ${artist}`)
+    const song = searches[0]
+
+    if (!song) {
+      return res.status(404).json({ error: "Letra não encontrada" })
+    }
+
+    const lyrics = await song.lyrics()
     res.json({ lyrics })
-  } catch (error) {
-    console.error(error)
-    res.status(500).send("Erro ao buscar a letra da música.")
+  } catch (err) {
+    console.error("Erro ao buscar letra:", err.message)
+    res.status(500).json({ error: "Erro ao buscar a letra" })
   }
 })
 

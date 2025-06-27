@@ -34,7 +34,7 @@
     <div class="details__group">
       <div class="details__button">
         <audio ref="audioPlayers" :src="track.preview"></audio>
-        <button @click="playPreview(index)">
+        <button @click="playPreview()">
           <span>
             <img
               src="https://github.com/Vinicius-Boschi/music/assets/74377158/1a2d6fe5-7258-472d-b786-56f2eb12019b"
@@ -74,7 +74,11 @@
         </div>
       </div>
     </div>
-    <div class="details__lyrics" v-html="lyrics"></div>
+    <div class="details__lyrics">
+      <template v-if="loadingLyrics">Carregando letra...</template>
+      <template v-else-if="lyricsError">{{ lyricsError }}</template>
+      <div v-else v-html="lyrics"></div>
+    </div>
   </div>
   <Footer />
 </template>
@@ -84,6 +88,7 @@ import { formatDuration } from "../untils/formatDuration.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
+import axios from "axios"
 
 export default {
   name: "DetailsTrack",
@@ -95,6 +100,8 @@ export default {
       showModal: false,
       highlightedRow: null,
       lyrics: "",
+      loadingLyrics: false,
+      lyricsError: null,
       items: [
         {
           icon: "https://github.com/Vinicius-Boschi/music/assets/74377158/d1950296-7fb2-485b-b5f7-d5c4132685e9",
@@ -158,20 +165,28 @@ export default {
     toggleModal() {
       this.showModal = !this.showModal
     },
+    cleanTitle(title) {
+      return title
+        .replace(/\(.*?\)/g, "")
+        .replace(/[-–]/g, "")
+        .trim()
+    },
     async getLyrics(title, artist) {
-      const response = await fetch(
-        `http://localhost:3000/lyrics/${encodeURIComponent(
-          title
-        )}/${encodeURIComponent(artist)}`
-      )
-      const data = await response.json()
-      if (data && data.lyrics) {
-        const lines = data.lyrics
-          .split("\n")
-          .filter((line) => line.trim() !== "")
+      this.loadingLyrics = true
+      this.lyricsError = null
+
+      try {
+        const response = await axios.get("http://localhost:3000/lyrics", {
+          params: { title, artist },
+        })
+
+        const lines = response.data.lyrics.split("\n")
+        lines.shift()
         this.lyrics = this.processLyrics(lines)
-      } else {
-        console.error("Nenhuma letra foi encontrada", title)
+      } catch (error) {
+        this.lyricsError = "Letra não encontrada"
+      } finally {
+        this.loadingLyrics = false
       }
     },
     async getDetailsTrack() {
@@ -180,8 +195,10 @@ export default {
         const response = await fetch(`http://localhost:3000/track/${id}`)
         const data = await response.json()
         this.track = data
-        if (this.track.id) {
-          await this.getLyrics(this.track.title, this.track.artist.name)
+
+        if (this.track && this.track.title && this.track.artist) {
+          const cleanTitle = this.cleanTitle(this.track.title)
+          await this.getLyrics(cleanTitle, this.track.artist.name)
         }
       } catch (error) {
         console.error("Erro ao buscar a música", error)
@@ -192,12 +209,14 @@ export default {
       let section = []
 
       lyrics.forEach((line) => {
-        if (line) {
-          section.push(line)
-        } else if (section.length) {
-          sections.push(section)
-          section = []
+        // Se for título de estrofe, fecha a anterior e começa nova
+        if (line.startsWith("[") && line.endsWith("]")) {
+          if (section.length) {
+            sections.push(section)
+            section = []
+          }
         }
+        section.push(line)
       })
 
       if (section.length) {
@@ -222,6 +241,7 @@ export default {
       return formatDuration(seconds)
     },
     playPreview() {
+      if (!this.audioPlayers) return
       this.audioPlayers.pause()
       this.audioPlayers.play()
     },
