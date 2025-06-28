@@ -8,14 +8,25 @@
             <button @click="viewAllInfos">Visualizar tudo</button>
           </div>
           <div class="chart__navigation">
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+            <div
+              :class="[
+                'swiper-button-prev',
+                `swiper-button-prev-${carouselId}`,
+              ]"
+            ></div>
+            <div
+              :class="[
+                'swiper-button-next',
+                `swiper-button-next-${carouselId}`,
+              ]"
+            ></div>
           </div>
         </div>
         <swiper
+          v-if="navigationReady"
           :navigation="{
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
+            nextEl: `.swiper-button-next-${carouselId}`,
+            prevEl: `.swiper-button-prev-${carouselId}`,
           }"
           :slidesPerView="5"
           :spaceBetween="20"
@@ -55,9 +66,16 @@ export default {
     Swiper,
     SwiperSlide,
   },
+  props: {
+    carouselId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       genres: [],
+      navigationReady: false,
     }
   },
   setup() {
@@ -66,7 +84,11 @@ export default {
     }
   },
   mounted() {
-    this.getGenre()
+    this.getGenre().then(() => {
+      this.$nextTick(() => {
+        this.navigationReady = true
+      })
+    })
   },
   methods: {
     async getGenre() {

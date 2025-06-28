@@ -1,12 +1,12 @@
 <template>
   <Sidebar />
   <div class="content">
-    <Artist />
-    <Musics />
-    <Albuns />
-    <Playlist />
-    <Podcasts />
-    <Genre />
+    <Artist carouselId="carousel-artist" />
+    <Musics carouselId="carousel-musics" />
+    <Albuns carouselId="carousel-albuns" />
+    <Playlist carouselId="carousel-playlist" />
+    <Podcasts carouselId="carousel-podcasts" />
+    <Genre carouselId="carousel-genre" />
   </div>
   <Footer />
 </template>

@@ -9,14 +9,25 @@
             <button @click="viewAllInfos">Visualizar tudo</button>
           </div>
           <div class="chart__navigation">
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+            <div
+              :class="[
+                'swiper-button-prev',
+                `swiper-button-prev-${carouselId}`,
+              ]"
+            ></div>
+            <div
+              :class="[
+                'swiper-button-next',
+                `swiper-button-next-${carouselId}`,
+              ]"
+            ></div>
           </div>
         </div>
         <swiper
+          v-if="navigationReady"
           :navigation="{
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
+            nextEl: `.swiper-button-next-${carouselId}`,
+            prevEl: `.swiper-button-prev-${carouselId}`,
           }"
           :slidesPerView="5"
           :spaceBetween="20"
@@ -59,10 +70,25 @@ export default {
     Swiper,
     SwiperSlide,
   },
+  props: {
+    carouselId: {
+      type: String,
+      default: () => Math.random().toString(36).substring(2, 9),
+    },
+  },
   data() {
     return {
       charts: [],
+      navigationReady: false,
     }
+  },
+  computed: {
+    navigation() {
+      return {
+        nextEl: `.swiper-button-next-${this.carouselId}`,
+        prevEl: `.swiper-button-prev-${this.carouselId}`,
+      }
+    },
   },
   setup() {
     return {
@@ -70,21 +96,34 @@ export default {
     }
   },
   mounted() {
-    this.getChart()
+    this.getChart().then(() => {
+      this.$nextTick(() => {
+        this.navigationReady = true
+      })
+    })
   },
   methods: {
     async getChart() {
       try {
         const response = await fetch("http://localhost:3000/chart")
         const data = await response.json()
-        this.charts = data.tracks.data
+        this.charts = this.removeDuplicateArtists(data.tracks.data)
       } catch (error) {
         console.error("Erro ao buscar os charts.", error)
       }
     },
+    removeDuplicateArtists(tracks) {
+      const seen = new Set()
+      return tracks.filter((track) => {
+        const name = track.artist.name.toLowerCase()
+        if (seen.has(name)) return false
+        seen.add(name)
+        return true
+      })
+    },
     viewAllInfos() {
       this.$router.push({ name: "AllArtists" })
-    }
+    },
   },
 }
 </script>
