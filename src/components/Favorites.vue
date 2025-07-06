@@ -41,23 +41,25 @@
             <p class="page__artist-followers">
               {{
                 artist.nb_fan
-                  ? `${artist.nb_fan.toLocaleString()} fãs`
+                  ? `${numberReformed(artist.nb_fan)} fãs`
                   : "Popular agora"
               }}
             </p>
-            <button class="page__remove" @click="removeFavorite(artist.id)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="white"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                />
-              </svg>
-            </button>
+            <div class="page__remove-wrapper">
+              <button class="page__remove" @click="removeFavorite(artist.id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="white"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </transition-group>
@@ -94,19 +96,21 @@
           <div class="page__infos">
             <p class="page__name">{{ track.title }}</p>
             <p class="page__artist-followers">{{ track.artist.name }}</p>
-            <button class="page__remove" @click="removeTrack(track.id)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="white"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                />
-              </svg>
-            </button>
+            <div class="page__remove-wrapper">
+              <button class="page__remove" @click="removeTrack(track.id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="white"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </transition-group>
@@ -143,19 +147,21 @@
           <div class="page__infos">
             <p class="page__name">{{ album.title }}</p>
             <p class="page__artist-followers">{{ album.artist.name }}</p>
-            <button class="page__remove" @click="removeAlbum(album.id)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="white"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                />
-              </svg>
-            </button>
+            <div class="page__remove-wrapper">
+              <button class="page__remove" @click="removeAlbum(album.id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="white"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </transition-group>
@@ -193,23 +199,28 @@
 
           <div class="page__infos">
             <p class="page__name">{{ playlist.title }}</p>
-            <p class="page__artist-followers">
-              {{ playlist.nb_tracks }} faixas
-            </p>
-            <p>150 fãs</p>
-            <button class="page__remove" @click="removePlaylists(playlist.id)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="white"
-                viewBox="0 0 24 24"
+            <span class="page__artist-followers">
+              {{ playlist.nb_tracks }} faixas -
+              {{ numberReformed(playlist.fans) }} fãs
+            </span>
+            <div class="page__remove-wrapper">
+              <button
+                class="page__remove"
+                @click="removePlaylists(playlist.id)"
               >
-                <path
-                  d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="white"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </transition-group>
@@ -248,21 +259,23 @@
           <div class="page__infos">
             <p class="page__name">{{ podcast.title }}</p>
             <p class="page__artist-followers">
-              {{ podcast.fans.toLocaleString() }} fãs
+              {{ numberReformed(podcast.fans) }} fãs
             </p>
-            <button class="page__remove" @click="removePodcasts(podcast.id)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="white"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                />
-              </svg>
-            </button>
+            <div class="page__remove-wrapper">
+              <button class="page__remove" @click="removePodcasts(podcast.id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="white"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </transition-group>
@@ -272,12 +285,13 @@
 </template>
 
 <script>
+import { formatNumber } from "../untils/formatNumber.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
 
 export default {
-  name: "FavoriteArtists",
+  name: "Favorites",
   components: {
     Header,
     Sidebar,
@@ -474,11 +488,9 @@ export default {
         this.snackbarVisible = false
       }, 2000)
     },
+    numberReformed(number) {
+      return formatNumber(number)
+    },
   },
 }
 </script>
-
-<style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/allArtists.scss";
-</style>

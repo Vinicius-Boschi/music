@@ -14,6 +14,7 @@
         </div>
       </div>
     </div>
+    
     <table class="accordion__track-list">
       <thead>
         <tr class="accordion__track-bottom">
@@ -137,9 +138,6 @@ export default {
       return formatHours(seconds)
     },
     dateReformed(data) {
-      console.log("Data original:", data);
-      const formattedDate = formatDate(data);
-      console.log("Data formatada:", formattedDate);
       return formatDate(data)
     },
   },

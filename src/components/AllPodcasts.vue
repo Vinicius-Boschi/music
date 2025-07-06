@@ -4,7 +4,7 @@
     <Sidebar />
     <div class="page">
       <div v-if="snackbarVisible" class="page__snackbar">
-        Podcasts adicionado aos favoritos.
+        {{ snackbarMessage }}
       </div>
       <div class="page__title">
         <h1>Podcasts para você ouvir.</h1>
@@ -30,32 +30,32 @@
             <div class="page__infos">
               <p class="page__name">{{ podcast.title }}</p>
               <p class="page__artist-followers">
-                {{
-                  podcast.nb_fan ? `${podcast.nb_fan.toLocaleString()} fãs` : ""
-                }}
+                {{ numberReformed(podcast.fans) }} fãs
               </p>
-              <button
-                class="page__favorite-button"
-                @click.prevent="toggleFavorite(podcast.id)"
-                :class="{ active: isFavorite(podcast.id) }"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
+              <div class="page__remove-wrapper">
+                <button
+                  class="page__favorite-button"
+                  @click.prevent="toggleFavorite(podcast.id)"
+                  :class="{ active: isFavorite(podcast.id) }"
                 >
-                  <path
-                    :fill="isFavorite(podcast.id) ? '#e53935' : '#dfdfe2'"
-                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.41
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      :fill="isFavorite(podcast.id) ? '#e53935' : '#dfdfe2'"
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.41
                4.42 3 7.5 3c1.74 0 3.41 0.81 4.5
                2.09C13.09 3.81 14.76 3 16.5
                3 19.58 3 22 5.41 22 8.5c0
                3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                  />
-                </svg>
-              </button>
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </template>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { formatNumber } from "../untils/formatNumber.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -80,6 +81,7 @@ export default {
       podcasts: [],
       favorites: new Set(),
       snackbarVisible: false,
+      snackbarMessage: "",
       loading: true,
     }
   },
@@ -112,8 +114,10 @@ export default {
     toggleFavorite(podcastId) {
       if (this.favorites.has(podcastId)) {
         this.favorites.delete(podcastId)
+        this.showSnackbar("Podcast removido dos favoritos.")
       } else {
         this.favorites.add(podcastId)
+        this.showSnackbar("Podcast adicionado aos favoritos.")
       }
       this.saveFavorites()
     },
@@ -128,7 +132,7 @@ export default {
       this.snackbarVisible = true
       setTimeout(() => {
         this.snackbarVisible = false
-      }, 2000)
+      }, 3000)
     },
     loadFavorites() {
       const saved = localStorage.getItem(FAVORITE_PODCAST_KEY)
@@ -140,6 +144,16 @@ export default {
           console.error("Erro ao carregar podcasts do localStorage.", e)
         }
       }
+    },
+    numberReformed(number) {
+      return formatNumber(number)
+    },
+    showSnackbar(message) {
+      this.snackbarMessage = message
+      this.snackbarVisible = true
+      setTimeout(() => {
+        this.snackbarVisible = false
+      }, 3000)
     },
   },
 }

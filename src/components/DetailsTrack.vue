@@ -3,6 +3,9 @@
     <Header />
     <Sidebar />
     <div class="details">
+      <div v-if="snackbarVisible" class="details__snackbar">
+        {{ snackbarMessage }}
+      </div>
       <img
         v-if="track && track.album"
         :src="track.album.cover_medium"
@@ -33,8 +36,8 @@
     </div>
     <div class="details__group">
       <div class="details__button">
-        <audio ref="audioPlayers" :src="track.preview"></audio>
-        <button @click="playPreview()">
+        <audio ref="audioPlayer" :src="track.preview"></audio>
+        <button @click="playPreview">
           <span>
             <img
               src="https://github.com/Vinicius-Boschi/music/assets/74377158/1a2d6fe5-7258-472d-b786-56f2eb12019b"
@@ -46,31 +49,59 @@
           </div>
         </button>
       </div>
+      <div class="details__remove-wrapper">
+        <button
+          class="details__favorite-button"
+          @click.stop.prevent="toggleFavorite(track.id)"
+          :class="{ active: isFavorite(track.id) }"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              :fill="isFavorite(track.id) ? '#e53935' : '#dfdfe2'"
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.41
+                 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5
+                 2.09C13.09 3.81 14.76 3 16.5
+                 3 19.58 3 22 5.41 22 8.5c0
+                 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+            />
+          </svg>
+        </button>
+      </div>
       <div class="details__wrapper">
-        <button @click="toggleModal">
+        <button @click.stop.prevent="toggleModal">
           <img
             src="https://github.com/Vinicius-Boschi/music/assets/74377158/212cefc2-22fd-487b-8c36-44cbd4f4af49"
             alt=""
           />
         </button>
       </div>
-      <div v-if="showModal" class="details__modal">
-        <div class="details__items">
-          <ul class="details__list">
-            <li
-              class="details__lists"
-              v-for="(item, index) in items"
-              :key="index"
-              @mouseover="highlightedRow = index"
-              @mouseleave="highlightedRow = null"
-              :class="{ highlighted: highlightedRow === index }"
-            >
-              <button class="details__buttons">
-                <img class="details__icon" :src="item.icon" :alt="item.alt" />
-                <span class="details__listen">{{ item.text }}</span>
-              </button>
-            </li>
-          </ul>
+      <div
+        v-if="showModal"
+        class="details__modal-overlay"
+        @click="showModal = false"
+      >
+        <div class="details__modal" @click.stop>
+          <div class="details__items">
+            <ul class="details__list">
+              <li
+                class="details__lists"
+                v-for="(item, index) in items"
+                :key="index"
+                :class="{ highlighted: highlightedRow === index }"
+              >
+                <button class="details__buttons">
+                  <img class="details__icon" :src="item.icon" :alt="item.alt" />
+                  <span class="details__listen">{{ item.text }}</span>
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -96,12 +127,14 @@ export default {
   data() {
     return {
       track: {},
-      audioPlayers: [],
       showModal: false,
       highlightedRow: null,
       lyrics: "",
       loadingLyrics: false,
       lyricsError: null,
+      favorites: [],
+      snackbarVisible: false,
+      snackbarMessage: "",
       items: [
         {
           icon: "https://github.com/Vinicius-Boschi/music/assets/74377158/d1950296-7fb2-485b-b5f7-d5c4132685e9",
@@ -157,9 +190,8 @@ export default {
     Footer,
   },
   mounted() {
-    this.getDetailsTrack().then(() => {
-      this.audioPlayers = this.$refs.audioPlayers
-    })
+    this.loadFavoritesFromStorage()
+    this.getDetailsTrack()
   },
   methods: {
     toggleModal() {
@@ -209,7 +241,6 @@ export default {
       let section = []
 
       lyrics.forEach((line) => {
-        // Se for título de estrofe, fecha a anterior e começa nova
         if (line.startsWith("[") && line.endsWith("]")) {
           if (section.length) {
             sections.push(section)
@@ -241,9 +272,41 @@ export default {
       return formatDuration(seconds)
     },
     playPreview() {
-      if (!this.audioPlayers) return
-      this.audioPlayers.pause()
-      this.audioPlayers.play()
+      const player = this.$refs.audioPlayer
+      if (!player) return
+
+      if (!player.paused) {
+        player.pause()
+      }
+      player.play()
+    },
+
+    loadFavoritesFromStorage() {
+      const saved = localStorage.getItem("favorites_tracks")
+      this.favorites = saved ? JSON.parse(saved) : []
+    },
+    toggleFavorite(trackId) {
+      const index = this.favorites.indexOf(trackId)
+
+      if (index === -1) {
+        this.favorites.push(trackId)
+        this.showSnackbar("Música adicionada aos favoritos.")
+      } else {
+        this.favorites.splice(index, 1)
+        this.showSnackbar("Música removida dos favoritos.")
+      }
+
+      localStorage.setItem("favorites_tracks", JSON.stringify(this.favorites))
+    },
+    isFavorite(trackId) {
+      return this.favorites.includes(trackId)
+    },
+    showSnackbar(message) {
+      this.snackbarMessage = message
+      this.snackbarVisible = true
+      setTimeout(() => {
+        this.snackbarVisible = false
+      }, 3000)
     },
   },
 }
