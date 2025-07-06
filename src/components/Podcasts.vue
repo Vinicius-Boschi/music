@@ -5,7 +5,7 @@
         <div class="chart__header">
           <div class="chart__button">
             <h1 class="chart__title">Podcasts</h1>
-            <button>Visualizar tudo</button>
+            <button @click="viewAllInfos">Visualizar tudo</button>
           </div>
           <div class="chart__navigation">
             <div
@@ -99,6 +99,9 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+    viewAllInfos() {
+      this.$router.push({ name: "AllPodcasts" })
     },
   },
 }

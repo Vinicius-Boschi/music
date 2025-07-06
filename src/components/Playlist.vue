@@ -97,7 +97,7 @@ export default {
         const data = await response.json()
         this.playlists = data.data
       } catch (error) {
-        console.error("Erro ao buscar os álbuns.", error)
+        console.error("Erro ao buscar as playlists.", error)
       }
     },
     viewAllInfos() {

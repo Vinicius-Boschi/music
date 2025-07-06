@@ -4,38 +4,40 @@
     <Sidebar />
     <div class="page">
       <div v-if="snackbarVisible" class="page__snackbar">
-        Artista adicionado aos favoritos.
+        Podcasts adicionado aos favoritos.
       </div>
       <div class="page__title">
-        <h1>Artistas para você ouvir.</h1>
+        <h1>Podcasts para você ouvir.</h1>
       </div>
       <div class="page__container">
         <SkeletonArtists v-if="loading" />
         <template v-else>
           <div
             class="page__content"
-            v-for="(artist, index) in artists"
+            v-for="(podcast, index) in podcasts"
             :key="index"
           >
-            <router-link :to="{ name: 'Details', params: { id: artist.id } }">
+            <router-link
+              :to="{ name: 'DetailsPodcasts', params: { id: podcast.id } }"
+            >
               <img
                 class="page__img"
-                :src="artist.picture_medium"
-                :alt="artist.name"
+                :src="podcast.picture_medium"
+                :alt="podcast.title"
               />
             </router-link>
 
             <div class="page__infos">
-              <p class="page__name">{{ artist.name }}</p>
+              <p class="page__name">{{ podcast.title }}</p>
               <p class="page__artist-followers">
                 {{
-                  artist.nb_fan ? `${artist.nb_fan.toLocaleString()} fãs` : ""
+                  podcast.nb_fan ? `${podcast.nb_fan.toLocaleString()} fãs` : ""
                 }}
               </p>
               <button
                 class="page__favorite-button"
-                @click.prevent="toggleFavorite(artist.id)"
-                :class="{ active: isFavorite(artist.id) }"
+                @click.prevent="toggleFavorite(podcast.id)"
+                :class="{ active: isFavorite(podcast.id) }"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +47,7 @@
                   viewBox="0 0 24 24"
                 >
                   <path
-                    :fill="isFavorite(artist.id) ? '#e53935' : '#dfdfe2'"
+                    :fill="isFavorite(podcast.id) ? '#e53935' : '#dfdfe2'"
                     d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.41
                4.42 3 7.5 3c1.74 0 3.41 0.81 4.5
                2.09C13.09 3.81 14.76 3 16.5
@@ -68,14 +70,14 @@ import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
 import SkeletonArtists from "./SkeletonArtists.vue"
-const FAVORITE_KEY = "favorites_artists"
+const FAVORITE_PODCAST_KEY = "favorites_podcast"
 
 export default {
-  name: "AllArtists",
+  name: "AllPodcasts",
 
   data() {
     return {
-      artists: [],
+      podcasts: [],
       favorites: new Set(),
       snackbarVisible: false,
       loading: true,
@@ -95,44 +97,47 @@ export default {
     async getAllInfos() {
       try {
         const response = await fetch(
-          "https://api.deezer.com/chart/0/artists?limit=100"
+          "https://api.deezer.com/chart/0/podcasts?limit=100"
         )
         const data = await response.json()
 
         setTimeout(() => {
-          this.artists = data.data
+          this.podcasts = data.data
           this.loading = false
         }, 1000)
       } catch (error) {
         console.error(error)
       }
     },
-    toggleFavorite(artistId) {
-      if (this.favorites.has(artistId)) {
-        this.favorites.delete(artistId)
+    toggleFavorite(podcastId) {
+      if (this.favorites.has(podcastId)) {
+        this.favorites.delete(podcastId)
       } else {
-        this.favorites.add(artistId)
+        this.favorites.add(podcastId)
       }
       this.saveFavorites()
     },
-    isFavorite(artistId) {
-      return this.favorites.has(artistId)
+    isFavorite(podcastId) {
+      return this.favorites.has(podcastId)
     },
     saveFavorites() {
-      localStorage.setItem(FAVORITE_KEY, JSON.stringify([...this.favorites]))
+      localStorage.setItem(
+        FAVORITE_PODCAST_KEY,
+        JSON.stringify([...this.favorites])
+      )
       this.snackbarVisible = true
       setTimeout(() => {
         this.snackbarVisible = false
       }, 2000)
     },
     loadFavorites() {
-      const saved = localStorage.getItem(FAVORITE_KEY)
+      const saved = localStorage.getItem(FAVORITE_PODCAST_KEY)
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
           this.favorites = new Set(parsed)
         } catch (e) {
-          console.error("Erro ao carregar favoritos do localStorage.", e)
+          console.error("Erro ao carregar podcasts do localStorage.", e)
         }
       }
     },

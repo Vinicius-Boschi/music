@@ -185,7 +185,7 @@ app.get("/playlist/:id/tracks", async (req, res) => {
   }
 })
 
-app.get("/track/:id", async (req, res) => {
+app.get("/track/:id", async (req, res) => { 
   try {
     const { id } = req.params
     const response = await fetch(`https://api.deezer.com/track/${id}`)
