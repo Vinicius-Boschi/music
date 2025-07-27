@@ -42,7 +42,7 @@
                 <router-link
                   :to="{ name: 'DetailsGenre', params: { id: genre.id } }"
                 >
-                  <p class="chart__name">{{ genre.title }}</p>
+                  <p class="chart__name center white">{{ genre.title }}</p>
                 </router-link>
               </div>
             </div>

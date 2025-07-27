@@ -9,7 +9,7 @@
 
       <!-- Artistas -->
       <div class="page__title" v-if="favoriteArtists.length">
-        <h1>Favoritos.</h1>
+        <h1>Artistas.</h1>
       </div>
       <div v-else class="page__empty">
         <img

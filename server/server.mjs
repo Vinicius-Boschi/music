@@ -2,8 +2,6 @@ import express from "express"
 import fetch from "node-fetch"
 import cors from "cors"
 import Genius from "genius-lyrics"
-import axios from "axios"
-import * as cheerio from "cheerio"
 
 const Client = new Genius.Client(
   "k9I8sEt0VO5kqb1U-KpF_AJ2ZbfCgwxJaA5Y422oZ6HGaR2SiQ770QmFEigBPEMv"
@@ -256,7 +254,6 @@ app.get("/search/track", async (req, res) => {
 app.get("/lyrics", async (req, res) => {
   try {
     const { title, artist } = req.query
-    console.log("🎤 Buscando letra para:", title, artist)
 
     const searches = await Client.songs.search(`${title} ${artist}`)
     const song = searches[0]
@@ -341,6 +338,18 @@ app.get("/radio/:id", async (req, res) => {
     const response = await fetch(`https://api.deezer.com/radio/${id}`)
     const data = await response.json()
     res.send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Erro ao buscar a top rádio.")
+  }
+})
+
+app.get("/radio/:id/tracks", async (req, res) => {
+  try {
+    const { id } = req.params
+    const response = await fetch(`https://api.deezer.com/radio/${id}/tracks`)
+    const data = await response.json()
+    res.send(data)  
   } catch (error) {
     console.error(error)
     res.status(500).send("Erro ao buscar a top rádio.")

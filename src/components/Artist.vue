@@ -46,7 +46,7 @@
                     :alt="chart.artist.name"
                   />
                 </router-link>
-                <p class="chart__name">{{ chart.artist.name }}</p>
+                <p class="chart__name center">{{ chart.artist.name }}</p>
               </div>
             </div>
           </swiper-slide>
@@ -64,7 +64,7 @@ import "swiper/scss"
 import "swiper/scss/navigation"
 
 export default {
-  name: "Chart",
+  name: "Artist",
   components: {
     Header,
     Swiper,
@@ -128,7 +128,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/chart.scss";
-</style>
+<style></style>

@@ -2,20 +2,39 @@
   <div class="content">
     <Header />
     <Sidebar />
-    <div>
-      <h1 class="chart__genre">{{ genre }}</h1>
-      <div class="chart__text">
-        <h2 class="chart__title genre">Top playlists {{ genre }}</h2>
-      </div>
-      <swiper
-        :navigation="true"
-        :slidesPerView="5"
-        :spaceBetween="30"
-        :modules="modules"
-        class="mySwiper"
-      >
-        <swiper-slide v-for="(playlist, index) in playlists" :key="index">
-          <div class="chart__content">
+    <h1 class="chart__genre">{{ genre }}</h1>
+    <div class="chart__text">
+      <!-- Top Playlists -->
+      <div class="chart__container">
+        <div class="chart__header">
+          <h2 class="chart__title genre">Top playlists {{ genre }}</h2>
+          <div class="chart__navigation">
+            <div
+              :class="[
+                'swiper-button-prev',
+                `swiper-button-prev-${carouselId.playlists}`,
+              ]"
+            ></div>
+            <div
+              :class="[
+                'swiper-button-next',
+                `swiper-button-next-${carouselId.playlists}`,
+              ]"
+            ></div>
+          </div>
+        </div>
+        <swiper
+          v-if="navigationReady"
+          :navigation="{
+            nextEl: `.swiper-button-next-${carouselId.playlists}`,
+            prevEl: `.swiper-button-prev-${carouselId.playlists}`,
+          }"
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :modules="modules"
+          class="chart__swiper"
+        >
+          <swiper-slide v-for="(playlist, index) in playlists" :key="index">
             <div class="chart__content__item">
               <router-link
                 :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
@@ -25,28 +44,48 @@
                   :src="playlist.picture_big"
                   :alt="playlist.title"
                 />
-                <p class="chart__name left">{{ playlist.title }}</p>
+                <p class="chart__name">{{ playlist.title }}</p>
               </router-link>
-              <p class="chart__tracks">{{ playlist.nb_tracks }} faixas</p>
+              <p class="chart__followers">
+                {{ playlist.nb_tracks }} faixas -
+                {{ numberReformed(playlist.fans) }} fãs
+              </p>
             </div>
-          </div>
-        </swiper-slide>
-      </swiper>
-    </div>
-
-    <div>
-      <div class="chart__text">
-        <h2 class="chart__title genre">Artistas {{ genre }} do momento</h2>
+          </swiper-slide>
+        </swiper>
       </div>
-      <swiper
-        :navigation="true"
-        :slidesPerView="5"
-        :spaceBetween="30"
-        :modules="modules"
-        class="mySwiper"
-      >
-        <swiper-slide v-for="(artist, index) in artists" :key="index">
-          <div class="chart__content">
+
+      <!-- Artistas -->
+      <div class="chart__container">
+        <div class="chart__header">
+          <h2 class="chart__title genre">Artistas {{ genre }} do momento</h2>
+          <div class="chart__navigation">
+            <div
+              :class="[
+                'swiper-button-prev',
+                `swiper-button-prev-${carouselId.artists}`,
+              ]"
+            ></div>
+            <div
+              :class="[
+                'swiper-button-next',
+                `swiper-button-next-${carouselId.artists}`,
+              ]"
+            ></div>
+          </div>
+        </div>
+        <swiper
+          v-if="navigationReady"
+          :navigation="{
+            nextEl: `.swiper-button-next-${carouselId.artists}`,
+            prevEl: `.swiper-button-prev-${carouselId.artists}`,
+          }"
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :modules="modules"
+          class="chart__swiper"
+        >
+          <swiper-slide v-for="(artist, index) in artists" :key="index">
             <div class="chart__content__item">
               <router-link :to="{ name: 'Details', params: { id: artist.id } }">
                 <img
@@ -55,29 +94,47 @@
                   :alt="artist.name"
                 />
               </router-link>
-              <p class="chart__name">{{ artist.name }}</p>
-              <p class="chart__tracks center">
+              <p class="chart__name center">{{ artist.name }}</p>
+              <p class="chart__followers center">
                 {{ numberReformed(artist.fans) }} fãs
               </p>
+              <p class="chart__followers center">{{ artist.album }} álbuns</p>
             </div>
-          </div>
-        </swiper-slide>
-      </swiper>
-    </div>
-
-    <div>
-      <div class="chart__text">
-        <h2 class="chart__title genre">Vá mais fundo</h2>
+          </swiper-slide>
+        </swiper>
       </div>
-      <swiper
-        :navigation="true"
-        :slidesPerView="5"
-        :spaceBetween="30"
-        :modules="modules"
-        class="mySwiper"
-      >
-        <swiper-slide v-for="(album, index) in albums" :key="index">
-          <div class="chart__content">
+
+      <!-- Álbuns -->
+      <div class="chart__container">
+        <div class="chart__header">
+          <h2 class="chart__title genre">Vá mais fundo</h2>
+          <div class="chart__navigation">
+            <div
+              :class="[
+                'swiper-button-prev',
+                `swiper-button-prev-${carouselId.albums}`,
+              ]"
+            ></div>
+            <div
+              :class="[
+                'swiper-button-next',
+                `swiper-button-next-${carouselId.albums}`,
+              ]"
+            ></div>
+          </div>
+        </div>
+        <swiper
+          v-if="navigationReady"
+          :navigation="{
+            nextEl: `.swiper-button-next-${carouselId.albums}`,
+            prevEl: `.swiper-button-prev-${carouselId.albums}`,
+          }"
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :modules="modules"
+          class="chart__swiper"
+        >
+          <swiper-slide v-for="(album, index) in albuns" :key="index">
             <div class="chart__content__item">
               <router-link
                 :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
@@ -88,26 +145,44 @@
                   :alt="album.title"
                 />
               </router-link>
-              <p class="chart__name left">{{ album.title }}</p>
-              <p class="chart__tracks">{{ album.nb_tracks }} faixas</p>
+              <p class="chart__name">{{ album.title }}</p>
+              <p class="chart__followers">{{ album.nb_tracks }} faixas</p>
             </div>
-          </div>
-        </swiper-slide>
-      </swiper>
-    </div>
-    <div>
-      <div class="chart__text">
-        <h2 class="chart__title genre">Lançamentos do {{ genre }}</h2>
+          </swiper-slide>
+        </swiper>
       </div>
-      <swiper
-        :navigation="true"
-        :slidesPerView="5"
-        :spaceBetween="30"
-        :modules="modules"
-        class="mySwiper"
-      >
-        <swiper-slide v-for="(release, index) in releases" :key="index">
-          <div class="chart__content">
+
+      <!-- Lançamentos -->
+      <div class="chart__container">
+        <div class="chart__header">
+          <h2 class="chart__title genre">Lançamentos do {{ genre }}</h2>
+          <div class="chart__navigation">
+            <div
+              :class="[
+                'swiper-button-prev',
+                `swiper-button-prev-${carouselId.releases}`,
+              ]"
+            ></div>
+            <div
+              :class="[
+                'swiper-button-next',
+                `swiper-button-next-${carouselId.releases}`,
+              ]"
+            ></div>
+          </div>
+        </div>
+        <swiper
+          v-if="navigationReady"
+          :navigation="{
+            nextEl: `.swiper-button-next-${carouselId.releases}`,
+            prevEl: `.swiper-button-prev-${carouselId.releases}`,
+          }"
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :modules="modules"
+          class="chart__swiper"
+        >
+          <swiper-slide v-for="(release, index) in releases" :key="index">
             <div class="chart__content__item">
               <router-link
                 :to="{ name: 'DetailsPlaylist', params: { id: release.id } }"
@@ -118,25 +193,28 @@
                   :alt="release.title"
                 />
               </router-link>
-              <p class="chart__name left">{{ release.title }}</p>
-              <p class="chart__tracks">por {{ release.artist.name }}</p>
-              <p class="chart__date">Lançado em {{ release.time_add }}</p>
+              <p class="chart__name">{{ release.title }}</p>
+              <p class="chart__followers">por {{ release.artist.name }}</p>
+              <p class="chart__followers">
+                Lançado em {{ dateReformed(release.release_date) }}
+              </p>
             </div>
-          </div>
-        </swiper-slide>
-      </swiper>
+          </swiper-slide>
+        </swiper>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import Header from "./Header.vue";
-import Sidebar from "./Sidebar.vue";
-import { formatNumber } from "../untils/formatNumber.js";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation } from "swiper/modules";
-import "swiper/scss";
-import "swiper/scss/navigation";
+import Header from "./Header.vue"
+import Sidebar from "./Sidebar.vue"
+import { formatNumber } from "../untils/formatNumber.js"
+import { formatDate } from "../untils/formatDate.js"
+import { Swiper, SwiperSlide } from "swiper/vue"
+import { Navigation } from "swiper/modules"
+import "swiper/scss"
+import "swiper/scss/navigation"
 
 export default {
   props: {
@@ -151,229 +229,222 @@ export default {
   data() {
     return {
       genre: "",
+      tracklist: "",
+      genreId: null,
       genres: [],
       artists: [],
       playlists: [],
-      albums: [],
+      albuns: [],
       releases: [],
-    };
+      navigationReady: false,
+      carouselId: {
+        playlists: "playlists",
+        artists: "artists",
+        albums: "albums",
+        releases: "releases",
+      },
+    }
+  },
+  computed: {
+    navigation() {
+      return {
+        nextEl: `.swiper-button-next-${this.carouselId}`,
+        prevEl: `.swiper-button-prev-${this.carouselId}`,
+      }
+    },
   },
   setup() {
     return {
       modules: [Navigation],
-    };
+    }
   },
   mounted() {
-    this.initializePageData();
+    this.initializePageData()
   },
   watch: {
     $route(to, from) {
       if (to.params.id !== from.params.id) {
-        this.initializePageData();
+        this.initializePageData()
       }
     },
   },
   methods: {
     async initializePageData() {
       try {
-        await this.getGenres();
-        await this.getGenreName();
+        await this.getGenres()
+        await this.getGenreName()
         await Promise.all([
           this.getArtistsBySelectedGenre(),
           this.getPlaylistsByGenre(),
-          this.getAlbums(),
+          this.getAlbuns(),
           this.getReleases(),
-        ]);
+        ])
+        this.navigationReady = true
       } catch (error) {
-        console.error("Erro na inicialização:", error);
+        console.error("Erro na inicialização:", error)
       }
     },
 
     async getGenres() {
       try {
-        const response = await fetch("http://localhost:3000/radio/top");
-        if (!response.ok) throw new Error("Erro ao buscar gêneros");
-        const data = await response.json();
-        this.genres = data.data || [];
+        const res = await fetch("http://localhost:3000/radio/top")
+        const data = await res.json()
+        this.genres = data.data || []
       } catch (error) {
-        console.error("Erro ao carregar gêneros:", error);
+        console.error("Erro ao carregar gêneros:", error)
       }
     },
 
     async getGenreName() {
       try {
-        const response = await fetch(`http://localhost:3000/radio/${this.id}`);
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar o nome do gênero com ID ${this.id}`);
-        }
-        const data = await response.json();
-        this.genre = data.title;
+        const res = await fetch(`http://localhost:3000/radio/${this.id}`)
+        const data = await res.json()
+        this.genre = data.title
+        this.tracklist = data.tracklist?.replace(
+          "https://api.deezer.com",
+          "http://localhost:3000"
+        )
       } catch (error) {
-        console.error("Erro:", error);
+        console.error("Erro:", error)
       }
     },
+
     async getPlaylistsByGenre() {
       try {
-        if (!this.genre) {
-          console.error("Erro: Gênero não definido");
-          return;
-        }
-        const response = await fetch(
+        const res = await fetch(
           `http://localhost:3000/search/playlist?q=${this.genre}`
-        );
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar playlists de ${this.genre}`);
-        }
-        const data = await response.json();
-        this.playlists = data.data || [];
+        )
+        const data = await res.json()
+        const playlists = data.data?.slice(0, 12) || []
+
+        const detailsPlaylists = await Promise.all(
+          playlists.map(async (playlist) => {
+            const details = await fetch(
+              `http://localhost:3000/playlist/${playlist.id}`
+            )
+            const detailsData = await details.json()
+            return {
+              ...playlist,
+              fans: detailsData.fans,
+            }
+          })
+        )
+        this.playlists = detailsPlaylists
       } catch (error) {
-        console.error("Erro:", error);
+        console.error("Erro ao buscar playlists:", error)
       }
     },
+
     async getArtistsBySelectedGenre() {
       try {
-        if (!this.genre) {
-          console.error("Erro: Gênero não definido");
-          return;
-        }
-        const response = await fetch(
-          `http://localhost:3000/search/playlist?q=${this.genre}`
-        );
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar playlists de ${this.genre}`);
-        }
-        const data = await response.json();
-        const playlists = data.data || [];
-
-        let artistPromises = [];
-        for (const playlist of playlists) {
-          artistPromises.push(this.getArtistsFromPlaylist(playlist.id));
+        if (!this.tracklist) {
+          console.error("Erro: Tracklist não definida")
+          return
         }
 
-        const artistResults = await Promise.all(artistPromises);
-        let artists = [];
-        artistResults.forEach((result) => {
-          artists = artists.concat(result);
-        });
+        const res = await fetch(this.tracklist)
+        const data = await res.json()
+        const tracks = data.data || []
 
-        this.artists = artists;
-      } catch (error) {
-        console.error("Erro:", error);
-      }
-    },
-    async getArtistsFromPlaylist(id) {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/playlist/${id}/tracks`
-        );
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar faixas da playlist ${id}`);
-        }
-        const data = await response.json();
-        const tracks = data.data || [];
-        let uniqueArtists = new Set();
-        let artistPromises = [];
+        const uniqueArtists = new Set()
+        const artistPromises = []
 
         for (const track of tracks) {
-          const artistName = track.artist.name;
+          const artistName = track.artist.name
           if (!uniqueArtists.has(artistName)) {
-            uniqueArtists.add(artistName);
-            artistPromises.push(this.getArtistDetails(track.artist.id));
+            uniqueArtists.add(artistName)
+            artistPromises.push(this.getArtistDetails(track.artist.id))
           }
         }
 
-        const artistDetails = await Promise.all(artistPromises);
-        let artists = artistDetails.map((details) => ({
-          name: details.name,
-          picture: details.picture_big,
-          id: details.id,
-          fans: details.nb_fan,
-        }));
-
-        return artists;
+        const artistDetails = await Promise.all(artistPromises)
+        this.artists = artistDetails
+          .map((a) => ({
+            name: a.name,
+            picture: a.picture_big,
+            id: a.id,
+            fans: a.nb_fan,
+            album: a.nb_album,
+          }))
+          .slice(0, 12)
       } catch (error) {
-        console.error("Erro:", error);
-        return [];
+        console.error("Erro ao buscar artistas do gênero:", error)
       }
     },
+
     async getArtistDetails(id) {
       try {
-        const response = await fetch(`http://localhost:3000/artist/${id}`);
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar detalhes do artista com ID ${id}`);
-        }
-        const data = await response.json();
-        return data;
+        const res = await fetch(`http://localhost:3000/artist/${id}`)
+        return await res.json()
       } catch (error) {
-        console.error("Erro:", error);
-        return {};
+        console.error("Erro ao buscar detalhes do artista:", error)
+        return {}
       }
     },
-    async getAlbums() {
+
+    async getAlbuns() {
       try {
-        if (!this.genre) {
-          console.error("Erro: Album não encontrado");
-          return;
-        }
-        const response = await fetch(
+        const res = await fetch(
           `http://localhost:3000/search/album?q=${this.genre}`
-        );
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar álbuns de ${this.genre}`);
-        }
-        const data = await response.json();
-        this.albums = data.data || [];
+        )
+        const data = await res.json()
+        this.albuns = data.data?.slice(0, 12) || []
       } catch (error) {
-        console.error("Erro:", error);
+        console.error("Erro ao buscar álbuns:", error)
       }
     },
+
     async getReleases() {
       try {
-        if (!this.genre || this.genre.trim() === "") {
-          console.error("Erro: Gênero não definido");
-          return;
-        }
+        const res = await fetch(
+          `http://localhost:3000/search/track?q=${this.genre}`
+        )
+        const data = await res.json()
+        const tracks = data.data || []
 
-        if (!this.genres || this.genres.length === 0) {
-          console.error("Erro: Lista de gêneros não carregada");
-          return;
-        }
+        const seen = new Set()
+        const filtered = tracks
+          .filter((track) => {
+            if (seen.has(track.title)) return false
+            seen.add(track.title)
+            return true
+          })
+          .slice(0, 12)
 
-        const genreData = this.genres.find(
-          (g) => g.name.trim().toLowerCase() === this.genre.trim().toLowerCase()
-        );
+        const releasesWithDate = await Promise.all(
+          filtered.map(async (track) => {
+            const albumId = track.album.id
 
-        if (!genreData) {
-          console.error(
-            "Erro: Não foi possível encontrar o gênero correspondente.",
-            "Gênero selecionado:",
-            this.genre,
-            "Lista de gêneros:",
-            this.genres.map((g) => g.name)
-          );
-          return;
-        }
+            let releaseDate = "Data desconhecida"
+            try {
+              const resAlbum = await fetch(
+                `http://localhost:3000/album/${albumId}`
+              )
+              const albumData = await resAlbum.json()
+              releaseDate = albumData.release_date || "Data desconhecida"
+            } catch (e) {
+              console.warn("Erro ao buscar álbum:", e)
+            }
 
-        const id = genreData.id;
-
-        const response = await fetch(
-          `http://localhost:3000/playlist/${id}/tracks`
-        );
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar músicas para o gênero ${this.genre}`);
-        }
-
-        const data = await response.json();
-        this.releases = data.data || [];
+            return {
+              ...track,
+              release_date: releaseDate,
+            }
+          })
+        )
+        this.releases = releasesWithDate
       } catch (error) {
-        console.error("Erro ao buscar lançamentos:", error);
+        console.error("Erro ao buscar lançamentos:", error)
       }
     },
-    numberReformed(number) {
-      return formatNumber(number);
+    numberReformed(num) {
+      return formatNumber(num)
+    },
+    dateReformed(date) {
+      return formatDate(date)
     },
   },
-};
+}
 </script>
 
 <style></style>
