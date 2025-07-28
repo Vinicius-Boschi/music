@@ -10,36 +10,26 @@
               class="sidebar__hover"
               :class="{ active: isHomePage }"
             >
-              <img
-                class="sidebar__icon"
-                src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/5554d011-9384-419c-938b-81edd1f3cbde"
-                alt="icon sidebar"
-              />
+              <img class="sidebar__icon" :src="home" alt="icon sidebar" />
               <p class="sidebar__link-text">Início</p>
             </router-link>
           </li>
           <li>
             <a href="#" class="sidebar__hover">
-              <img
-                class="sidebar__icon"
-                src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/637008bf-4f5f-4dc4-9e05-5fa14e912ada"
-                alt="icon sidebar"
-              />
+              <img class="sidebar__icon" :src="explore" alt="icon sidebar" />
               <p class="sidebar__link-text">Explorar</p>
             </a>
           </li>
 
           <li>
-            <a href="#" class="sidebar__hover">
-              <img
-                class="sidebar__icon"
-                src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/84ae12a9-2b9f-44f9-b81e-2283432f3d08"
-                alt="icon sidebar"
-              />
-              <router-link to="/favorites" class="sidebar__link-text"
-                >Favoritos</router-link
-              >
-            </a>
+            <router-link
+              to="/favorites"
+              class="sidebar__hover"
+              :class="{ active: isFavoritesPage }"
+            >
+              <img class="sidebar__icon" :src="favorites" alt="icon sidebar" />
+              <p class="sidebar__link-text">Favoritos</p>
+            </router-link>
           </li>
         </ul>
         <div class="sidebar__announcement">
@@ -53,21 +43,13 @@
           <h1 class="sidebar__playlist-title">Playlists</h1>
           <div class="sidebar__playlist-content">
             <a href="#" class="sidebar__hover">
-              <img
-                class="sidebar__icon"
-                src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/4d23b271-0954-48e3-af60-dea71a52b445"
-                alt="icon sidebar"
-              />
+              <img class="sidebar__icon" :src="loved" alt="icon sidebar" />
               <p class="sidebar__playlist-text">Mais queridas</p>
             </a>
           </div>
           <div class="sidebar__playlist-content">
             <a href="#" class="sidebar__hover">
-              <img
-                class="sidebar__icon"
-                src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/02d57893-885a-4bf0-b847-c529bae5e71d"
-                alt="icon sidebar"
-              />
+              <img class="sidebar__icon" :src="playlist" alt="icon sidebar" />
               <p class="sidebar__playlist-text">Criar uma playlist</p>
             </a>
           </div>
@@ -75,11 +57,7 @@
       </div>
       <div class="sidebar__photo">
         <a href="#" class="sidebar__photo-link">
-          <img
-            alt="user photo"
-            src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-            class="sidebar__user-photo"
-          />
+          <img alt="user photo" :src="user" class="sidebar__user-photo" />
           <div>
             <p class="sidebar__name">
               <strong class="sidebar__name-strong">Eric Frusciante</strong>
@@ -100,11 +78,21 @@ export default {
       home: "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/cca4a60a-03c9-410e-84bd-7e831bd58f13",
       explore:
         "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/17df5b60-6e2e-4b32-899c-d5ba9f99e653",
+      favorites:
+        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/84ae12a9-2b9f-44f9-b81e-2283432f3d08",
+      loved:
+        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/4d23b271-0954-48e3-af60-dea71a52b445",
+      playlist:
+        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/02d57893-885a-4bf0-b847-c529bae5e71d",
+      user: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
     }
   },
   computed: {
     isHomePage() {
       return this.$route.path === "/"
+    },
+    isFavoritesPage() {
+      return this.$route.path === "/favorites"
     },
   },
 }
@@ -113,8 +101,4 @@ export default {
 <style lang="scss">
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/sidebar.scss";
-
-.container {
-  display: flex;
-}
 </style>

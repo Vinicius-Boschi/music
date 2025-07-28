@@ -6,279 +6,273 @@
       <div v-if="snackbarVisible" class="page__snackbar">
         Item removido dos favoritos.
       </div>
-
-      <!-- Artistas -->
-      <div class="page__title" v-if="favoriteArtists.length">
-        <h1>Artistas.</h1>
-      </div>
-      <div v-else class="page__empty">
-        <img
-          class="page__empty-img"
-          src="../assets/notfound.png"
-          alt="Sem artistas favoritos"
-        />
-        <p class="page__empty-message">
-          🎧 Você ainda não adicionou nenhum artista aos favoritos. 🎧
-        </p>
-      </div>
-
-      <transition-group name="fade" tag="div" appear class="page__container">
-        <div
-          class="page__content"
-          v-for="artist in favoriteArtists"
-          :key="`artist-${artist.id}`"
-        >
-          <router-link :to="{ name: 'Details', params: { id: artist.id } }">
-            <img
-              class="page__img"
-              :src="artist.picture_medium"
-              :alt="artist.name"
-            />
-          </router-link>
-
-          <div class="page__infos">
-            <p class="page__name">{{ artist.name }}</p>
-            <p class="page__artist-followers">
-              {{
-                artist.nb_fan
-                  ? `${numberReformed(artist.nb_fan)} fãs`
-                  : "Popular agora"
-              }}
-            </p>
-            <div class="page__remove-wrapper">
-              <button class="page__remove" @click="removeFavorite(artist.id)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  viewBox="0 0 24 24"
+      <!-- Accordion -->
+      <article class="accordion">
+        <div class="accordion__about-center">
+          <article class="accordion__about">
+            <div class="accordion__btn-container">
+              <div class="accordion__btn-container-content">
+                <button
+                  class="accordion__tab-btn"
+                  :class="{ active: activeTab === 'artists' }"
+                  @click="activeTab = 'artists'"
                 >
-                  <path
-                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </transition-group>
-
-      <!-- Músicas -->
-      <div class="page__title" v-if="favoriteTracks.length">
-        <h1>Músicas.</h1>
-      </div>
-      <div v-else class="page__empty">
-        <img
-          class="page__empty-img"
-          src="../assets/notfound.png"
-          alt="Sem músicas favoritas"
-        />
-        <p class="page__empty-message">
-          🎶 Você ainda não adicionou nenhuma música aos favoritos. 🎶
-        </p>
-      </div>
-
-      <transition-group name="fade" tag="div" appear class="page__container">
-        <div
-          class="page__content"
-          v-for="track in favoriteTracks"
-          :key="`track-${track.id}`"
-        >
-          <router-link :to="{ name: 'DetailsTrack', params: { id: track.id } }">
-            <img
-              class="page__img"
-              :src="track.album.cover_medium"
-              :alt="track.title"
-            />
-          </router-link>
-
-          <div class="page__infos">
-            <p class="page__name">{{ track.title }}</p>
-            <p class="page__artist-followers">{{ track.artist.name }}</p>
-            <div class="page__remove-wrapper">
-              <button class="page__remove" @click="removeTrack(track.id)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  viewBox="0 0 24 24"
+                  Artistas
+                </button>
+                <button
+                  class="accordion__tab-btn"
+                  :class="{ active: activeTab === 'tracks' }"
+                  @click="activeTab = 'tracks'"
                 >
-                  <path
-                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </transition-group>
-
-      <!-- Albuns -->
-      <div class="page__title" v-if="favoriteAlbuns.length">
-        <h1>Álbuns.</h1>
-      </div>
-      <div v-else class="page__empty">
-        <img
-          class="page__empty-img"
-          src="../assets/notfound.png"
-          alt="Sem albuns favoritas"
-        />
-        <p class="page__empty-message">
-          🎶 Você ainda não adicionou nenhuma album aos favoritos. 🎶
-        </p>
-      </div>
-
-      <transition-group name="fade" tag="div" appear class="page__container">
-        <div
-          class="page__content"
-          v-for="album in favoriteAlbuns"
-          :key="`album-${album.id}`"
-        >
-          <router-link :to="{ name: 'DetailsAlbum', params: { id: album.id } }">
-            <img
-              class="page__img"
-              :src="album.cover_medium"
-              :alt="album.title"
-            />
-          </router-link>
-
-          <div class="page__infos">
-            <p class="page__name">{{ album.title }}</p>
-            <p class="page__artist-followers">{{ album.artist.name }}</p>
-            <div class="page__remove-wrapper">
-              <button class="page__remove" @click="removeAlbum(album.id)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  viewBox="0 0 24 24"
+                  Músicas
+                </button>
+                <button
+                  class="accordion__tab-btn"
+                  :class="{ active: activeTab === 'albums' }"
+                  @click="activeTab = 'albums'"
                 >
-                  <path
-                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                  />
-                </svg>
-              </button>
+                  Álbuns
+                </button>
+                <button
+                  class="accordion__tab-btn"
+                  :class="{ active: activeTab === 'playlists' }"
+                  @click="activeTab = 'playlists'"
+                >
+                  Playlists
+                </button>
+                <button
+                  class="accordion__tab-btn"
+                  :class="{ active: activeTab === 'podcasts' }"
+                  @click="activeTab = 'podcasts'"
+                >
+                  Podcasts
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      </transition-group>
 
-      <!-- Playlists -->
-      <div class="page__title" v-if="favoritePlaylists.length">
-        <h1>Playlists.</h1>
-      </div>
-      <div v-else class="page__empty">
-        <img
-          class="page__empty-img"
-          src="../assets/notfound.png"
-          alt="Sem playlists favoritas"
-        />
-        <p class="page__empty-message">
-          🎶 Você ainda não adicionou nenhuma playlist aos favoritos. 🎶
-        </p>
-      </div>
+            <!-- ARTISTAS -->
+            <transition name="accordion-fade">
+              <div class="accordion__content" v-show="activeTab === 'artists'">
+                <div v-if="favoriteArtists.length" class="accordion__related">
+                  <div
+                    v-for="artist in favoriteArtists"
+                    :key="artist.id"
+                    class="accordion__related-container"
+                  >
+                    <img
+                      :src="artist.picture_medium"
+                      :alt="artist.name"
+                      class="accordion__related-picture"
+                    />
+                    <h1 class="accordion__related-text">{{ artist.name }}</h1>
+                    <p class="accordion__related-fan">
+                      {{ numberReformed(artist.nb_fan) }}
+                    </p>
+                    <p class="accordion__related-album">
+                      {{ numberReformed(artist.nb_album) }} álbuns
+                    </p>
+                    <button @click="removeFavorite(artist.id)">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="white"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div v-else class="page__empty">
+                  <img
+                    class="page__empty-img"
+                    src="../assets/notfound.png"
+                    alt="Sem artistas favoritos"
+                  />
+                  <p class="page__empty-message">
+                    🎧 Você ainda não adicionou nenhum artista aos favoritos. 🎧
+                  </p>
+                </div>
+              </div>
+            </transition>
 
-      <transition-group name="fade" tag="div" appear class="page__container">
-        <div
-          class="page__content"
-          v-for="playlist in favoritePlaylists"
-          :key="`playlist-${playlist.id}`"
-        >
-          <router-link
-            :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
-          >
-            <img
-              class="page__img"
-              :src="playlist.picture_medium"
-              :alt="playlist.title"
-            />
-          </router-link>
+            <!-- MÚSICAS -->
+            <transition name="accordion-fade">
+              <transition name="accordion-fade">
+                <div class="accordion__content" v-show="activeTab === 'tracks'">
+                  <div v-if="favoriteTracks.length" class="accordion__track">
+                    <table class="accordion__track-list">
+                      <thead>
+                        <tr class="accordion__track-bottom">
+                          <th>Música</th>
+                          <th>Álbum</th>
+                          <th>
+                            <img
+                              src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
+                              alt=""
+                            />
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="accordion__track-container">
+                        <tr
+                          v-for="(track, index) in favoriteTracks"
+                          :key="track.id"
+                          @mouseover="highlightedRow = index"
+                          @mouseleave="highlightedRow = null"
+                          ref="trackRows"
+                          :class="{ highlighted: highlightedRow === index }"
+                        >
+                          <audio
+                            ref="audioPlayers"
+                            :src="track.preview"
+                          ></audio>
 
-          <div class="page__infos">
-            <p class="page__name">{{ playlist.title }}</p>
-            <span class="page__artist-followers">
-              {{ playlist.nb_tracks }} faixas -
-              {{ numberReformed(playlist.fans) }} fãs
-            </span>
-            <div class="page__remove-wrapper">
-              <button
-                class="page__remove"
-                @click="removePlaylists(playlist.id)"
+                          <td class="accordion__track-group">
+                            <img
+                              :src="track.album.cover_small"
+                              :alt="track.title"
+                              @click="playPreview(index)"
+                              @mouseover="currentTrackIndex = index"
+                              @mouseleave="currentTrackIndex = null"
+                            />
+                            <h1>
+                              <router-link
+                                :to="{
+                                  name: 'DetailsTrack',
+                                  params: { id: track.id },
+                                }"
+                              >
+                                {{ index + 1 }} - {{ track.title }}
+                              </router-link>
+                            </h1>
+                          </td>
+
+                          <td>
+                            <router-link
+                              :to="{
+                                name: 'DetailsAlbum',
+                                params: { id: track.album.id },
+                              }"
+                            >
+                              {{ track.album.title }}
+                            </router-link>
+                          </td>
+
+                          <td>{{ durationReformed(track.duration) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Caso não tenha músicas favoritas -->
+                  <div v-else class="page__empty">
+                    <img
+                      class="page__empty-img"
+                      src="../assets/notfound.png"
+                      alt="Sem músicas favoritas"
+                    />
+                    <p class="page__empty-message">
+                      🎧 Você ainda não adicionou nenhuma música aos favoritos.
+                      🎧
+                    </p>
+                  </div>
+                </div>
+              </transition>
+            </transition>
+
+            <!-- ÁLBUNS -->
+            <transition name="accordion-fade">
+              <div class="accordion__content" v-show="activeTab === 'albums'">
+                <div v-if="favoriteAlbuns.length" class="favorites-list">
+                  <div v-for="album in favoriteAlbuns" :key="album.id">
+                    <img :src="album.cover_medium" :alt="album.title" />
+                    <p>{{ album.title }}</p>
+                    <button @click="removeAlbum(album.id)">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="white"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div v-else class="page__empty">
+                  <p>📀 Nenhum álbum favorito.</p>
+                </div>
+              </div>
+            </transition>
+
+            <!-- PLAYLISTS -->
+            <transition name="accordion-fade">
+              <div
+                class="accordion__content"
+                v-show="activeTab === 'playlists'"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
+                <div v-if="favoritePlaylists.length" class="favorites-list">
+                  <div v-for="playlist in favoritePlaylists" :key="playlist.id">
+                    <img :src="playlist.picture_medium" :alt="playlist.title" />
+                    <p>{{ playlist.title }}</p>
+                    <button @click="removePlaylists(playlist.id)">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="white"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div v-else class="page__empty">
+                  <p>📂 Nenhuma playlist favorita.</p>
+                </div>
+              </div>
+            </transition>
+
+            <!-- PODCASTS -->
+            <transition name="accordion-fade">
+              <div class="accordion__content" v-show="activeTab === 'podcasts'">
+                <div v-if="favoritePodcasts.length" class="favorites-list">
+                  <div v-for="podcast in favoritePodcasts" :key="podcast.id">
+                    <img :src="podcast.picture_medium" :alt="podcast.title" />
+                    <p>{{ podcast.title }}</p>
+                    <button @click="removePodcasts(podcast.id)">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="white"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div v-else class="page__empty">
+                  <p>🎙️ Nenhum podcast favorito.</p>
+                </div>
+              </div>
+            </transition>
+          </article>
         </div>
-      </transition-group>
-
-      <!-- Podcasts -->
-      <div class="page__title" v-if="favoritePodcasts.length">
-        <h1>Podcasts.</h1>
-      </div>
-      <div v-else class="page__empty">
-        <img
-          class="page__empty-img"
-          src="../assets/notfound.png"
-          alt="Sem podcasts favoritas"
-        />
-        <p class="page__empty-message">
-          🎶 Você ainda não adicionou nenhum podcast aos favoritos. 🎶
-        </p>
-      </div>
-
-      <transition-group name="fade" tag="div" appear class="page__container">
-        <div
-          class="page__content"
-          v-for="podcast in favoritePodcasts"
-          :key="`podcast-${podcast.id}`"
-        >
-          <router-link
-            :to="{ name: 'DetailsPodcasts', params: { id: podcast.id } }"
-          >
-            <img
-              class="page__img"
-              :src="podcast.picture_medium"
-              :alt="podcast.title"
-            />
-          </router-link>
-
-          <div class="page__infos">
-            <p class="page__name">{{ podcast.title }}</p>
-            <p class="page__artist-followers">
-              {{ numberReformed(podcast.fans) }} fãs
-            </p>
-            <div class="page__remove-wrapper">
-              <button class="page__remove" @click="removePodcasts(podcast.id)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </transition-group>
+      </article>
     </div>
   </div>
   <Footer />
@@ -286,25 +280,27 @@
 
 <script>
 import { formatNumber } from "../untils/formatNumber.js"
+import { formatDuration } from "../untils/formatDuration.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
 
 export default {
   name: "Favorites",
-  components: {
-    Header,
-    Sidebar,
-    Footer,
-  },
+  components: { Header, Sidebar, Footer },
   data() {
     return {
+      activeTab: "artists",
       favoriteArtists: [],
       favoriteTracks: [],
       favoriteAlbuns: [],
       favoritePlaylists: [],
       favoritePodcasts: [],
+      audioPlayers: [],
+      trackRows: [],
       snackbarVisible: false,
+      highlightedRow: null,
+      currentTrackIndex: null,
     }
   },
   mounted() {
@@ -321,7 +317,6 @@ export default {
 
       try {
         const favoriteIds = JSON.parse(saved)
-
         const requests = favoriteIds.map((id) =>
           fetch(`https://api.deezer.com/artist/${id}`).then((res) => res.json())
         )
@@ -338,7 +333,6 @@ export default {
 
       try {
         const favoriteIds = JSON.parse(saved)
-
         const requests = favoriteIds.map((id) =>
           fetch(`https://api.deezer.com/track/${id}`).then((res) => res.json())
         )
@@ -355,7 +349,6 @@ export default {
 
       try {
         const favoriteIds = JSON.parse(saved)
-
         const requests = favoriteIds.map((id) =>
           fetch(`https://api.deezer.com/album/${id}`).then((res) => res.json())
         )
@@ -372,7 +365,6 @@ export default {
 
       try {
         const favoriteIds = JSON.parse(saved)
-
         const requests = favoriteIds.map((id) =>
           fetch(`https://api.deezer.com/playlist/${id}`).then((res) =>
             res.json()
@@ -393,7 +385,6 @@ export default {
 
       try {
         const favoriteIds = JSON.parse(saved)
-
         const requests = favoriteIds.map((id) =>
           fetch(`https://api.deezer.com/podcast/${id}`).then((res) =>
             res.json()
@@ -490,6 +481,9 @@ export default {
     },
     numberReformed(number) {
       return formatNumber(number)
+    },
+    durationReformed(seconds) {
+      return formatDuration(seconds)
     },
   },
 }
