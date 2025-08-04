@@ -74,7 +74,11 @@
                         src="../assets/icons/search-solid-full.png"
                         alt="search"
                       />
-                      <input type="text" placeholder="Buscar nas faixas" />
+                      <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Buscar nas faixas"
+                      />
                     </div>
                     <div class="accordion__sort">
                       <button @click="isOpen = !isOpen" class="accordion__drop">
@@ -184,7 +188,11 @@
                         src="../assets/icons/search-solid-full.png"
                         alt="search"
                       />
-                      <input type="text" placeholder="Buscar nas faixas" />
+                      <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Buscar nas faixas"
+                      />
                     </div>
                   </div>
                 </div>
@@ -193,6 +201,7 @@
                     <thead>
                       <tr class="accordion__track-bottom">
                         <th>Música</th>
+                        <th></th>
                         <th>Artista</th>
                         <th>Álbum</th>
                         <th>Adicionada</th>
@@ -206,7 +215,7 @@
                     </thead>
                     <tbody class="accordion__track-container">
                       <tr
-                        v-for="(track, index) in favoriteTracks"
+                        v-for="(track, index) in sortedTracks"
                         :key="track.id"
                         @mouseover="highlightedRow = index"
                         @mouseleave="highlightedRow = null"
@@ -232,6 +241,24 @@
                               {{ index + 1 }} - {{ track.title }}
                             </router-link>
                           </h1>
+                        </td>
+                        <td>
+                          <button
+                            class="accordion__remove"
+                            @click="removeTrack(track.id)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="white"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2zM9 4h6v2H9V4z"
+                              />
+                            </svg>
+                          </button>
                         </td>
                         <td>
                           <router-link
@@ -285,7 +312,11 @@
                         src="../assets/icons/search-solid-full.png"
                         alt="search"
                       />
-                      <input type="text" placeholder="Buscar nas faixas" />
+                      <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Buscar nas faixas"
+                      />
                     </div>
                     <div class="accordion__sort">
                       <button @click="isOpen = !isOpen" class="accordion__drop">
@@ -371,7 +402,11 @@
                         src="../assets/icons/search-solid-full.png"
                         alt="search"
                       />
-                      <input type="text" placeholder="Buscar nas faixas" />
+                      <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Buscar nas faixas"
+                      />
                     </div>
                     <div class="accordion__sort">
                       <button @click="isOpen = !isOpen" class="accordion__drop">
@@ -455,7 +490,11 @@
                         src="../assets/icons/search-solid-full.png"
                         alt="search"
                       />
-                      <input type="text" placeholder="Buscar nas faixas" />
+                      <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Buscar nas faixas"
+                      />
                     </div>
                     <div class="accordion__sort">
                       <button @click="isOpen = !isOpen" class="accordion__drop">
@@ -559,6 +598,7 @@ export default {
       currentTrackIndex: null,
       sortOption: "recent",
       isOpen: false,
+      search: "",
       selected: { label: "Adicionados recentemente", value: "recent" },
       sortOptions: [
         { label: "Ordem alfabética", value: "alphabetical" },
@@ -578,49 +618,92 @@ export default {
   },
   computed: {
     sortedArtists() {
-      if (this.sortOption === "alphabetical") {
-        return [...this.favoriteArtists].sort((a, b) =>
-          a.name.localeCompare(b.name)
+      const searchTerm = this.search.trim().toLowerCase()
+      let filtered = this.favoriteArtists
+
+      if (searchTerm) {
+        filtered = filtered.filter((artist) =>
+          artist.name.toLowerCase().includes(searchTerm)
         )
+      }
+
+      if (this.sortOption === "alphabetical") {
+        return [...filtered].sort((a, b) => a.name.localeCompare(b.name))
       } else {
-        return [...this.favoriteArtists].sort(
+        return [...filtered].sort(
           (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
         )
       }
     },
     sortedAlbuns() {
-      if (this.sortOption === "alphabetical") {
-        return [...this.favoriteAlbuns].sort((a, b) =>
-          a.title.localeCompare(b.title)
+      const searchTerm = this.search.trim().toLowerCase()
+      let filtered = this.favoriteAlbuns
+
+      if (searchTerm) {
+        filtered = filtered.filter((album) =>
+          album.title.toLowerCase().includes(searchTerm)
         )
+      }
+
+      if (this.sortOption === "alphabetical") {
+        return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
       } else {
-        return [...this.favoriteAlbuns].sort(
+        return [...filtered].sort(
           (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
         )
       }
     },
     sortedPlaylists() {
-      if (this.sortOption === "alphabetical") {
-        return [...this.favoritePlaylists].sort((a, b) =>
-          a.title.localeCompare(b.title)
+      const searchTerm = this.search.trim().toLowerCase()
+      let filtered = this.favoritePlaylists
+
+      if (searchTerm) {
+        filtered = filtered.filter((playlist) =>
+          playlist.title.toLowerCase().includes(searchTerm)
         )
+      }
+
+      if (this.sortOption === "alphabetical") {
+        return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
       } else {
-        return [...this.favoritePlaylists].sort(
+        return [...filtered].sort(
           (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
         )
       }
     },
     sortedPodcasts() {
-      if (this.sortOption === "alphabetical") {
-        return [...this.favoritePodcasts].sort((a, b) =>
-          a.title.localeCompare(b.title)
+      const searchTerm = this.search.trim().toLowerCase()
+      let filtered = this.favoritePodcasts
+
+      if (searchTerm) {
+        filtered = filtered.filter((podcast) =>
+          podcast.title.toLowerCase().includes(searchTerm)
         )
+      }
+
+      if (this.sortOption === "alphabetical") {
+        return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
       } else {
-        return [...this.favoritePodcasts].sort(
+        return [...filtered].sort(
           (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
         )
       }
     },
+    sortedTracks() {
+      return this.favoriteTracks
+        .filter((track) =>
+          track.title.toLowerCase().includes(this.search.toLowerCase())
+        )
+        .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
+    },
+  },
+  filteredArtists() {
+    const searchTerm = this.search.trim().toLowerCase()
+    if (!searchTerm) return this.artists
+
+    return this.artists.filter((artist) =>
+      artist.name.toLowerCase().includes(searchTerm)
+    )
   },
   methods: {
     async loadFavoriteArtists() {
@@ -774,7 +857,9 @@ export default {
 
         this.snackbarMessage = "Artista removido dos favoritos."
         this.snackbarVisible = true
-        setTimeout(() => (this.snackbarVisible = false), 2000)
+        setTimeout(() => {
+          this.snackbarVisible = false
+        }, 2000)
       } catch (e) {
         console.error("Erro ao remover favorito:", e)
       }
@@ -783,18 +868,22 @@ export default {
       const saved = localStorage.getItem("favorites_tracks")
       if (!saved) return
 
-      const parsed = JSON.parse(saved)
-      const update = parsed.filter((trackId) => trackId !== id)
-      localStorage.setItem("favorites_tracks", JSON.stringify(update))
-      this.favoriteTracks = this.favoriteTracks.filter(
-        (track) => track.id !== id
-      )
+      try {
+        const parsed = JSON.parse(saved)
+        const update = parsed.filter((item) => item.id !== id)
+        localStorage.setItem("favorites_tracks", JSON.stringify(update))
+        this.favoriteTracks = this.favoriteTracks.filter(
+          (track) => track.id !== id
+        )
 
-      this.snackbarMessage = "Música removida dos favoritos."
-      this.snackbarVisible = true
-      setTimeout(() => {
-        this.snackbarVisible = false
-      }, 2000)
+        this.snackbarMessage = "Música removida dos favoritos."
+        this.snackbarVisible = true
+        setTimeout(() => {
+          this.snackbarVisible = false
+        }, 2000)
+      } catch (e) {
+        console.error("Erro ao remover música favorita:", e)
+      }
     },
     removeAlbum(id) {
       const saved = localStorage.getItem("favorites_albuns")
