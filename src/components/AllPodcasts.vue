@@ -112,23 +112,36 @@ export default {
       }
     },
     toggleFavorite(podcastId) {
-      if (this.favorites.has(podcastId)) {
-        this.favorites.delete(podcastId)
+      const index = this.favorites.findIndex((item) => item.id === podcastId)
+
+      if (index !== -1) {
+        this.favorites.splice(index, 1)
         this.showSnackbar("Podcast removido dos favoritos.")
       } else {
-        this.favorites.add(podcastId)
+        this.favorites.push({
+          id: podcastId,
+          addedAt: new Date().toISOString(),
+        })
         this.showSnackbar("Podcast adicionado aos favoritos.")
       }
-      this.saveFavorites()
-    },
-    isFavorite(podcastId) {
-      return this.favorites.has(podcastId)
-    },
-    saveFavorites() {
       localStorage.setItem(
         FAVORITE_PODCAST_KEY,
-        JSON.stringify([...this.favorites])
+        JSON.stringify(this.favorites)
       )
+    },
+    isFavorite(podcastId) {
+      return this.favorites.some((item) => item.id === podcastId)
+    },
+    saveFavorites() {
+      const current =
+        JSON.parse(localStorage.getItem(FAVORITE_PODCAST_KEY)) || []
+      const alreadyExists = current.some((item) => item.id === id)
+
+      if (!alreadyExists) {
+        current.push({ id, addedAt: new Date().toISOString() })
+      }
+
+      localStorage.setItem(FAVORITE_PODCAST_KEY, JSON.stringify(current))
       this.snackbarVisible = true
       setTimeout(() => {
         this.snackbarVisible = false
@@ -139,10 +152,18 @@ export default {
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
-          this.favorites = new Set(parsed)
+
+          if (Array.isArray(parsed) && parsed.every((item) => item.id)) {
+            this.favorites = parsed.filter((item) => item.id && item.addedAt)
+          } else {
+            this.favorites = []
+          }
         } catch (e) {
-          console.error("Erro ao carregar podcasts do localStorage.", e)
+          console.error("Erro ao carregar favoritos do localStorage.", e)
+          this.favorites = []
         }
+      } else {
+        this.favorites = []
       }
     },
     numberReformed(number) {

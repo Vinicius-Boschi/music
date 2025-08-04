@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       artists: [],
-      favorites: new Set(),
+      favorites: [],
       snackbarVisible: false,
       snackbarMessage: "",
       loading: true,
@@ -110,20 +110,31 @@ export default {
       }
     },
     toggleFavorite(artistId) {
-      if (this.favorites.has(artistId)) {
-        this.favorites.delete(artistId)
+      const index = this.favorites.findIndex((item) => item.id === artistId)
+      if (index !== -1) {
+        this.favorites.splice(index, 1)
         this.showSnackbar("Artista removido dos favoritos.")
       } else {
-        this.favorites.add(artistId)
+        this.favorites.push({
+          id: artistId,
+          addedAt: new Date().toISOString(),
+        })
         this.showSnackbar("Artista adicionado aos favoritos.")
       }
-      this.saveFavorites()
+      localStorage.setItem("favorites_artists", JSON.stringify(this.favorites))
     },
     isFavorite(artistId) {
-      return this.favorites.has(artistId)
+      return this.favorites.some((item) => item.id === artistId)
     },
-    saveFavorites() {
-      localStorage.setItem(FAVORITE_KEY, JSON.stringify([...this.favorites]))
+    saveFavorites(id) {
+      const current = JSON.parse(localStorage.getItem(FAVORITE_KEY)) || []
+      const alreadyExists = current.some((item) => item.id === id)
+
+      if (!alreadyExists) {
+        current.push({ id, addedAt: new Date().toISOString() })
+      }
+
+      localStorage.setItem(FAVORITE_KEY, JSON.stringify(current))
       this.snackbarVisible = true
       setTimeout(() => {
         this.snackbarVisible = false
@@ -134,10 +145,17 @@ export default {
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
-          this.favorites = new Set(parsed)
+          if (Array.isArray(parsed)) {
+            this.favorites = parsed
+          } else {
+            this.favorites = []
+          }
         } catch (e) {
           console.error("Erro ao carregar favoritos do localStorage.", e)
+          this.favorites = []
         }
+      } else {
+        this.favorites = []
       }
     },
     showSnackbar(message) {

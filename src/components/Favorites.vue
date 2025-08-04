@@ -4,12 +4,23 @@
     <Sidebar />
     <div class="page">
       <div v-if="snackbarVisible" class="page__snackbar">
-        Item removido dos favoritos.
+        {{ snackbarMessage }}
       </div>
       <!-- Accordion -->
       <article class="accordion">
         <div class="accordion__about-center">
           <article class="accordion__about">
+            <div class="accordion__about-title">
+              <h1 class="accordion__title-fav">Favoritos</h1>
+              <p class="accordion__subtitle">0 seguidor | 0 seguindo</p>
+              <button class="accordion__btn-fav">
+                <img
+                  src="../assets/icons/shuffle-solid-full.png"
+                  alt="icone de aleatório"
+                />
+                <p>Minha música - aleatório</p>
+              </button>
+            </div>
             <div class="accordion__btn-container">
               <div class="accordion__btn-container-content">
                 <button
@@ -28,8 +39,8 @@
                 </button>
                 <button
                   class="accordion__tab-btn"
-                  :class="{ active: activeTab === 'albums' }"
-                  @click="activeTab = 'albums'"
+                  :class="{ active: activeTab === 'albuns' }"
+                  @click="activeTab = 'albuns'"
                 >
                   Álbuns
                 </button>
@@ -53,17 +64,61 @@
             <!-- ARTISTAS -->
             <transition name="accordion-fade">
               <div class="accordion__content" v-show="activeTab === 'artists'">
-                <div v-if="favoriteArtists.length" class="accordion__related">
+                <div class="accordion__content-search">
+                  <h1 class="accordion__content-title">
+                    {{ favoriteArtists.length }} artistas
+                  </h1>
+                  <div class="accordion__content-btns">
+                    <div class="accordion__btn-search">
+                      <img
+                        src="../assets/icons/search-solid-full.png"
+                        alt="search"
+                      />
+                      <input type="text" placeholder="Buscar nas faixas" />
+                    </div>
+                    <div class="accordion__sort">
+                      <button @click="isOpen = !isOpen" class="accordion__drop">
+                        {{ selected.label }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                        >
+                          <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                        </svg>
+                      </button>
+                      <ul v-if="isOpen" class="accordion__menu">
+                        <li
+                          :class="{ active: sortOption === option.value }"
+                          v-for="option in sortOptions"
+                          :key="option.value"
+                          @click="selectOption(option)"
+                        >
+                          {{ option.label }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion__related" v-if="favoriteArtists.length">
                   <div
-                    v-for="artist in favoriteArtists"
+                    v-for="artist in sortedArtists"
                     :key="artist.id"
                     class="accordion__related-container"
                   >
-                    <img
-                      :src="artist.picture_medium"
-                      :alt="artist.name"
-                      class="accordion__related-picture"
-                    />
+                    <router-link
+                      :to="{
+                        name: 'Details',
+                        params: { id: artist.id },
+                      }"
+                    >
+                      <img
+                        :src="artist.picture_medium"
+                        :alt="artist.name"
+                        class="accordion__picture rounded"
+                      />
+                    </router-link>
                     <h1 class="accordion__related-text">{{ artist.name }}</h1>
                     <p class="accordion__related-fan">
                       {{ numberReformed(artist.nb_fan) }}
@@ -71,7 +126,10 @@
                     <p class="accordion__related-album">
                       {{ numberReformed(artist.nb_album) }} álbuns
                     </p>
-                    <button @click="removeFavorite(artist.id)">
+                    <button
+                      class="accordion__remove"
+                      @click="removeFavorite(artist.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -89,11 +147,11 @@
                 <div v-else class="page__empty">
                   <img
                     class="page__empty-img"
-                    src="../assets/notfound.png"
+                    src="../assets/icons/notfound.png"
                     alt="Sem artistas favoritos"
                   />
                   <p class="page__empty-message">
-                    🎧 Você ainda não adicionou nenhum artista aos favoritos. 🎧
+                    🙍‍♂️ Você ainda não adicionou nenhum artista aos favoritos. 🙍‍♂️
                   </p>
                 </div>
               </div>
@@ -101,97 +159,175 @@
 
             <!-- MÚSICAS -->
             <transition name="accordion-fade">
-              <transition name="accordion-fade">
-                <div class="accordion__content" v-show="activeTab === 'tracks'">
-                  <div v-if="favoriteTracks.length" class="accordion__track">
-                    <table class="accordion__track-list">
-                      <thead>
-                        <tr class="accordion__track-bottom">
-                          <th>Música</th>
-                          <th>Álbum</th>
-                          <th>
-                            <img
-                              src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
-                              alt=""
-                            />
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="accordion__track-container">
-                        <tr
-                          v-for="(track, index) in favoriteTracks"
-                          :key="track.id"
-                          @mouseover="highlightedRow = index"
-                          @mouseleave="highlightedRow = null"
-                          ref="trackRows"
-                          :class="{ highlighted: highlightedRow === index }"
-                        >
-                          <audio
-                            ref="audioPlayers"
-                            :src="track.preview"
-                          ></audio>
-
-                          <td class="accordion__track-group">
-                            <img
-                              :src="track.album.cover_small"
-                              :alt="track.title"
-                              @click="playPreview(index)"
-                              @mouseover="currentTrackIndex = index"
-                              @mouseleave="currentTrackIndex = null"
-                            />
-                            <h1>
-                              <router-link
-                                :to="{
-                                  name: 'DetailsTrack',
-                                  params: { id: track.id },
-                                }"
-                              >
-                                {{ index + 1 }} - {{ track.title }}
-                              </router-link>
-                            </h1>
-                          </td>
-
-                          <td>
-                            <router-link
-                              :to="{
-                                name: 'DetailsAlbum',
-                                params: { id: track.album.id },
-                              }"
-                            >
-                              {{ track.album.title }}
-                            </router-link>
-                          </td>
-
-                          <td>{{ durationReformed(track.duration) }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <!-- Caso não tenha músicas favoritas -->
-                  <div v-else class="page__empty">
-                    <img
-                      class="page__empty-img"
-                      src="../assets/notfound.png"
-                      alt="Sem músicas favoritas"
-                    />
-                    <p class="page__empty-message">
-                      🎧 Você ainda não adicionou nenhuma música aos favoritos.
-                      🎧
-                    </p>
+              <div class="accordion__content" v-show="activeTab === 'tracks'">
+                <div class="accordion__header">
+                  <h1 class="accordion__content-title">
+                    {{ favoriteTracks.length }} mais queridas
+                  </h1>
+                  <div class="accordion__buttons">
+                    <div class="accordion__btns">
+                      <button class="accordion__btn-play">
+                        <img
+                          src="../assets/icons/play-solid-full.png"
+                          alt="play"
+                        />
+                      </button>
+                      <button class="accordion__btn-share">
+                        <img
+                          src="../assets/icons/share-solid-full.png"
+                          alt="share"
+                        />
+                      </button>
+                    </div>
+                    <div class="accordion__btn-search">
+                      <img
+                        src="../assets/icons/search-solid-full.png"
+                        alt="search"
+                      />
+                      <input type="text" placeholder="Buscar nas faixas" />
+                    </div>
                   </div>
                 </div>
-              </transition>
+                <div v-if="favoriteTracks.length" class="accordion__track">
+                  <table class="accordion__track-list">
+                    <thead>
+                      <tr class="accordion__track-bottom">
+                        <th>Música</th>
+                        <th>Artista</th>
+                        <th>Álbum</th>
+                        <th>Adicionada</th>
+                        <th>
+                          <img
+                            src="https://github.com/Vinicius-Boschi/music/assets/74377158/8cf18291-ad74-4476-8288-12ef0a90e1da"
+                            alt="clock"
+                          />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="accordion__track-container">
+                      <tr
+                        v-for="(track, index) in favoriteTracks"
+                        :key="track.id"
+                        @mouseover="highlightedRow = index"
+                        @mouseleave="highlightedRow = null"
+                        ref="trackRows"
+                        :class="{ highlighted: highlightedRow === index }"
+                      >
+                        <audio ref="audioPlayers" :src="track.preview"></audio>
+                        <td class="accordion__track-group">
+                          <img
+                            :src="track.album.cover_small"
+                            :alt="track.title"
+                            @click="playPreview(index)"
+                            @mouseover="currentTrackIndex = index"
+                            @mouseleave="currentTrackIndex = null"
+                          />
+                          <h1>
+                            <router-link
+                              :to="{
+                                name: 'DetailsTrack',
+                                params: { id: track.id },
+                              }"
+                            >
+                              {{ index + 1 }} - {{ track.title }}
+                            </router-link>
+                          </h1>
+                        </td>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'Details',
+                              params: { id: track.artist.id },
+                            }"
+                          >
+                            {{ track.artist.name }}
+                          </router-link>
+                        </td>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'DetailsAlbum',
+                              params: { id: track.album.id },
+                            }"
+                          >
+                            {{ track.album.title }}
+                          </router-link>
+                        </td>
+                        <td>{{ dateReformed(track.addedAt) }}</td>
+                        <td>{{ durationReformed(track.duration) }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div v-else class="page__empty">
+                  <img
+                    class="page__empty-img"
+                    src="../assets/icons/notfound.png"
+                    alt="Sem músicas favoritas"
+                  />
+                  <p class="page__empty-message">
+                    🎧 Você ainda não adicionou nenhuma música aos favoritos. 🎧
+                  </p>
+                </div>
+              </div>
             </transition>
 
             <!-- ÁLBUNS -->
             <transition name="accordion-fade">
-              <div class="accordion__content" v-show="activeTab === 'albums'">
-                <div v-if="favoriteAlbuns.length" class="favorites-list">
-                  <div v-for="album in favoriteAlbuns" :key="album.id">
-                    <img :src="album.cover_medium" :alt="album.title" />
-                    <p>{{ album.title }}</p>
-                    <button @click="removeAlbum(album.id)">
+              <div class="accordion__content" v-show="activeTab === 'albuns'">
+                <div class="accordion__content-search">
+                  <h1 class="accordion__content-title">
+                    {{ favoriteAlbuns.length }} álbuns
+                  </h1>
+                  <div class="accordion__content-btns">
+                    <div class="accordion__btn-search">
+                      <img
+                        src="../assets/icons/search-solid-full.png"
+                        alt="search"
+                      />
+                      <input type="text" placeholder="Buscar nas faixas" />
+                    </div>
+                    <div class="accordion__sort">
+                      <button @click="isOpen = !isOpen" class="accordion__drop">
+                        {{ selected.label }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                        >
+                          <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                        </svg>
+                      </button>
+                      <ul v-if="isOpen" class="accordion__menu">
+                        <li
+                          :class="{ active: sortOption === option.value }"
+                          v-for="option in sortOptions"
+                          :key="option.value"
+                          @click="selectOption(option)"
+                        >
+                          {{ option.label }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion__related" v-if="favoriteAlbuns.length">
+                  <div
+                    class="accordion__related-container"
+                    v-for="album in sortedAlbuns"
+                    :key="album.id"
+                  >
+                    <img
+                      class="accordion__picture"
+                      :src="album.cover_medium"
+                      :alt="album.title"
+                    />
+                    <p class="accordion__related-text">{{ album.title }}</p>
+                    <button
+                      class="accordion__remove"
+                      @click="removeAlbum(album.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -207,7 +343,14 @@
                   </div>
                 </div>
                 <div v-else class="page__empty">
-                  <p>📀 Nenhum álbum favorito.</p>
+                  <img
+                    class="page__empty-img"
+                    src="../assets/icons/notfound.png"
+                    alt="Sem músicas favoritas"
+                  />
+                  <p class="page__empty-message">
+                    📀 Você ainda não adicionou nenhuma música aos favoritos. 📀
+                  </p>
                 </div>
               </div>
             </transition>
@@ -218,11 +361,59 @@
                 class="accordion__content"
                 v-show="activeTab === 'playlists'"
               >
-                <div v-if="favoritePlaylists.length" class="favorites-list">
-                  <div v-for="playlist in favoritePlaylists" :key="playlist.id">
-                    <img :src="playlist.picture_medium" :alt="playlist.title" />
-                    <p>{{ playlist.title }}</p>
-                    <button @click="removePlaylists(playlist.id)">
+                <div class="accordion__content-search">
+                  <h1 class="accordion__content-title">
+                    {{ favoritePlaylists.length }} playlists
+                  </h1>
+                  <div class="accordion__content-btns">
+                    <div class="accordion__btn-search">
+                      <img
+                        src="../assets/icons/search-solid-full.png"
+                        alt="search"
+                      />
+                      <input type="text" placeholder="Buscar nas faixas" />
+                    </div>
+                    <div class="accordion__sort">
+                      <button @click="isOpen = !isOpen" class="accordion__drop">
+                        {{ selected.label }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                        >
+                          <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                        </svg>
+                      </button>
+                      <ul v-if="isOpen" class="accordion__menu">
+                        <li
+                          :class="{ active: sortOption === option.value }"
+                          v-for="option in sortOptions"
+                          :key="option.value"
+                          @click="selectOption(option)"
+                        >
+                          {{ option.label }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion__related" v-if="favoritePlaylists.length">
+                  <div
+                    class="accordion__related-container"
+                    v-for="playlist in sortedPlaylists"
+                    :key="playlist.id"
+                  >
+                    <img
+                      class="accordion__picture"
+                      :src="playlist.picture_medium"
+                      :alt="playlist.title"
+                    />
+                    <p class="accordion__related-text">{{ playlist.title }}</p>
+                    <button
+                      class="accordion__remove"
+                      @click="removePlaylists(playlist.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -238,7 +429,15 @@
                   </div>
                 </div>
                 <div v-else class="page__empty">
-                  <p>📂 Nenhuma playlist favorita.</p>
+                  <img
+                    class="page__empty-img"
+                    src="../assets/icons/notfound.png"
+                    alt="Sem músicas favoritas"
+                  />
+                  <p class="page__empty-message">
+                    📂 Você ainda não adicionou nenhuma playlist aos favoritos.
+                    📂
+                  </p>
                 </div>
               </div>
             </transition>
@@ -246,11 +445,59 @@
             <!-- PODCASTS -->
             <transition name="accordion-fade">
               <div class="accordion__content" v-show="activeTab === 'podcasts'">
-                <div v-if="favoritePodcasts.length" class="favorites-list">
-                  <div v-for="podcast in favoritePodcasts" :key="podcast.id">
-                    <img :src="podcast.picture_medium" :alt="podcast.title" />
-                    <p>{{ podcast.title }}</p>
-                    <button @click="removePodcasts(podcast.id)">
+                <div class="accordion__content-search">
+                  <h1 class="accordion__content-title">
+                    {{ favoritePodcasts.length }} podcast
+                  </h1>
+                  <div class="accordion__content-btns">
+                    <div class="accordion__btn-search">
+                      <img
+                        src="../assets/icons/search-solid-full.png"
+                        alt="search"
+                      />
+                      <input type="text" placeholder="Buscar nas faixas" />
+                    </div>
+                    <div class="accordion__sort">
+                      <button @click="isOpen = !isOpen" class="accordion__drop">
+                        {{ selected.label }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                        >
+                          <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                        </svg>
+                      </button>
+                      <ul v-if="isOpen" class="accordion__menu">
+                        <li
+                          :class="{ active: sortOption === option.value }"
+                          v-for="option in sortOptions"
+                          :key="option.value"
+                          @click="selectOption(option)"
+                        >
+                          {{ option.label }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion__related" v-if="favoritePodcasts.length">
+                  <div
+                    class="accordion__related-container"
+                    v-for="podcast in sortedPodcasts"
+                    :key="podcast.id"
+                  >
+                    <img
+                      class="accordion__picture"
+                      :src="podcast.picture_medium"
+                      :alt="podcast.title"
+                    />
+                    <p class="accordion__related-text">{{ podcast.title }}</p>
+                    <button
+                      class="accordion__remove"
+                      @click="removePodcasts(podcast.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -266,7 +513,14 @@
                   </div>
                 </div>
                 <div v-else class="page__empty">
-                  <p>🎙️ Nenhum podcast favorito.</p>
+                  <img
+                    class="page__empty-img"
+                    src="../assets/icons/notfound.png"
+                    alt="Sem músicas favoritas"
+                  />
+                  <p class="page__empty-message">
+                    🎙️ Você ainda não adicionou nenhum podcast aos favoritos. 🎙️
+                  </p>
                 </div>
               </div>
             </transition>
@@ -281,6 +535,7 @@
 <script>
 import { formatNumber } from "../untils/formatNumber.js"
 import { formatDuration } from "../untils/formatDuration.js"
+import { formatDate } from "../untils/formatDate.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -299,16 +554,73 @@ export default {
       audioPlayers: [],
       trackRows: [],
       snackbarVisible: false,
+      snackbarMessage: "",
       highlightedRow: null,
       currentTrackIndex: null,
+      sortOption: "recent",
+      isOpen: false,
+      selected: { label: "Adicionados recentemente", value: "recent" },
+      sortOptions: [
+        { label: "Ordem alfabética", value: "alphabetical" },
+        { label: "Adicionados recentemente", value: "recent" },
+      ],
     }
   },
   mounted() {
     this.loadFavoriteArtists()
-    this.loadFavoriteTracks()
     this.loadFavoriteAlbuns()
     this.loadFavoritePlaylists()
     this.loadFavoritePodcasts()
+    this.loadFavoriteTracks().then(() => {
+      this.audioPlayers = this.$refs.audioPlayers
+      this.trackRows = this.$refs.trackRows
+    })
+  },
+  computed: {
+    sortedArtists() {
+      if (this.sortOption === "alphabetical") {
+        return [...this.favoriteArtists].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        )
+      } else {
+        return [...this.favoriteArtists].sort(
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        )
+      }
+    },
+    sortedAlbuns() {
+      if (this.sortOption === "alphabetical") {
+        return [...this.favoriteAlbuns].sort((a, b) =>
+          a.title.localeCompare(b.title)
+        )
+      } else {
+        return [...this.favoriteAlbuns].sort(
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        )
+      }
+    },
+    sortedPlaylists() {
+      if (this.sortOption === "alphabetical") {
+        return [...this.favoritePlaylists].sort((a, b) =>
+          a.title.localeCompare(b.title)
+        )
+      } else {
+        return [...this.favoritePlaylists].sort(
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        )
+      }
+    },
+    sortedPodcasts() {
+      if (this.sortOption === "alphabetical") {
+        return [...this.favoritePodcasts].sort((a, b) =>
+          a.title.localeCompare(b.title)
+        )
+      } else {
+        return [...this.favoritePodcasts].sort(
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        )
+      }
+    },
   },
   methods: {
     async loadFavoriteArtists() {
@@ -316,15 +628,22 @@ export default {
       if (!saved) return
 
       try {
-        const favoriteIds = JSON.parse(saved)
-        const requests = favoriteIds.map((id) =>
-          fetch(`https://api.deezer.com/artist/${id}`).then((res) => res.json())
+        const parsed = JSON.parse(saved)
+        const favoriteIds = parsed.map((item) => ({
+          id: item.id,
+          addedAt: item.addedAt,
+        }))
+
+        const requests = favoriteIds.map((entry) =>
+          fetch(`https://api.deezer.com/artist/${entry.id}`)
+            .then((res) => res.json())
+            .then((artist) => ({ ...artist, addedAt: entry.addedAt }))
         )
 
         const results = await Promise.all(requests)
         this.favoriteArtists = results.filter((artist) => artist && artist.id)
-      } catch (error) {
-        console.error("Erro ao carregar os artistas favoritos.", error)
+      } catch (e) {
+        console.error("Erro ao carregar artistas:", e)
       }
     },
     async loadFavoriteTracks() {
@@ -332,9 +651,26 @@ export default {
       if (!saved) return
 
       try {
-        const favoriteIds = JSON.parse(saved)
-        const requests = favoriteIds.map((id) =>
-          fetch(`https://api.deezer.com/track/${id}`).then((res) => res.json())
+        let favoriteIds = JSON.parse(saved)
+
+        if (
+          typeof favoriteIds[0] === "string" ||
+          typeof favoriteIds[0] === "number"
+        ) {
+          favoriteIds = favoriteIds.map((id) => ({
+            id,
+            addedAt: new Date().toISOString(),
+          }))
+          localStorage.setItem("favorites_tracks", JSON.stringify(favoriteIds))
+        }
+
+        const requests = favoriteIds.map((item) =>
+          fetch(`https://api.deezer.com/track/${item.id}`)
+            .then((res) => res.json())
+            .then((track) => ({
+              ...track,
+              addedAt: item.addedAt,
+            }))
         )
 
         const results = await Promise.all(requests)
@@ -348,9 +684,19 @@ export default {
       if (!saved) return
 
       try {
-        const favoriteIds = JSON.parse(saved)
-        const requests = favoriteIds.map((id) =>
-          fetch(`https://api.deezer.com/album/${id}`).then((res) => res.json())
+        const parsed = JSON.parse(saved)
+        const favoriteIds = parsed.map((item) => ({
+          id: item.id,
+          addedAt: item.addedAt,
+        }))
+
+        const requests = favoriteIds.map((entry) =>
+          fetch(`https://api.deezer.com/album/${entry.id}`)
+            .then((res) => res.json())
+            .then((album) => ({
+              ...album,
+              addedAt: entry.addedAt,
+            }))
         )
 
         const results = await Promise.all(requests)
@@ -364,11 +710,18 @@ export default {
       if (!saved) return
 
       try {
-        const favoriteIds = JSON.parse(saved)
-        const requests = favoriteIds.map((id) =>
-          fetch(`https://api.deezer.com/playlist/${id}`).then((res) =>
-            res.json()
-          )
+        const parsed = JSON.parse(saved)
+        const favoriteIds = parsed.map((item) => ({
+          id: item.id,
+          addedAt: item.addedAt,
+        }))
+        const requests = favoriteIds.map((entry) =>
+          fetch(`https://api.deezer.com/playlist/${entry.id}`)
+            .then((res) => res.json())
+            .then((playlist) => ({
+              ...playlist,
+              addedAt: entry.addedAt,
+            }))
         )
 
         const results = await Promise.all(requests)
@@ -384,11 +737,19 @@ export default {
       if (!saved) return
 
       try {
-        const favoriteIds = JSON.parse(saved)
-        const requests = favoriteIds.map((id) =>
-          fetch(`https://api.deezer.com/podcast/${id}`).then((res) =>
-            res.json()
-          )
+        const parsed = JSON.parse(saved)
+        const favoriteIds = parsed.map((item) => ({
+          id: item.id,
+          addedAt: item.addedAt,
+        }))
+
+        const requests = favoriteIds.map((entry) =>
+          fetch(`https://api.deezer.com/podcast/${entry.id}`)
+            .then((res) => res.json())
+            .then((podcast) => ({
+              ...podcast,
+              addedAt: entry.addedAt,
+            }))
         )
 
         const results = await Promise.all(requests)
@@ -403,17 +764,20 @@ export default {
       const saved = localStorage.getItem("favorites_artists")
       if (!saved) return
 
-      const parsed = JSON.parse(saved)
-      const update = parsed.filter((artistId) => artistId !== id)
-      localStorage.setItem("favorites_artists", JSON.stringify(update))
-      this.favoriteArtists = this.favoriteArtists.filter(
-        (artist) => artist.id !== id
-      )
+      try {
+        const parsed = JSON.parse(saved)
+        const updated = parsed.filter((item) => item.id !== id)
+        localStorage.setItem("favorites_artists", JSON.stringify(updated))
+        this.favoriteArtists = this.favoriteArtists.filter(
+          (artist) => artist.id !== id
+        )
 
-      this.snackbarVisible = true
-      setTimeout(() => {
-        this.snackbarVisible = false
-      }, 2000)
+        this.snackbarMessage = "Artista removido dos favoritos."
+        this.snackbarVisible = true
+        setTimeout(() => (this.snackbarVisible = false), 2000)
+      } catch (e) {
+        console.error("Erro ao remover favorito:", e)
+      }
     },
     removeTrack(id) {
       const saved = localStorage.getItem("favorites_tracks")
@@ -426,6 +790,7 @@ export default {
         (track) => track.id !== id
       )
 
+      this.snackbarMessage = "Música removida dos favoritos."
       this.snackbarVisible = true
       setTimeout(() => {
         this.snackbarVisible = false
@@ -435,49 +800,68 @@ export default {
       const saved = localStorage.getItem("favorites_albuns")
       if (!saved) return
 
-      const parsed = JSON.parse(saved)
-      const update = parsed.filter((albumId) => albumId !== id)
-      localStorage.setItem("favorites_albuns", JSON.stringify(update))
-      this.favoriteAlbuns = this.favoriteAlbuns.filter(
-        (album) => album.id !== id
-      )
+      try {
+        const parsed = JSON.parse(saved)
+        const updated = parsed.filter((item) => item.id !== id)
+        localStorage.setItem("favorites_albuns", JSON.stringify(updated))
+        this.favoriteAlbuns = this.favoriteAlbuns.filter(
+          (album) => album.id !== id
+        )
 
-      this.snackbarVisible = true
-      setTimeout(() => {
-        this.snackbarVisible = false
-      }, 2000)
+        this.snackbarMessage = "Album removido dos favoritos."
+        this.snackbarVisible = true
+        setTimeout(() => {
+          this.snackbarVisible = false
+        }, 2000)
+      } catch (e) {
+        console.error("Erro ao remover álbum favorito:", e)
+      }
     },
     removePlaylists(id) {
       const saved = localStorage.getItem("favorites_playlists")
       if (!saved) return
 
-      const parsed = JSON.parse(saved)
-      const update = parsed.filter((playlistId) => playlistId !== id)
-      localStorage.setItem("favorites_playlists", JSON.stringify(update))
-      this.favoritePlaylists = this.favoritePlaylists.filter(
-        (playlist) => playlist.id !== id
-      )
+      try {
+        const parsed = JSON.parse(saved)
+        const updated = parsed.filter((item) => item.id !== id)
+        localStorage.setItem("favorites_playlists", JSON.stringify(updated))
+        this.favoritePlaylists = this.favoritePlaylists.filter(
+          (playlist) => playlist.id !== id
+        )
 
-      this.snackbarVisible = true
-      setTimeout(() => {
-        this.snackbarVisible = false
-      }, 2000)
+        this.snackbarMessage = "Playlist removido dos favoritos."
+        this.snackbarVisible = true
+        setTimeout(() => {
+          this.snackbarVisible = false
+        }, 2000)
+      } catch (e) {
+        console.error("Erro ao remover favorito:", e)
+      }
     },
     removePodcasts(id) {
       const saved = localStorage.getItem("favorites_podcast")
       if (!saved) return
 
-      const parsed = JSON.parse(saved)
-      const update = parsed.filter((podcastId) => podcastId !== id)
-      localStorage.setItem("favorites_podcast", JSON.stringify(update))
-      this.favoritePodcasts = this.favoritePodcasts.filter(
-        (podcast) => podcast.id !== id
-      )
+      try {
+        const parsed = JSON.parse(saved)
+        const updated = parsed.filter((item) => item.id !== id)
+        localStorage.setItem("favorites_podcast", JSON.stringify(updated))
+        this.favoritePodcasts = this.favoritePodcasts.filter(
+          (podcast) => podcast.id !== id
+        )
 
-      this.snackbarVisible = true
-      setTimeout(() => {
-        this.snackbarVisible = false
-      }, 2000)
+        this.snackbarMessage = "Podcast removido dos favoritos."
+        this.snackbarVisible = true
+        setTimeout(() => {
+          this.snackbarVisible = false
+        }, 2000)
+      } catch (e) {
+        console.error("Erro ao remover podcast favorito:", e)
+      }
+    },
+    playPreview(index) {
+      this.audioPlayers.forEach((player) => player.pause())
+      this.audioPlayers[index].play()
     },
     numberReformed(number) {
       return formatNumber(number)
@@ -485,6 +869,19 @@ export default {
     durationReformed(seconds) {
       return formatDuration(seconds)
     },
+    dateReformed(dateString) {
+      return formatDate(dateString)
+    },
+    selectOption(option) {
+      this.sortOption = option.value
+      this.selected = option
+      this.isOpen = false
+    },
   },
 }
 </script>
+<style lang="scss" scoped>
+li.active {
+  border: none;
+}
+</style>

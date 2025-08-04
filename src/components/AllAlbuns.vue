@@ -111,26 +111,39 @@ export default {
       }
     },
     toggleFavorite(albunsId) {
-      if (this.favorites.has(albunsId)) {
-        this.favorites.delete(albunsId)
-        this.showSnackbar("Album removida dos favoritos.")
+      const index = this.favorites.findIndex((item) => item.id === albunsId)
+
+      if (index !== -1) {
+        this.favorites.splice(index, 1)
+        this.showSnackbar("Álbum adicionado aos favoritos.")
       } else {
-        this.favorites.add(albunsId)
-        this.showSnackbar("Album adicionada aos favoritos.")
+        this.favorites.push({
+          id: albunsId,
+          addedAt: new Date().toISOString(),
+        })
+        this.showSnackbar("Álbum removido dos favoritos.")
+        localStorage.setItem(
+          FAVORITE_ALBUM_KEY,
+          JSON.stringify(this.favorites)
+        )
       }
-      this.saveFavorites()
     },
     isFavorite(albunsId) {
-      return this.favorites.has(albunsId)
+      return this.favorites.some((item) => item.id === albunsId)
     },
     saveFavorites() {
-      localStorage.setItem(
-        FAVORITE_ALBUM_KEY,
-        JSON.stringify([...this.favorites])
-      )
-      this.snackbarVisible = true
+      const current =
+        JSON.parse(localStorage.getItem(FAVORITE_ALBUM_KEY)) || []
+      const alreadyExists = current.some((item) => item.id === id)
+
+      if (!alreadyExists) {
+        current.push({ id, addedAt: new Date().toISOString() })
+      }
+
+      localStorage.setItem(FAVORITE_ALBUM_KEY, JSON.stringify(current))
+      this.snackbarMessage = true
       setTimeout(() => {
-        this.snackbarVisible = false
+        this.snackbarMessage = false
       }, 3000)
     },
     loadFavorites() {
@@ -138,10 +151,18 @@ export default {
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
-          this.favorites = new Set(parsed)
+
+          if (Array.isArray(parsed) && parsed.every((item) => item.id)) {
+            this.favorites = parsed.filter((item) => item.id && item.addedAt)
+          } else {
+            this.favorites = []
+          }
         } catch (e) {
           console.error("Erro ao carregar albuns do localStorage.", e)
+          this.favorites = []
         }
+      } else {
+        this.favorites = []
       }
     },
     showSnackbar(message) {

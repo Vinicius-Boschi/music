@@ -119,26 +119,4 @@
       fill: #e53935 !important;
     }
   }
-
-  &__remove {
-    padding: 6px 12px;
-    background-color: #e53935;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    font-size: 0.85rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: background-color 0.3s ease;
-
-    svg {
-      fill: white;
-    }
-
-    &:hover {
-      background-color: #c62828;
-    }
-  }
 }

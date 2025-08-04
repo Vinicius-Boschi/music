@@ -152,7 +152,7 @@
                 :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
               >
                 <img
-                  class="accordion__playlist-picture"
+                  class="accordion__picture"
                   :src="album.cover_medium"
                   :alt="album.title"
                 />
@@ -172,7 +172,7 @@
                 :to="{ name: 'Details', params: { id: related.id } }"
               >
                 <img
-                  class="accordion__related-picture"
+                  class="accordion__picture"
                   :src="related.picture_medium"
                   :alt="related.name"
                 />
@@ -198,7 +198,7 @@
                 :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
               >
                 <img
-                  class="accordion__playlist-picture"
+                  class="accordion__picture"
                   :src="playlist.picture_medium"
                   :alt="playlist.title"
                 />
@@ -377,6 +377,6 @@ export default {
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/accordion.scss";
 .highlighted {
-  background-color: lightblue;
+  background-color: lightblue
 }
 </style>

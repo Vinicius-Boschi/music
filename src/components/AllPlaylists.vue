@@ -110,23 +110,36 @@ export default {
       }
     },
     toggleFavorite(playlistId) {
-      if (this.favorites.has(playlistId)) {
-        this.favorites.delete(playlistId)
+      const index = this.favorites.findIndex((item) => item.id === playlistId)
+
+      if (index !== -1) {
+        this.favorites.splice(index, 1)
         this.showSnackbar("Playlist removida dos favoritos.")
       } else {
-        this.favorites.add(playlistId)
+        this.favorites.push({
+          id: playlistId,
+          addedAt: new Date().toISOString(),
+        })
         this.showSnackbar("Playlist adicionada aos favoritos.")
       }
-      this.saveFavorites()
-    },
-    isFavorite(playlistId) {
-      return this.favorites.has(playlistId)
-    },
-    saveFavorites() {
       localStorage.setItem(
         FAVORITE_PLAYLIST_KEY,
-        JSON.stringify([...this.favorites])
+        JSON.stringify(this.favorites)
       )
+    },
+    isFavorite(playlistId) {
+      return this.favorites.some((item) => item.id === playlistId)
+    },
+    saveFavorites() {
+      const current =
+        JSON.parse(localStorage.getItem(FAVORITE_PLAYLIST_KEY)) || []
+      const alreadyExists = current.some((item) => item.id === id)
+
+      if (!alreadyExists) {
+        current.push({ id, addedAt: new Date().toISOString() })
+      }
+
+      localStorage.setItem(FAVORITE_PLAYLIST_KEY, JSON.stringify(current))
       this.snackbarVisible = true
       setTimeout(() => {
         this.snackbarVisible = false
@@ -137,10 +150,18 @@ export default {
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
-          this.favorites = new Set(parsed)
+
+          if (Array.isArray(parsed) && parsed.every((item) => item.id)) {
+            this.favorites = parsed.filter((item) => item.id && item.addedAt)
+          } else {
+            this.favorites = []
+          }
         } catch (e) {
-          console.error("Erro ao carregar playlists do localStorage.", e)
+          console.error("Erro ao carregar favoritos do localStorage.", e)
+          this.favorites = []
         }
+      } else {
+        this.favorites = []
       }
     },
     showSnackbar(message) {

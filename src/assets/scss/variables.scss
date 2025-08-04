@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Glagolitic&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@100..900&display=swap");
 
 $white: #ffffff;
 $white-two: #f5f2f8;
@@ -13,6 +14,7 @@ $purple: #9333e8;
 $purple-two: #8225d3;
 $blue: #0000ff;
 $font: "Inter", sans-serif;
+$font-title: "Bebas Neue", sans-serif;
 
 @mixin phone {
   @media (min-width: 375px) and (max-width: 540px) {
