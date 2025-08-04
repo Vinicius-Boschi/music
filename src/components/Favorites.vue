@@ -13,7 +13,7 @@
             <div class="accordion__about-title">
               <h1 class="accordion__title-fav">Favoritos</h1>
               <p class="accordion__subtitle">0 seguidor | 0 seguindo</p>
-              <button class="accordion__btn-fav">
+              <button class="accordion__btn-fav" @click="playRandomFavorite">
                 <img
                   src="../assets/icons/shuffle-solid-full.png"
                   alt="icone de aleatório"
@@ -170,7 +170,10 @@
                   </h1>
                   <div class="accordion__buttons">
                     <div class="accordion__btns">
-                      <button class="accordion__btn-play">
+                      <button
+                        class="accordion__btn-play"
+                        @click="startSequentialPlayback"
+                      >
                         <img
                           src="../assets/icons/play-solid-full.png"
                           alt="play"
@@ -575,6 +578,7 @@
 import { formatNumber } from "../untils/formatNumber.js"
 import { formatDuration } from "../untils/formatDuration.js"
 import { formatDate } from "../untils/formatDate.js"
+import { ref, nextTick } from "vue"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -596,6 +600,8 @@ export default {
       snackbarMessage: "",
       highlightedRow: null,
       currentTrackIndex: null,
+      currentTrack: null,
+      audioPlayer: null,
       sortOption: "recent",
       isOpen: false,
       search: "",
@@ -947,6 +953,102 @@ export default {
       } catch (e) {
         console.error("Erro ao remover podcast favorito:", e)
       }
+    },
+    getRandomTracks(tracks) {
+      const randomIndex = Math.floor(Math.random() * tracks.length)
+      return tracks[randomIndex]
+    },
+    playTrack(track) {
+      if (!track || !track.preview) return
+
+      const audio = new Audio(track.preview)
+      audio.play()
+    },
+    async playRandomFavorite() {
+      const favsRaw = localStorage.getItem("favorites_tracks")
+      const favoriteTracks = favsRaw ? JSON.parse(favsRaw) : []
+
+      if (favoriteTracks.length === 0) {
+        alert("Você não tem músicas favoritas para tocar.")
+        return
+      }
+
+      const random = this.getRandomTracks(favoriteTracks)
+      const trackId = random.id
+
+      try {
+        const response = await fetch(`https://api.deezer.com/track/${trackId}`)
+        const track = await response.json()
+
+        if (!track.preview) {
+          alert("Esta música não tem preview disponível.")
+          return
+        }
+
+        const audio = new Audio(track.preview)
+        audio.play()
+      } catch (error) {
+        console.error("Erro ao buscar dados da música:", error)
+      }
+    },
+    async startSequentialPlayback() {
+      const favsRaw = localStorage.getItem("favorites_tracks")
+      const favoriteTracks = favsRaw ? JSON.parse(favsRaw) : []
+
+      if (favoriteTracks.length === 0) {
+        alert("Você não tem músicas favoritas para tocar.")
+        return
+      }
+
+      const tracks = await Promise.all(
+        favoriteTracks.map((track) =>
+          fetch(`https://api.deezer.com/track/${track.id}`).then((res) =>
+            res.json()
+          )
+        )
+      )
+
+      this.favoriteTracks = tracks.filter((track) => track && track.preview)
+
+      if (this.favoriteTracks.length === 0) {
+        alert("Nenhuma das músicas favoritas tem preview disponível.")
+        return
+      }
+
+      this.currentTrackIndex = 0
+      this.currentTrack = this.favoriteTracks[0]
+
+      this.playCurrent()
+    },
+    playCurrent() {
+      const track = this.favoriteTracks[this.currentTrackIndex]
+
+      if (!track || !track.preview) {
+        console.warn("Esta música não tem preview disponível.")
+        return
+      }
+
+      if (this.audioPlayer) {
+        this.audioPlayer.pause()
+        this.audioPlayer = null
+      }
+
+      this.audioPlayer = new Audio(track.preview)
+      this.audioPlayer.addEventListener("ended", this.playNextTrack)
+      this.audioPlayer.play().catch((e) => {
+        console.error("Erro ao tocar: ", e)
+        this.playNextTrack()
+      })
+    },
+    playNextTrack() {
+      this.currentTrackIndex++
+      if (this.currentTrackIndex >= this.favoriteTracks.length) {
+        this.currentTrack = null
+        return
+      }
+
+      this.currentTrack = this.favoriteTracks[this.currentTrackIndex]
+      this.playCurrent()
     },
     playPreview(index) {
       this.audioPlayers.forEach((player) => player.pause())
