@@ -569,6 +569,107 @@
           </article>
         </div>
       </article>
+      <footer class="accordion__player" v-show="true || currentTrack">
+        <div class="accordion__player-top">
+          <div class="accordion__player-info">
+            <img
+              :src="currentTrack.album?.cover_small"
+              alt="Capa"
+              class="accordion__player-info-img"
+            />
+            <div class="accordion__player-info-text">
+              <p class="accordion__player-info-title">
+                {{ currentTrack?.title }}
+              </p>
+              <p class="accordion__player-info-artist">
+                {{ currentTrack?.artist?.name }}
+              </p>
+            </div>
+          </div>
+          <div class="accordion__player-center">
+            <div class="accordion__player-controls">
+              <button
+                @click="playPreviousTrack"
+                class="accordion__player-button"
+              >
+                <img
+                  :src="previousIcon"
+                  alt="Anterior"
+                  class="accordion__player-icon"
+                />
+              </button>
+              <button @click="togglePlay" class="accordion__player-button">
+                <img
+                  :src="isPlaying ? pauseIcon : playIcon"
+                  alt="Play/Pause"
+                  class="accordion__player-icon"
+                />
+              </button>
+              <button @click="playNextTrack" class="accordion__player-button">
+                <img
+                  :src="nextIcon"
+                  alt="Próxima"
+                  class="accordion__player-icon"
+                />
+              </button>
+            </div>
+            <div class="accordion__player-progress" v-if="audioPlayer">
+              <span class="accordion__player-time">{{
+                durationReformed(currentTime)
+              }}</span>
+              <input
+                type="range"
+                min="0"
+                :max="duration"
+                step="0.1"
+                v-model="currentTime"
+                class="accordion__player-progress-bar"
+                @input="seekAudio"
+              />
+              <span class="accordion__player-time">{{
+                durationReformed(duration)
+              }}</span>
+            </div>
+          </div>
+          <div>
+            <button>
+              <img
+                :src="listIcon"
+                alt="lista de músicas"
+                class="accordion__player-icon"
+              />
+            </button>
+            <button>
+              <img
+                :src="tvIcon"
+                alt="transmitir na tv"
+                class="accordion__player-icon"
+              />
+            </button>
+            <button>
+              <img
+                :src="volumeIcon"
+                alt="volume do som"
+                class="accordion__player-icon"
+              />
+            </button>
+            <button>
+              <img
+                :src="sliderIcon"
+                alt="configuração de áudio"
+                class="accordion__player-icon"
+              />
+            </button>
+          </div>
+        </div>
+        <audio
+          :src="currentTrack?.preview"
+          ref="audioPlayer"
+          @ended="playNextTrack"
+          @play="isPlaying = true"
+          @pause="isPlaying = false"
+        ></audio>
+      </footer>
     </div>
   </div>
   <Footer />
@@ -578,10 +679,17 @@
 import { formatNumber } from "../untils/formatNumber.js"
 import { formatDuration } from "../untils/formatDuration.js"
 import { formatDate } from "../untils/formatDate.js"
-import { ref, nextTick } from "vue"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
+import playIcon from "@/assets/icons/play-solid-full.png"
+import pauseIcon from "@/assets/icons/pause-solid-full.png"
+import nextIcon from "@/assets/icons/forward-solid-full.png"
+import previousIcon from "@/assets/icons/backward-solid-full.png"
+import listIcon from "@/assets/icons/list-solid-full.png"
+import tvIcon from "@/assets/icons/tv-solid-full.png"
+import volumeIcon from "@/assets/icons/volume-high-solid-full.png"
+import sliderIcon from "@/assets/icons/sliders-solid-full.png"
 
 export default {
   name: "Favorites",
@@ -600,11 +708,22 @@ export default {
       snackbarMessage: "",
       highlightedRow: null,
       currentTrackIndex: null,
-      currentTrack: null,
+      currentTrack: "",
       audioPlayer: null,
       sortOption: "recent",
       isOpen: false,
+      isPlaying: false,
+      currentTime: 0,
+      duration: 30,
       search: "",
+      playIcon,
+      pauseIcon,
+      nextIcon,
+      previousIcon,
+      listIcon,
+      tvIcon,
+      volumeIcon,
+      sliderIcon,
       selected: { label: "Adicionados recentemente", value: "recent" },
       sortOptions: [
         { label: "Ordem alfabética", value: "alphabetical" },
@@ -621,6 +740,17 @@ export default {
       this.audioPlayers = this.$refs.audioPlayers
       this.trackRows = this.$refs.trackRows
     })
+    const savedTrack = localStorage.getItem("last_played_track")
+    if (savedTrack) {
+      this.currentTrack = JSON.parse(savedTrack)
+    }
+  },
+  watch: {
+    currentTime(val) {
+      if (this.audioPlayer) {
+        this.audioPlayer.currentTime = val
+      }
+    },
   },
   computed: {
     sortedArtists() {
@@ -701,6 +831,12 @@ export default {
           track.title.toLowerCase().includes(this.search.toLowerCase())
         )
         .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
+    },
+    formattedCurrentTime() {
+      return this.durationReformed(this.currentTime)
+    },
+    formattedDuration() {
+      return this.durationReformed(this.duration)
     },
   },
   filteredArtists() {
@@ -1022,23 +1158,27 @@ export default {
     },
     playCurrent() {
       const track = this.favoriteTracks[this.currentTrackIndex]
-
       if (!track || !track.preview) {
-        console.warn("Esta música não tem preview disponível.")
+        this.playNextTrack()
         return
       }
+      this.currentTrack = track
+      localStorage.setItem("last_played_track", JSON.stringify(track))
 
       if (this.audioPlayer) {
         this.audioPlayer.pause()
-        this.audioPlayer = null
+        this.audioPlayer.src = ""
+        this.audioPlayer.removeEventListener("ended", this.playNextTrack)
       }
-
       this.audioPlayer = new Audio(track.preview)
       this.audioPlayer.addEventListener("ended", this.playNextTrack)
-      this.audioPlayer.play().catch((e) => {
-        console.error("Erro ao tocar: ", e)
-        this.playNextTrack()
+      this.audioPlayer.addEventListener("timeupdate", () => {
+        this.currentTime = this.audioPlayer.currentTime
       })
+      this.audioPlayer.addEventListener("loadedmetadata", () => {
+        this.duration = this.audioPlayer.duration || 30
+      })
+      this.audioPlayer.play().catch(console.error)
     },
     playNextTrack() {
       this.currentTrackIndex++
@@ -1050,9 +1190,63 @@ export default {
       this.currentTrack = this.favoriteTracks[this.currentTrackIndex]
       this.playCurrent()
     },
+    playPreviousTrack() {
+      if (!this.audioPlayer) return
+
+      if (this.audioPlayer.currentTime > 3 || this.currentTrackIndex === 0) {
+        this.audioPlayer.currentTime = 0
+        return
+      }
+
+      this.currentTrackIndex--
+      if (this.currentTrackIndex < 0) {
+        this.currentTrackIndex = 0
+      }
+      this.currentTrack = this.favoriteTracks[this.currentTrackIndex]
+      this.playCurrent()
+    },
     playPreview(index) {
       this.audioPlayers.forEach((player) => player.pause())
       this.audioPlayers[index].play()
+    },
+    seekAudio() {
+      if (this.audioPlayer) {
+        this.audioPlayer.currentTime = this.currentTime
+      }
+    },
+    togglePlay() {
+      if (!this.currentTrack) {
+        this.resumeLastTrack()
+        return
+      }
+
+      if (!this.$refs.audioPlayer) return
+      const audio = this.$refs.audioPlayer
+      if (audio.paused) {
+        audio.play()
+        this.isPlaying = true
+      } else {
+        audio.pause()
+        this.isPlaying = false
+      }
+    },
+    resumeLastTrack() {
+      if (!this.currentTrack) return
+      this.$nextTick(() => {
+        const audio = this.$refs.audioPlayer
+        if (audio) {
+          audio.addEventListener("timeupdate", () => {
+            this.currentTime = audio.currentTime
+          })
+          audio.addEventListener("loadedmetadata", () => {
+            this.duration = audio.duration || 30
+          })
+          audio.addEventListener("ended", this.playNextTrack)
+
+          audio.play().catch((e) => console.error("Erro ao tocar:", e))
+          this.isPlaying = true
+        }
+      })
     },
     numberReformed(number) {
       return formatNumber(number)
@@ -1071,6 +1265,7 @@ export default {
   },
 }
 </script>
+
 <style lang="scss" scoped>
 li.active {
   border: none;

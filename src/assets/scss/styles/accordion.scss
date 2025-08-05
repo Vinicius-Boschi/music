@@ -405,4 +405,132 @@
       margin-top: 0.5rem;
     }
   }
+
+  &__player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $white-three;
+    padding: 10px 20px;
+    z-index: 1000;
+
+    &-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    &-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 180px;
+      flex-shrink: 0;
+
+      &-img {
+        width: 42px;
+        height: 42px;
+        border-radius: 4px;
+        object-fit: cover;
+      }
+
+      &-text {
+        display: flex;
+        flex-direction: column;
+        max-width: 200px;
+        overflow: hidden;
+      }
+
+      &-title {
+        font-size: 13px;
+        font-weight: bold;
+        margin: 0;
+        text-overflow: ellipsis;
+      }
+
+      &-artist {
+        font-size: 12px;
+        margin: 0;
+        line-height: 1.5;
+        text-overflow: ellipsis;
+      }
+    }
+
+    &-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    &-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    &-icon {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    button {
+      background: none;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border-radius: 50%;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        transition: background-color 0.3s ease;
+      }
+    }
+
+    &-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+
+      &-bar {
+        flex: 1;
+        height: 4px;
+        background: $light-gray;
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+
+        &::-webkit-slider-thumb {
+          appearance: none;
+          width: 10px;
+          height: 10px;
+          background: $purple;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+      }
+    }
+
+    &-time {
+      font-size: 11px;
+      width: 36px;
+      text-align: center;
+    }
+  }
 }

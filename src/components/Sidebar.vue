@@ -55,17 +55,6 @@
           </div>
         </div>
       </div>
-      <div class="sidebar__photo">
-        <a href="#" class="sidebar__photo-link">
-          <img alt="user photo" :src="user" class="sidebar__user-photo" />
-          <div>
-            <p class="sidebar__name">
-              <strong class="sidebar__name-strong">Eric Frusciante</strong>
-              <span> eric@frusciante.com </span>
-            </p>
-          </div>
-        </a>
-      </div>
     </div>
   </div>
 </template>
