@@ -47,7 +47,7 @@ export default {
   methods: {
     async getAllInfos() {
       try {
-        const response = await fetch("https://api.deezer.com/radio/top")
+        const response = await fetch("/api/deezer/radio/top")
         const data = await response.json()
         this.genres = data.data
       } catch (error) {

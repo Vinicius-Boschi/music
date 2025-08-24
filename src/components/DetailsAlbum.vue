@@ -120,7 +120,7 @@ export default {
     async getDetailsAlbum() {
       try {
         const id = this.id
-        const response = await fetch(`http://localhost:3000/album/${id}`)
+        const response = await fetch(`/api/deezer/album/${id}`)
         const data = await response.json()
         this.details = data
       } catch (error) {

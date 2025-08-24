@@ -183,10 +183,10 @@ export default {
     async performSearch() {
       try {
         const response = await fetch(
-          `http://localhost:3000/search?q=${this.searchQuery}`
+          `/api/deezer/search?q=${this.searchQuery}`
         )
         const playlistResponse = await fetch(
-          `http://localhost:3000/search/playlist?q=${this.searchQuery}`
+          `/api/deeezer/search/playlist?q=${this.searchQuery}`
         )
         const data = await response.json()
         const playlistData = await playlistResponse.json()
@@ -201,10 +201,10 @@ export default {
           const trackMatch = this.searchTracks()
 
           if (artistMatch) {
-            const url = `/artist/${artistMatch}`
+            const url = `/artist/deezer/${artistMatch}`
             this.$router.push(url)
           } else if (trackMatch) {
-            const url = `/track/${trackMatch}`
+            const url = `/track/deezer/${trackMatch}`
             this.$router.push(url)
           } else if (albumMatch && playlistMatch) {
             this.showConfirmationModal(albumMatch, playlistMatch)

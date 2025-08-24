@@ -93,9 +93,7 @@ export default {
   methods: {
     async getGenre() {
       try {
-        const response = await fetch(
-          "http://localhost:3000/radio/top?limit=12"
-        )
+        const response = await fetch("/api/deezer/radio/top?limit=12")
         const data = await response.json()
         this.genres = data.data
       } catch (error) {

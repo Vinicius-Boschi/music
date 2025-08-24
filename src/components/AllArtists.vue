@@ -96,9 +96,7 @@ export default {
   methods: {
     async getAllInfos() {
       try {
-        const response = await fetch(
-          "https://api.deezer.com/chart/0/artists?limit=100"
-        )
+        const response = await fetch("/api/deezer/chart/0/artists?limit=100")
         const data = await response.json()
 
         setTimeout(() => {

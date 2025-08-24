@@ -92,7 +92,7 @@ export default {
   methods: {
     async getMusics() {
       try {
-        const response = await fetch("http://localhost:3000/chart/0/tracks")
+        const response = await fetch("/api/deezer/chart/0/tracks")
         const data = await response.json()
         this.musics = data.data
       } catch (error) {

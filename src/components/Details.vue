@@ -58,7 +58,7 @@ export default {
     async getDetails() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`http://localhost:3000/artist/${id}`)
+        const response = await fetch(`/api/deezer/artist/${id}`)
         const data = await response.json()
         this.artist = data
       } catch (error) {

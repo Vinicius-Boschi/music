@@ -119,7 +119,6 @@ import { formatDuration } from "../untils/formatDuration.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
-import axios from "axios"
 
 export default {
   name: "DetailsTrack",
@@ -208,15 +207,26 @@ export default {
       this.lyricsError = null
 
       try {
-        const response = await axios.get("http://localhost:3000/lyrics", {
-          params: { title, artist },
-        })
+        const response = await fetch(
+          `/api/lyrics?title=${encodeURIComponent(
+            title
+          )}&artist=${encodeURIComponent(artist)}`
+        )
 
-        const lines = response.data.lyrics.split("\n")
-        lines.shift()
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}))
+          this.lyricsError = errData.error || "Erro ao buscar a letra"
+          return
+        }
+
+        const data = await response.json()
+        const lines = data.lyrics
+          .split("\n")
+          .filter((line) => line.trim() !== "")
         this.lyrics = this.processLyrics(lines)
-      } catch (error) {
-        this.lyricsError = "Letra não encontrada"
+      } catch (err) {
+        console.error("Erro ao buscar a letra:", err)
+        this.lyricsError = "Erro ao buscar a letra"
       } finally {
         this.loadingLyrics = false
       }
@@ -224,13 +234,15 @@ export default {
     async getDetailsTrack() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`http://localhost:3000/track/${id}`)
+        const response = await fetch(`/api/deezer/track/${id}`)
         const data = await response.json()
         this.track = data
 
-        if (this.track && this.track.title && this.track.artist) {
-          const cleanTitle = this.cleanTitle(this.track.title)
-          await this.getLyrics(cleanTitle, this.track.artist.name)
+        if (this.track?.title && this.track?.artist?.name) {
+          await this.getLyrics(
+            this.cleanTitle(this.track.title),
+            this.track.artist.name
+          )
         }
       } catch (error) {
         console.error("Erro ao buscar a música", error)
@@ -241,7 +253,7 @@ export default {
       let section = []
 
       lyrics.forEach((line) => {
-        if (line.startsWith("[") && line.endsWith("]")) {
+        if (line.startsWith("[") && line.endsWith("]" && section.length)) {
           if (section.length) {
             sections.push(section)
             section = []
@@ -255,15 +267,13 @@ export default {
       }
 
       return sections
-        .map((section) => {
-          return `<div class="section">${section
-            .map((line) => {
-              if (line.startsWith("[") && line.endsWith("]")) {
-                return `<p class="details__lyrics-background">${line}</p>`
-              } else {
-                return `<p class="details__lyrics-paragraph">${line}</p>`
-              }
-            })
+        .map((sec) => {
+          return `<div class="section">${sec
+            .map((line) =>
+              line.startsWith("[") && line.endsWith("]")
+                ? `<p class="details__lyrics-background">${line}</p>`
+                : `<p class="details__lyrics-paragraph">${line}</p>`
+            )
             .join("")}</div>`
         })
         .join("")

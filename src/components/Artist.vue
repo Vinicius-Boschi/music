@@ -105,7 +105,12 @@ export default {
   methods: {
     async getChart() {
       try {
-        const response = await fetch("http://localhost:3000/chart")
+        const response = await fetch("/api/deezer/chart")
+
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar os charts: ${response.statusText}`)
+        }
+
         const data = await response.json()
         this.charts = this.removeDuplicateArtists(data.tracks.data)
       } catch (error) {
@@ -127,5 +132,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

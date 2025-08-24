@@ -93,7 +93,7 @@ export default {
   methods: {
     async getPodcasts() {
       try {
-        const response = await fetch("http://localhost:3000/chart/0/podcasts")
+        const response = await fetch("/api/deezer/chart/0/podcasts")
         const data = await response.json()
         this.podcasts = data.data
       } catch (error) {

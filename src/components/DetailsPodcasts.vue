@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    
+
     <table class="accordion__track-list">
       <thead>
         <tr class="accordion__track-bottom">
@@ -74,7 +74,7 @@ export default {
       currentTrackIndex: null,
       highlightedRow: null,
       showModal: false,
-      nextUrl: "https://api.deezer.com/podcast/1950252/episodes",
+      nextUrl: "/api/deezer/podcast/1950252/episodes",
     }
   },
   components: {
@@ -98,7 +98,7 @@ export default {
     async getDetailsPodcast() {
       try {
         const id = this.id
-        const response = await fetch(`http://localhost:3000/podcast/${id}`)
+        const response = await fetch(`/api/deezer/podcast/${id}`)
         const data = await response.json()
         this.podcast = data
       } catch (error) {
@@ -108,9 +108,7 @@ export default {
     async getDetailsEpisodes() {
       try {
         const id = this.id
-        const response = await fetch(
-          `http://localhost:3000/podcast/${id}/episodes`
-        )
+        const response = await fetch(`/api/deezer/podcast/${id}/episodes`)
         const data = await response.json()
         this.episodes = data.data
       } catch (error) {

@@ -58,19 +58,22 @@
           <div class="accordion__container">
             <div
               class="accordion__info"
-              v-for="(track, index) in tracks.slice(0, 4)"
-              :key="index"
+              v-for="(track, index) in tracks?.slice(0, 4) || []"
+              :key="track.id"
               @mouseover="highlightedRow = index"
               @mouseleave="highlightedRow = null"
               ref="trackRows"
               :class="{ highlighted: highlightedRow === index }"
             >
-              <audio ref="audioPlayers" :src="track.preview"></audio>
+              <audio
+                :ref="(el) => (audioTracks[index] = el)"
+                :src="track.preview"
+              ></audio>
               <img
                 class="accordion__picture"
                 :src="track.album.cover_small"
                 :alt="track.title"
-                @click="playPreview(index)"
+                @click="playTrack(index)"
                 @mouseover="currentTrackIndex = index"
                 @mouseleave="currentTrackIndex = null"
               />
@@ -101,19 +104,22 @@
               </thead>
               <tbody class="accordion__track-container">
                 <tr
-                  v-for="(track, index) in tracks"
-                  :key="index"
+                  v-for="(track, index) in tracks || []"
+                  :key="track.id"
                   @mouseover="highlightedRow = index"
                   @mouseleave="highlightedRow = null"
                   ref="trackRows"
                   :class="{ highlighted: highlightedRow === index }"
                 >
-                  <audio ref="audioPlayers" :src="track.preview"></audio>
+                  <audio
+                    :ref="(el) => (audioTracks[index] = el)"
+                    :src="track.preview"
+                  ></audio>
                   <td class="accordion__track-group">
                     <img
                       :src="track.album.cover_small"
                       :alt="track.title"
-                      @click="playPreview(index)"
+                      @click="playTrack(index)"
                       @mouseover="currentTrackIndex = index"
                       @mouseleave="currentTrackIndex = null"
                     />
@@ -145,7 +151,7 @@
           <div class="accordion__playlist">
             <div
               class="accordion__playlist-container"
-              v-for="(album, index) in albums"
+              v-for="(album, index) in albums || []"
               :key="index"
             >
               <router-link
@@ -165,7 +171,7 @@
           <div class="accordion__related">
             <div
               class="accordion__related-container"
-              v-for="(related, index) in relateds"
+              v-for="(related, index) in relateds || []"
               :key="index"
             >
               <router-link
@@ -191,7 +197,7 @@
           <div class="accordion__playlist">
             <div
               class="accordion__playlist-container"
-              v-for="(playlist, index) in playlists"
+              v-for="(playlist, index) in playlists || []"
               :key="index"
             >
               <router-link
@@ -224,19 +230,22 @@
               </thead>
               <tbody class="accordion__track-container">
                 <tr
-                  v-for="(radio, index) in radios"
-                  :key="index"
+                  v-for="(radio, index) in radios || []"
+                  :key="radio.id"
                   @mouseover="highlightedRow = index"
                   @mouseleave="highlightedRow = null"
                   ref="trackRows"
                   :class="{ highlighted: highlightedRow === index }"
                 >
-                  <audio ref="audioPlayers" :src="radio.preview"></audio>
+                  <audio
+                    :ref="(el) => (audioRadios[index] = el)"
+                    :src="radio.preview"
+                  ></audio>
                   <td class="accordion__track-group">
                     <img
                       :src="radio.album.cover_small"
                       :alt="radio.title"
-                      @click="playPreview(index)"
+                      @click="playRadio(index)"
                       @mouseover="currentTrackIndex = index"
                       @mouseleave="currentTrackIndex = null"
                     />
@@ -283,14 +292,17 @@ export default {
       playlists: [],
       albums: [],
       radios: [],
-      audioPlayers: [],
+      audioTracks: [],
+      audioRadios: [],
       currentTrackIndex: null,
       highlightedRow: null,
     }
   },
   mounted() {
     this.getTopTracks().then(() => {
-      this.audioPlayers = this.$refs.audioPlayers
+      this.audioPlayers = Array.isArray(this.$refs.audioPlayers)
+        ? this.$refs.audioPlayers
+        : [this.$refs.audioPlayers]
     })
     this.getRelated()
     this.getPlaylists()
@@ -304,59 +316,60 @@ export default {
     async getTopTracks() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`http://localhost:3000/artist/${id}/top?`)
+        const response = await fetch(`/api/deezer/artist/${id}/top?limit=100`)
         const data = await response.json()
-        this.tracks = data.data
+        this.tracks = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar o artista.", error)
+        console.error("Erro ao buscar as músicas.", error)
+        this.tracks = []
       }
     },
     async getTopAlbums() {
       try {
         const id = this.$route.params.id
         const response = await fetch(
-          `http://localhost:3000/artist/${id}/albums`
+          `/api/deezer/artist/${id}/albums?limit=50`
         )
         const data = await response.json()
-        this.albums = data.data
+        this.albums = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar o artista.", error)
+        console.error("Erro ao buscar os albuns.", error)
+        this.albums = []
       }
     },
     async getRelated() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(
-          `http://localhost:3000/artist/${id}/related`
-        )
+        const response = await fetch(`/api/deezer/artist/${id}/related`)
         const data = await response.json()
-        this.relateds = data.data
+        this.relateds = data?.data || []
       } catch (error) {
         console.error("Erro ao buscar os artistas semelhantes.", error)
+        this.relateds = []
       }
     },
     async getPlaylists() {
       try {
         const id = this.$route.params.id
         const response = await fetch(
-          `http://localhost:3000/artist/${id}/playlists?limit=100`
+          `/api/deezer/artist/${id}/playlists?limit=50`
         )
         const data = await response.json()
-        this.playlists = data.data
+        this.playlists = data?.data || []
       } catch (error) {
         console.error("Erro ao buscar as playlists.", error)
+        this.playlists = []
       }
     },
     async getRadio() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(
-          `http://localhost:3000/artist/${id}/radio`
-        )
+        const response = await fetch(`/api/deezer/artist/${id}/radio?limit=50`)
         const data = await response.json()
-        this.radios = data.data
+        this.radios = data?.data || []
       } catch (error) {
         console.error("Erro ao buscar a rádio.", error)
+        this.radios = []
       }
     },
     durationReformed(seconds) {
@@ -365,9 +378,20 @@ export default {
     numberReformed(number) {
       return formatNumber(number)
     },
-    playPreview(index) {
-      this.audioPlayers.forEach((player) => player.pause())
-      this.audioPlayers[index].play()
+    playTrack(index) {
+      const track = this.tracks[index]
+
+      this.audioTracks.forEach((p) => p && p.pause())
+      const player = this.audioTracks[index]
+      if (player) player.play()
+    },
+
+    playRadio(index) {
+      const radio = this.radios[index]
+
+      this.audioRadios.forEach((p) => p && p.pause())
+      const player = this.audioRadios[index]
+      if (player) player.play()
     },
   },
 }
@@ -377,6 +401,6 @@ export default {
 @import "../assets/scss/variables.scss";
 @import "../assets/scss/styles/accordion.scss";
 .highlighted {
-  background-color: lightblue
+  background-color: lightblue;
 }
 </style>

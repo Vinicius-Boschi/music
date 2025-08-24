@@ -225,12 +225,11 @@
                         ref="trackRows"
                         :class="{ highlighted: highlightedRow === index }"
                       >
-                        <audio ref="audioPlayers" :src="track.preview"></audio>
                         <td class="accordion__track-group">
                           <img
                             :src="track.album.cover_small"
                             :alt="track.title"
-                            @click="playPreview(index)"
+                            @click="playPreview(track)"
                             @mouseover="currentTrackIndex = index"
                             @mouseleave="currentTrackIndex = null"
                           />
@@ -352,11 +351,18 @@
                     v-for="album in sortedAlbuns"
                     :key="album.id"
                   >
-                    <img
-                      class="accordion__picture"
-                      :src="album.cover_medium"
-                      :alt="album.title"
-                    />
+                    <router-link
+                      :to="{
+                        name: 'DetailsAlbum',
+                        params: { id: album.id },
+                      }"
+                    >
+                      <img
+                        class="accordion__picture"
+                        :src="album.cover_medium"
+                        :alt="album.title"
+                      />
+                    </router-link>
                     <p class="accordion__related-text">{{ album.title }}</p>
                     <button
                       class="accordion__remove"
@@ -442,11 +448,18 @@
                     v-for="playlist in sortedPlaylists"
                     :key="playlist.id"
                   >
-                    <img
-                      class="accordion__picture"
-                      :src="playlist.picture_medium"
-                      :alt="playlist.title"
-                    />
+                    <router-link
+                      :to="{
+                        name: 'DetailsPlaylist',
+                        params: { id: playlist.id },
+                      }"
+                    >
+                      <img
+                        class="accordion__picture"
+                        :src="playlist.picture_medium"
+                        :alt="playlist.title"
+                      />
+                    </router-link>
                     <p class="accordion__related-text">{{ playlist.title }}</p>
                     <button
                       class="accordion__remove"
@@ -530,11 +543,18 @@
                     v-for="podcast in sortedPodcasts"
                     :key="podcast.id"
                   >
-                    <img
-                      class="accordion__picture"
-                      :src="podcast.picture_medium"
-                      :alt="podcast.title"
-                    />
+                    <router-link
+                      :to="{
+                        name: 'DetailsPodcasts',
+                        params: { id: podcast.id },
+                      }"
+                    >
+                      <img
+                        class="accordion__picture"
+                        :src="podcast.picture_medium"
+                        :alt="podcast.title"
+                      />
+                    </router-link>
                     <p class="accordion__related-text">{{ podcast.title }}</p>
                     <button
                       class="accordion__remove"
@@ -740,10 +760,29 @@ export default {
       this.audioPlayers = this.$refs.audioPlayers
       this.trackRows = this.$refs.trackRows
     })
-    const savedTrack = localStorage.getItem("last_played_track")
+    const savedTrack = localStorage.getItem("currentTrack")
     if (savedTrack) {
       this.currentTrack = JSON.parse(savedTrack)
     }
+    window.addEventListener("track-changed", () => {
+      const savedTrack = localStorage.getItem("currentTrack")
+      if (savedTrack) {
+        this.currentTrack = JSON.parse(savedTrack)
+
+        if (savedTrack) {
+          this.currentTrack = JSON.parse(savedTrack)
+
+          this.$nextTick(() => {
+            const player = this.$refs.audioPlayer
+            if (player) {
+              player.currentTime = 0
+              player.play()
+              this.isPlaying = true
+            }
+          })
+        }
+      }
+    })
   },
   watch: {
     currentTime(val) {
@@ -860,7 +899,7 @@ export default {
         }))
 
         const requests = favoriteIds.map((entry) =>
-          fetch(`https://api.deezer.com/artist/${entry.id}`)
+          fetch(`/api/deezer/artist/${entry.id}`)
             .then((res) => res.json())
             .then((artist) => ({ ...artist, addedAt: entry.addedAt }))
         )
@@ -890,7 +929,7 @@ export default {
         }
 
         const requests = favoriteIds.map((item) =>
-          fetch(`https://api.deezer.com/track/${item.id}`)
+          fetch(`/api/deezer/track/${item.id}`)
             .then((res) => res.json())
             .then((track) => ({
               ...track,
@@ -916,7 +955,7 @@ export default {
         }))
 
         const requests = favoriteIds.map((entry) =>
-          fetch(`https://api.deezer.com/album/${entry.id}`)
+          fetch(`/api/deezer/album/${entry.id}`)
             .then((res) => res.json())
             .then((album) => ({
               ...album,
@@ -941,7 +980,7 @@ export default {
           addedAt: item.addedAt,
         }))
         const requests = favoriteIds.map((entry) =>
-          fetch(`https://api.deezer.com/playlist/${entry.id}`)
+          fetch(`/api/deezer/playlist/${entry.id}`)
             .then((res) => res.json())
             .then((playlist) => ({
               ...playlist,
@@ -969,7 +1008,7 @@ export default {
         }))
 
         const requests = favoriteIds.map((entry) =>
-          fetch(`https://api.deezer.com/podcast/${entry.id}`)
+          fetch(`/api/deezer/podcast/${entry.id}`)
             .then((res) => res.json())
             .then((podcast) => ({
               ...podcast,
@@ -1113,7 +1152,7 @@ export default {
       const trackId = random.id
 
       try {
-        const response = await fetch(`https://api.deezer.com/track/${trackId}`)
+        const response = await fetch(`/api/deezer/track/${trackId}`)
         const track = await response.json()
 
         if (!track.preview) {
@@ -1121,8 +1160,8 @@ export default {
           return
         }
 
-        const audio = new Audio(track.preview)
-        audio.play()
+        localStorage.setItem("currentTrack", JSON.stringify(track))
+        window.dispatchEvent(new Event("track-changed"))
       } catch (error) {
         console.error("Erro ao buscar dados da música:", error)
       }
@@ -1138,9 +1177,7 @@ export default {
 
       const tracks = await Promise.all(
         favoriteTracks.map((track) =>
-          fetch(`https://api.deezer.com/track/${track.id}`).then((res) =>
-            res.json()
-          )
+          fetch(`/api/deezer/track/${track.id}`).then((res) => res.json())
         )
       )
 
@@ -1205,9 +1242,10 @@ export default {
       this.currentTrack = this.favoriteTracks[this.currentTrackIndex]
       this.playCurrent()
     },
-    playPreview(index) {
-      this.audioPlayers.forEach((player) => player.pause())
-      this.audioPlayers[index].play()
+    playPreview(track) {
+      this.currentTrack = track
+      localStorage.setItem("currentTrack", JSON.stringify(track))
+      window.dispatchEvent(new Event("track-changed"))
     },
     seekAudio() {
       if (this.audioPlayer) {

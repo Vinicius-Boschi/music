@@ -287,7 +287,7 @@ export default {
 
     async getGenres() {
       try {
-        const res = await fetch("http://localhost:3000/radio/top")
+        const res = await fetch("/api/deezer/radio/top")
         const data = await res.json()
         this.genres = data.data || []
       } catch (error) {
@@ -297,12 +297,12 @@ export default {
 
     async getGenreName() {
       try {
-        const res = await fetch(`http://localhost:3000/radio/${this.id}`)
+        const res = await fetch(`/api/deezer/radio/${this.id}`)
         const data = await res.json()
         this.genre = data.title
         this.tracklist = data.tracklist?.replace(
           "https://api.deezer.com",
-          "http://localhost:3000"
+          "/api/deezer"
         )
       } catch (error) {
         console.error("Erro:", error)
@@ -311,17 +311,13 @@ export default {
 
     async getPlaylistsByGenre() {
       try {
-        const res = await fetch(
-          `http://localhost:3000/search/playlist?q=${this.genre}`
-        )
+        const res = await fetch(`/api/deezer/search/playlist?q=${this.genre}`)
         const data = await res.json()
         const playlists = data.data?.slice(0, 12) || []
 
         const detailsPlaylists = await Promise.all(
           playlists.map(async (playlist) => {
-            const details = await fetch(
-              `http://localhost:3000/playlist/${playlist.id}`
-            )
+            const details = await fetch(`/api/deezer/playlist/${playlist.id}`)
             const detailsData = await details.json()
             return {
               ...playlist,
@@ -341,7 +337,6 @@ export default {
           console.error("Erro: Tracklist não definida")
           return
         }
-
         const res = await fetch(this.tracklist)
         const data = await res.json()
         const tracks = data.data || []
@@ -374,7 +369,7 @@ export default {
 
     async getArtistDetails(id) {
       try {
-        const res = await fetch(`http://localhost:3000/artist/${id}`)
+        const res = await fetch(`/api/deezer/artist/${id}`)
         return await res.json()
       } catch (error) {
         console.error("Erro ao buscar detalhes do artista:", error)
@@ -384,9 +379,7 @@ export default {
 
     async getAlbuns() {
       try {
-        const res = await fetch(
-          `http://localhost:3000/search/album?q=${this.genre}`
-        )
+        const res = await fetch(`/api/deezer/search/album?q=${this.genre}`)
         const data = await res.json()
         this.albuns = data.data?.slice(0, 12) || []
       } catch (error) {
@@ -396,9 +389,7 @@ export default {
 
     async getReleases() {
       try {
-        const res = await fetch(
-          `http://localhost:3000/search/track?q=${this.genre}`
-        )
+        const res = await fetch(`/api/deezer/search/track?q=${this.genre}`)
         const data = await res.json()
         const tracks = data.data || []
 
@@ -417,9 +408,7 @@ export default {
 
             let releaseDate = "Data desconhecida"
             try {
-              const resAlbum = await fetch(
-                `http://localhost:3000/album/${albumId}`
-              )
+              const resAlbum = await fetch(`/api/deezer/album/${albumId}`)
               const albumData = await resAlbum.json()
               releaseDate = albumData.release_date || "Data desconhecida"
             } catch (e) {
@@ -446,5 +435,3 @@ export default {
   },
 }
 </script>
-
-<style></style>
