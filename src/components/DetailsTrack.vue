@@ -49,6 +49,7 @@
           </div>
         </button>
       </div>
+
       <div class="details__remove-wrapper">
         <button
           class="details__favorite-button"
@@ -106,9 +107,15 @@
       </div>
     </div>
     <div class="details__lyrics">
-      <template v-if="loadingLyrics">Carregando letra...</template>
-      <template v-else-if="lyricsError">{{ lyricsError }}</template>
-      <div v-else v-html="lyrics"></div>
+      <div v-if="loadingLyrics" class="details__skeleton">
+        <div v-for="n in 5" :key="n" class="details__line"></div>
+      </div>
+      <div v-else-if="lyricsError" class="details__error">
+        {{ lyricsError }}
+      </div>
+      <pre v-else>
+    <span :class="{ chorus: line.chorus, title: line.isTitle}" v-for="(line, index) in lyrics" :key="index">{{ line.text }}</span>
+  </pre>
     </div>
   </div>
   <Footer />
@@ -128,7 +135,7 @@ export default {
       track: {},
       showModal: false,
       highlightedRow: null,
-      lyrics: "",
+      lyrics: [],
       loadingLyrics: false,
       lyricsError: null,
       favorites: [],
@@ -192,6 +199,11 @@ export default {
     this.loadFavoritesFromStorage()
     this.getDetailsTrack()
   },
+  beforeUnmount() {
+    const player = this.$refs.audioPlayer
+    if (player)
+      player.removeEventListener("timeupdate", this.updateCurrentLine)
+  },
   methods: {
     toggleModal() {
       this.showModal = !this.showModal
@@ -204,14 +216,10 @@ export default {
     },
     async getLyrics(title, artist) {
       this.loadingLyrics = true
-      this.lyricsError = null
-
       try {
-        const response = await fetch(
-          `/api/lyrics?title=${encodeURIComponent(
-            title
-          )}&artist=${encodeURIComponent(artist)}`
-        )
+        const API_BASE = import.meta.env.VITE_API_BASE
+        const query = encodeURIComponent(`${title} ${artist}`)
+        const response = await fetch(`${API_BASE}/lyrics?query=${query}`)
 
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}))
@@ -220,13 +228,28 @@ export default {
         }
 
         const data = await response.json()
-        const lines = data.lyrics
+
+        if (!data.lyrics) {
+          this.lyricsError = "Letra não encontrada"
+          return
+        }
+
+        this.lyrics = data.lyrics
           .split("\n")
-          .filter((line) => line.trim() !== "")
-        this.lyrics = this.processLyrics(lines)
+          .map((line) => line.trim())
+          .filter((line) => line !== "")
+          .map((line) => ({
+            text: line,
+          }))
+
+        this.lyrics.forEach((line) => {
+          if (/refrão|verso/i.test(line.text)) {
+            line.isTitle = true
+          }
+        })
       } catch (err) {
-        console.error("Erro ao buscar a letra:", err)
-        this.lyricsError = "Erro ao buscar a letra"
+        console.error(err)
+        this.lyricsError = "Erro ao buscar letras"
       } finally {
         this.loadingLyrics = false
       }
@@ -234,6 +257,9 @@ export default {
     async getDetailsTrack() {
       try {
         const id = this.$route.params.id
+
+        if (this.track?.id === id) return
+
         const response = await fetch(`/api/deezer/track/${id}`)
         const data = await response.json()
         this.track = data
@@ -248,49 +274,14 @@ export default {
         console.error("Erro ao buscar a música", error)
       }
     },
-    processLyrics(lyrics) {
-      let sections = []
-      let section = []
-
-      lyrics.forEach((line) => {
-        if (line.startsWith("[") && line.endsWith("]" && section.length)) {
-          if (section.length) {
-            sections.push(section)
-            section = []
-          }
-        }
-        section.push(line)
-      })
-
-      if (section.length) {
-        sections.push(section)
-      }
-
-      return sections
-        .map((sec) => {
-          return `<div class="section">${sec
-            .map((line) =>
-              line.startsWith("[") && line.endsWith("]")
-                ? `<p class="details__lyrics-background">${line}</p>`
-                : `<p class="details__lyrics-paragraph">${line}</p>`
-            )
-            .join("")}</div>`
-        })
-        .join("")
-    },
     durationReformed(seconds) {
       return formatDuration(seconds)
     },
     playPreview() {
       const player = this.$refs.audioPlayer
       if (!player) return
-
-      if (!player.paused) {
-        player.pause()
-      }
-      player.play()
+      player.paused ? player.play() : player.pause()
     },
-
     loadFavoritesFromStorage() {
       const saved = localStorage.getItem("favorites_tracks")
       this.favorites = saved ? JSON.parse(saved) : []
