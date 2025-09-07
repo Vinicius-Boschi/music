@@ -132,24 +132,36 @@
   }
 
   &__lyrics {
-    margin: 4rem 0 0 2rem;
-    font-size: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem;
+    margin: 1rem 0;
+    font-size: 16px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    color: #333;
 
-    &-paragraph {
-      line-height: 1.5;
-      font-size: 1.2rem;
-      background-color: #f9f9f9;
-      padding: 5px;
-      width: 55%;
-    }
+    span {
+      display: block;
+      margin-bottom: 1.2rem;
+      font-size: 16px;
+      line-height: 2;
+      transition: all 0.3s ease;
 
-    &-background {
-      background-color: transparent;
-      line-height: 1.5;
-      font-size: 1.2rem;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
+      &.title {
+        font-weight: bold;
+        color: $black;
+        margin-top: 2rem;
+        text-transform: uppercase;
+      }
+
+      &.chorus {
+        font-weight: bold;
+        color: $black;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
     }
   }
 }
