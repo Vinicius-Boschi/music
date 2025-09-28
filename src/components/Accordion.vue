@@ -396,11 +396,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/accordion.scss";
-.highlighted {
-  background-color: lightblue;
-}
-</style>

@@ -1,3 +1,5 @@
+@use "../variables" as *;
+
 .header {
   &__nav {
     display: flex;
@@ -94,7 +96,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: $white-three;
     -webkit-transition: 0.4s;
     transition: 0.4s;
 
@@ -105,7 +107,7 @@
       width: 15px;
       right: 2rem;
       bottom: 4px;
-      background-color: white;
+      background-color: $white;
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
@@ -210,7 +212,7 @@
     margin-left: -5rem;
 
     &-alert {
-      display: flex;  
+      display: flex;
       align-items: center;
       position: fixed;
       top: -5rem;
@@ -218,8 +220,8 @@
       padding: 20px;
       width: 40%;
       height: 50%;
-      background: $light-modal;  
-      box-shadow: 0 15px 30px #0d111747, 0 10px 10px #0d111747;  
+      background: $light-modal;
+      box-shadow: 0 15px 30px #0d111747, 0 10px 10px #0d111747;
       color: $white;
       z-index: 1000;
     }
@@ -230,22 +232,52 @@
       line-height: 1.5rem;
       margin-bottom: 1rem;
     }
-  
+
     &-buttons {
       display: flex;
       justify-content: space-evenly;
-  
+
       button {
         border: none;
         background-color: $purple;
         color: $white;
         font-weight: 700;
         font-size: 1rem;
-        padding: .6rem;
+        padding: 0.6rem;
         border-radius: 10px;
         cursor: pointer;
         width: 8rem;
       }
     }
+  }
+}
+
+.header__user-container {
+  &:hover {
+    .header__user-menu {
+      display: block;
+    }
+    .header__notification {
+      display: block;
+    }
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+.dark-mode {
+  background: $black;
+  color: $white;
+
+  .sidebar {
+    background: $black;
+    color: $white;
+  }
+
+  .header__user-menu {
+    background: $black;
+    color: $white;
   }
 }

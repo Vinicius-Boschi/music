@@ -155,6 +155,7 @@ export default {
       searchQuery: "",
       searchResults: [],
       playlistResults: [],
+      podcastResults: [],
       error: null,
       showConfirmModal: false,
       isDarkMode: false,
@@ -186,31 +187,42 @@ export default {
           `/api/deezer/search?q=${this.searchQuery}`
         )
         const playlistResponse = await fetch(
-          `/api/deeezer/search/playlist?q=${this.searchQuery}`
+          `/api/deezer/search/playlist?q=${this.searchQuery}`
         )
+
+        const podcastRespose = await fetch(
+          `/api/deezer/search/podcast?q=${this.searchQuery}`
+        )
+
+        if (!response.ok || !playlistResponse.ok) {
+          throw new Error("Erro na busca")
+        }
+
         const data = await response.json()
         const playlistData = await playlistResponse.json()
+        const podcastData = await podcastRespose.json()
 
         this.searchResults = data.data
         this.playlistResults = playlistData.data
+        this.podcastResults = podcastData.data
 
-        if (this.searchResults.length > 0) {
+        if (
+          this.searchResults.length ||
+          this.playlistResults.length ||
+          this.podcastResults.length
+        ) {
           const artistMatch = this.searchArtists()
           const playlistMatch = this.searchPlaylists()
           const albumMatch = this.searchAlbums()
           const trackMatch = this.searchTracks()
+          const podcastMatch = this.searchPodcast()
 
-          if (artistMatch) {
-            const url = `/artist/deezer/${artistMatch}`
-            this.$router.push(url)
-          } else if (trackMatch) {
-            const url = `/track/deezer/${trackMatch}`
-            this.$router.push(url)
-          } else if (albumMatch && playlistMatch) {
+          if (artistMatch) this.$router.push(`/artist/${artistMatch}`)
+          else if (trackMatch) this.$router.push(`/track/${trackMatch}`)
+          else if (podcastMatch) this.$router.push(`/podcast/${podcastMatch}`)
+          else if (albumMatch && playlistMatch)
             this.showConfirmationModal(albumMatch, playlistMatch)
-          } else {
-            alert("Nenhum resultado de artista, álbum ou playlist encontrado")
-          }
+          else alert("Nenhum resultado encontrado")
         } else {
           alert("Nenhum resultado encontrado")
         }
@@ -225,7 +237,7 @@ export default {
         if (
           track.artist &&
           track.artist.type === "artist" &&
-          track.artist.name.toLowerCase() === searchQueryLowercase
+          track.artist.name.toLowerCase().includes(searchQueryLowercase)
         ) {
           return track.artist.id
         }
@@ -235,7 +247,7 @@ export default {
     searchPlaylists() {
       const searchQueryLowercase = this.searchQuery.toLowerCase()
       for (const playlist of this.playlistResults) {
-        if (playlist.title.toLowerCase() === searchQueryLowercase) {
+        if (playlist.title.toLowerCase().includes(searchQueryLowercase)) {
           return playlist.id
         }
       }
@@ -247,7 +259,7 @@ export default {
         if (
           track.album &&
           track.album.type === "album" &&
-          track.album.title.toLowerCase() === searchQueryLowercase
+          track.album.title.toLowerCase().includes(searchQueryLowercase)
         ) {
           return track.album.id
         }
@@ -257,8 +269,20 @@ export default {
     searchTracks() {
       const searchQueryLowercase = this.searchQuery.toLowerCase()
       for (const track of this.searchResults) {
-        if (track.title.toLowerCase() === searchQueryLowercase) {
+        if (track.title.toLowerCase().includes(searchQueryLowercase)) {
           return track.id
+        }
+      }
+      return null
+    },
+    searchPodcast() {
+      const searchQueryLowercase = this.searchQuery.toLowerCase()
+      for (const podcast of this.podcastResults) {
+        if (
+          podcast.type === "podcast" &&
+          podcast.title.toLowerCase().includes(searchQueryLowercase)
+        ) {
+          return podcast.id
         }
       }
       return null
@@ -281,35 +305,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/header.scss";
-
-.header__user-container:hover .header__user-menu {
-  display: block;
-}
-
-.header__user-container:hover .header__notification {
-  display: block;
-}
-
-a {
-  text-decoration: none !important;
-}
-
-.dark-mode {
-  background: black;
-  color: white;
-}
-
-.dark-mode .sidebar {
-  background: black;
-  color: white;
-}
-
-.dark-mode .header__user-menu {
-  background: black;
-  color: white;
-}
-</style>

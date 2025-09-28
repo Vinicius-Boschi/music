@@ -35,8 +35,3 @@ export default {
   },
 }
 </script>
-
-<style>
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/home.scss";
-</style>

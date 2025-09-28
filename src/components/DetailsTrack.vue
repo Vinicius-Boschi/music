@@ -238,12 +238,15 @@ export default {
           .split("\n")
           .map((line) => line.trim())
           .filter((line) => line !== "")
+          .filter(
+            (line, index) => index != 0 || !/Contributors|Lyrics\[/.test(line)
+          )
           .map((line) => ({
             text: line,
           }))
 
         this.lyrics.forEach((line) => {
-          if (/refrão|verso/i.test(line.text)) {
+          if (/^\[.*\]$/i.test(line.text) || /refrão|verso/i.test(line.text)) {
             line.isTitle = true
           }
         })
@@ -312,8 +315,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/detailsTrack.scss";
-</style>
