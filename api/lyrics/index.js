@@ -1,4 +1,4 @@
-import Genius from "genius-lyrics"
+import * as Genius from "genius-lyrics"
 
 export default async function handler(req, res) {
   try {
