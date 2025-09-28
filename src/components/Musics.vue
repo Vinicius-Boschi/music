@@ -105,8 +105,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/chart.scss";
-</style>

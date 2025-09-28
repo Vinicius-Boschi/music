@@ -1,3 +1,5 @@
+@use "../variables" as *;  
+
 .accordion {
   &__about {
     box-shadow: rgba(25, 25, 34, 0.16) 0px 2px 6px -4px;
@@ -90,7 +92,7 @@
     }
 
     &:hover {
-      background-color: darken($purple-two, 10%);
+      background-color: $purple-two;
     }
   }
 
@@ -145,7 +147,7 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: darken($purple-two, 10%);
+      background-color: $purple-two;
     }
 
     img {
@@ -533,4 +535,8 @@
       text-align: center;
     }
   }
+}
+
+.highlighted {
+  background-color: lightblue;
 }

@@ -153,9 +153,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/detailsAlbum.scss";
-
 a {
   &:hover {
     text-decoration: underline;
