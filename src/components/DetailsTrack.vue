@@ -229,6 +229,7 @@ export default {
 
       try {
         const API_BASE = import.meta.env.VITE_API_BASE
+        
         const cleanTitle = this.cleanTitle(title)
         const cleanArtist = artist.split(",")[0].split("&")[0].trim()
 
