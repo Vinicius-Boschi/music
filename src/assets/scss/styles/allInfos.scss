@@ -1,0 +1,43 @@
+@use "../variables" as *;  
+
+.page {
+  padding: 2rem;
+
+  &__title {
+    font-weight: bold;
+    font-size: 3rem;
+  }
+
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+  }
+
+  &__content {
+    border-radius: 10px;
+  }
+
+  &__img {
+    box-shadow: 0 0 5px rgba(4, 17, 42, 0.23);
+    margin-bottom: 0.5rem;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__name {
+    &.center {
+      text-align: center;
+      padding: 2rem;
+      color: $white;
+    }
+  }
+
+  &__tracks {
+    color: $gray-two;
+    font-size: 12px;
+    margin-top: 0.5rem;
+  }
+}

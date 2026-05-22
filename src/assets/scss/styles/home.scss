@@ -1,0 +1,10 @@
+@use "../variables" as *;  
+
+.container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.mySwiper {
+  margin: 2rem;
+}

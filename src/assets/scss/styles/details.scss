@@ -1,0 +1,52 @@
+@use "../variables" as *;  
+
+.container {
+  display: flex;
+}
+
+.content {
+  margin-left: 250px;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+
+  &__img {
+    width: 200px;
+    height: 200px;
+    margin-right: 1rem;
+  }
+
+  a {
+    text-decoration: none;
+    text-transform: capitalize;
+    padding: 0.5rem;
+  }
+
+  &__profile {
+    border-radius: 50%;
+  }
+
+  &__text {
+    padding: 1rem;
+  }
+
+  &__name-artist {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  &__fan,
+  &__album,
+  &__description {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: $gray-two;
+  }
+
+  &__description {
+    margin-left: 0.5rem;
+  }
+}

@@ -1,0 +1,169 @@
+@use "../variables" as *;  
+
+.details {
+  &__snackbar {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    z-index: 99999;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  &__watch {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  &__group {
+    display: flex;
+    position: absolute;
+  }
+
+  &__button {
+    margin-left: 2rem;
+
+    button {
+      display: flex;
+      align-items: center;
+      background-color: $purple;
+      color: $white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 10rem;
+      height: 3rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+
+      &:hover {
+        background-color: $purple-two;
+      }
+
+      img {
+        width: 2.5rem;
+        margin-top: 5px;
+      }
+
+      p {
+        font-size: 1.1rem;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  &__remove-wrapper {
+    position: relative;
+    z-index: 10; /* valor alto para estar acima do fundo/modal */
+    display: inline-block; /* para evitar pegar área extra */
+  }
+
+  &__favorite-button {
+    background: none;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+
+    &.active svg path {
+      fill: #e53935 !important;
+    }
+  }
+
+  &__wrapper {
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+
+    button {
+      border: none;
+      background-color: transparent;
+    }
+
+    img {
+      width: 3rem;
+      height: 3rem;
+      margin-left: 2rem;
+      cursor: pointer;
+    }
+  }
+
+  &__modal {
+    background-color: $white-two;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.24);
+    width: 350px;
+    height: auto;
+    z-index: 2;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  &__lists {
+    padding: 8px;
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  &__items {
+    padding: 1rem;
+  }
+
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &__listen {
+    margin: 0 16px;
+    font-size: 1rem;
+  }
+
+  &__lyrics {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem;
+    margin: 1rem 0;
+    font-size: 16px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    color: #333;
+
+    span {
+      display: block;
+      margin-bottom: 1.2rem;
+      font-size: 16px;
+      line-height: 2;
+      transition: all 0.3s ease;
+
+      &.title {
+        font-weight: bold;
+        color: $black;
+        margin-top: 2rem;
+        text-transform: uppercase;
+      }
+
+      &.chorus {
+        font-weight: bold;
+        color: $black;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+}
