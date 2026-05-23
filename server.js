@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 3001
 app.use(cors())
 app.get("/api/lyrics", (req, res) => lyricsHandler(req, res))
 
-app.get("/api/deezer/:path(*)", async (req, res) => {
+app.get(/^\/api\/deezer\/(.+)/, async (req, res) => {
   try {
-    const path = req.params.path
+    const path = req.params[0]
 
     const queryString = new URLSearchParams(req.query).toString()
 
