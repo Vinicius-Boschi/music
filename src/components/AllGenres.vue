@@ -9,7 +9,7 @@
       <div class="page__container">
         <div
           class="page__content background"
-          :style="{ backgroundColor: getColors(genre.title) }"
+          :style="{ backgroundColor: genre.color }"
           v-for="(genre, index) in genres"
           :key="index"
         >
@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { getGenreColor } from "../untils/getGenreColor.js"
+import { getRandomGenreColor } from "../untils/getGenreColor.js"
+import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -47,15 +48,17 @@ export default {
   methods: {
     async getAllInfos() {
       try {
-        const response = await fetch("/api/deezer/radio/top")
+        const response = await fetch(
+          `${API_BASE}/deezer/radio/lists?limit=100`,
+        )
         const data = await response.json()
-        this.genres = data.data
+        this.genres = data.data.map((genre) => ({
+          ...genre,
+          color: getRandomGenreColor(),
+        }))
       } catch (error) {
         console.error(error)
       }
-    },
-    getColors(genre) {
-      return getGenreColor(genre)
     },
   },
 }

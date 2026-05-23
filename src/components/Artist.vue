@@ -38,15 +38,15 @@
             <div class="chart__content">
               <div class="chart__content__item">
                 <router-link
-                  :to="{ name: 'Details', params: { id: chart.artist.id } }"
+                  :to="{ name: 'Details', params: { id: chart.id } }"
                 >
                   <img
                     class="chart__img rounded"
-                    :src="chart.artist.picture_medium"
-                    :alt="chart.artist.name"
+                    :src="chart.picture_medium"
+                    :alt="chart.name"
                   />
                 </router-link>
-                <p class="chart__name center">{{ chart.artist.name }}</p>
+                <p class="chart__name center">{{ chart.name }}</p>
               </div>
             </div>
           </swiper-slide>
@@ -58,6 +58,7 @@
 
 <script>
 import Header from "./Header.vue"
+import { API_BASE } from "../services/api"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation } from "swiper/modules"
 import "swiper/css"
@@ -105,22 +106,22 @@ export default {
   methods: {
     async getChart() {
       try {
-        const response = await fetch("/api/deezer/chart")
+        const response = await fetch(`${API_BASE}/deezer/chart/0/artists`)
 
         if (!response.ok) {
           throw new Error(`Erro ao buscar os charts: ${response.statusText}`)
         }
 
         const data = await response.json()
-        this.charts = this.removeDuplicateArtists(data.tracks.data)
+        this.charts = this.removeDuplicateArtists(data.data)
       } catch (error) {
         console.error("Erro ao buscar os charts.", error)
       }
     },
-    removeDuplicateArtists(tracks) {
+    removeDuplicateArtists(artists) {
       const seen = new Set()
-      return tracks.filter((track) => {
-        const name = track.artist.name.toLowerCase()
+      return artists.filter((artist) => {
+        const name = artist.name.toLowerCase()
         if (seen.has(name)) return false
         seen.add(name)
         return true

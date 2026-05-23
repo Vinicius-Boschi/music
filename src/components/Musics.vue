@@ -56,6 +56,7 @@
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation } from "swiper/modules"
+import { API_BASE } from "../services/api.js"
 import "swiper/css"
 import "swiper/css/navigation"
 
@@ -92,7 +93,7 @@ export default {
   methods: {
     async getMusics() {
       try {
-        const response = await fetch("/api/deezer/chart/0/tracks")
+        const response = await fetch(`${API_BASE}/deezer/chart/0/tracks`)
         const data = await response.json()
         this.musics = data.data
       } catch (error) {

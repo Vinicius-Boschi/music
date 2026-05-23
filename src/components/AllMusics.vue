@@ -70,6 +70,8 @@ import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
 import SkeletonArtists from "./SkeletonArtists.vue"
+import { API_BASE } from "../services/api.js"
+
 const FAVORITE_MUSIC_KEY = "favorites_tracks"
 
 export default {
@@ -97,7 +99,9 @@ export default {
   methods: {
     async getAllInfos() {
       try {
-        const response = await fetch("/api/deezer/chart/0/tracks?limit=100")
+        const response = await fetch(
+          `${API_BASE}/deezer/chart/0/tracks?limit=100`,
+        )
         const data = await response.json()
 
         setTimeout(() => {

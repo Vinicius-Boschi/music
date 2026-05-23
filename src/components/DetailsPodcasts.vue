@@ -60,6 +60,7 @@
 import { formatDate } from "../untils/formatDate.js"
 import { formatNumber } from "../untils/formatNumber.js"
 import { formatHours } from "../untils/formatHours.js"
+import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -74,7 +75,7 @@ export default {
       currentTrackIndex: null,
       highlightedRow: null,
       showModal: false,
-      nextUrl: "/api/deezer/podcast/1950252/episodes",
+      nextUrl: `${API_BASE}/deezer/podcast/1950252/episodes`,
     }
   },
   components: {
@@ -89,7 +90,7 @@ export default {
     },
   },
   mounted() {
-    this.getDetailsPodcast(), this.getDetailsEpisodes(), this.loadEpisodes()
+    (this.getDetailsPodcast(), this.getDetailsEpisodes(), this.loadEpisodes())
   },
   methods: {
     toggleModal() {
@@ -98,17 +99,20 @@ export default {
     async getDetailsPodcast() {
       try {
         const id = this.id
-        const response = await fetch(`/api/deezer/podcast/${id}`)
+        const response = await fetch(`${API_BASE}/deezer/podcast?query=${id}`)
         const data = await response.json()
         this.podcast = data
       } catch (error) {
         console.error("Erro ao buscar o podcast", error)
       }
     },
+
     async getDetailsEpisodes() {
       try {
         const id = this.id
-        const response = await fetch(`/api/deezer/podcast/${id}/episodes`)
+        const response = await fetch(
+          `${API_BASE}/deezer/podcast/${id}/episodes`,
+        )
         const data = await response.json()
         this.episodes = data.data
       } catch (error) {

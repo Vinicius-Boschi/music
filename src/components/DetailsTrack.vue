@@ -123,6 +123,7 @@
 
 <script>
 import { formatDuration } from "../untils/formatDuration.js"
+import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -228,8 +229,6 @@ export default {
       this.lyrics = []
 
       try {
-        const API_BASE = import.meta.env.VITE_API_BASE
-        
         const cleanTitle = this.cleanTitle(title)
         const cleanArtist = artist.split(",")[0].split("&")[0].trim()
 
@@ -277,7 +276,7 @@ export default {
 
         if (this.track?.id === id) return
 
-        const response = await fetch(`/api/deezer/track/${id}`)
+        const response = await fetch(`${API_BASE}/deezer/track/${id}`)
         const data = await response.json()
         this.track = data
 

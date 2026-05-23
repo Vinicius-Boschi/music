@@ -37,12 +37,12 @@
             <div class="chart__content">
               <div
                 class="chart__content__item background"
-                :style="{ backgroundColor: getColors(genre.title) }"
+                :style="{ backgroundColor: genre.color }"
               >
                 <router-link
                   :to="{ name: 'DetailsGenre', params: { id: genre.id } }"
                 >
-                  <p class="chart__name center white">{{ genre.title }}</p>
+                  <p class="chart__name center white">{{ genre.name }}</p>
                 </router-link>
               </div>
             </div>
@@ -54,7 +54,8 @@
 </template>
 
 <script>
-import { getGenreColor } from "../untils/getGenreColor.js"
+import { getRandomGenreColor } from "../untils/getGenreColor.js"
+import { API_BASE } from "../services/api.js"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation } from "swiper/modules"
 import "swiper/css"
@@ -93,18 +94,18 @@ export default {
   methods: {
     async getGenre() {
       try {
-        const response = await fetch("/api/deezer/radio/top?limit=12")
+        const response = await fetch(`${API_BASE}/deezer/genre`)
         const data = await response.json()
-        this.genres = data.data
+        this.genres = data.data.map((genre) => ({
+          ...genre,
+          color: getRandomGenreColor(),
+        }))
       } catch (error) {
         console.error("Erro ao buscar os gêneros.", error)
       }
     },
     viewAllInfos() {
       this.$router.push({ name: "AllGenres" })
-    },
-    getColors(genre) {
-      return getGenreColor(genre)
     },
   },
 }

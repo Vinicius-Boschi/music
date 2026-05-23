@@ -699,6 +699,7 @@
 import { formatNumber } from "../untils/formatNumber.js"
 import { formatDuration } from "../untils/formatDuration.js"
 import { formatDate } from "../untils/formatDate.js"
+import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -798,7 +799,7 @@ export default {
 
       if (searchTerm) {
         filtered = filtered.filter((artist) =>
-          artist.name.toLowerCase().includes(searchTerm)
+          artist.name.toLowerCase().includes(searchTerm),
         )
       }
 
@@ -806,7 +807,7 @@ export default {
         return [...filtered].sort((a, b) => a.name.localeCompare(b.name))
       } else {
         return [...filtered].sort(
-          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt),
         )
       }
     },
@@ -816,7 +817,7 @@ export default {
 
       if (searchTerm) {
         filtered = filtered.filter((album) =>
-          album.title.toLowerCase().includes(searchTerm)
+          album.title.toLowerCase().includes(searchTerm),
         )
       }
 
@@ -824,7 +825,7 @@ export default {
         return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
       } else {
         return [...filtered].sort(
-          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt),
         )
       }
     },
@@ -834,7 +835,7 @@ export default {
 
       if (searchTerm) {
         filtered = filtered.filter((playlist) =>
-          playlist.title.toLowerCase().includes(searchTerm)
+          playlist.title.toLowerCase().includes(searchTerm),
         )
       }
 
@@ -842,7 +843,7 @@ export default {
         return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
       } else {
         return [...filtered].sort(
-          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt),
         )
       }
     },
@@ -852,7 +853,7 @@ export default {
 
       if (searchTerm) {
         filtered = filtered.filter((podcast) =>
-          podcast.title.toLowerCase().includes(searchTerm)
+          podcast.title.toLowerCase().includes(searchTerm),
         )
       }
 
@@ -860,14 +861,14 @@ export default {
         return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
       } else {
         return [...filtered].sort(
-          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt),
         )
       }
     },
     sortedTracks() {
       return this.favoriteTracks
         .filter((track) =>
-          track.title.toLowerCase().includes(this.search.toLowerCase())
+          track.title.toLowerCase().includes(this.search.toLowerCase()),
         )
         .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
     },
@@ -883,7 +884,7 @@ export default {
     if (!searchTerm) return this.artists
 
     return this.artists.filter((artist) =>
-      artist.name.toLowerCase().includes(searchTerm)
+      artist.name.toLowerCase().includes(searchTerm),
     )
   },
   methods: {
@@ -899,9 +900,9 @@ export default {
         }))
 
         const requests = favoriteIds.map((entry) =>
-          fetch(`/api/deezer/artist/${entry.id}`)
+          fetch(`${API_BASE}/deezer/artist/${entry.id}`)
             .then((res) => res.json())
-            .then((artist) => ({ ...artist, addedAt: entry.addedAt }))
+            .then((artist) => ({ ...artist, addedAt: entry.addedAt })),
         )
 
         const results = await Promise.all(requests)
@@ -929,12 +930,12 @@ export default {
         }
 
         const requests = favoriteIds.map((item) =>
-          fetch(`/api/deezer/track/${item.id}`)
+          fetch(`${API_BASE}/deezer/track/${item.id}`)
             .then((res) => res.json())
             .then((track) => ({
               ...track,
               addedAt: item.addedAt,
-            }))
+            })),
         )
 
         const results = await Promise.all(requests)
@@ -955,12 +956,12 @@ export default {
         }))
 
         const requests = favoriteIds.map((entry) =>
-          fetch(`/api/deezer/album/${entry.id}`)
+          fetch(`${API_BASE}/deezer/album/${entry.id}`)
             .then((res) => res.json())
             .then((album) => ({
               ...album,
               addedAt: entry.addedAt,
-            }))
+            })),
         )
 
         const results = await Promise.all(requests)
@@ -980,17 +981,17 @@ export default {
           addedAt: item.addedAt,
         }))
         const requests = favoriteIds.map((entry) =>
-          fetch(`/api/deezer/playlist/${entry.id}`)
+          fetch(`${API_BASE}/deezer/playlist/${entry.id}`)
             .then((res) => res.json())
             .then((playlist) => ({
               ...playlist,
               addedAt: entry.addedAt,
-            }))
+            })),
         )
 
         const results = await Promise.all(requests)
         this.favoritePlaylists = results.filter(
-          (playlist) => playlist && playlist.id
+          (playlist) => playlist && playlist.id,
         )
       } catch (error) {
         console.error("Erro ao carregar as playlists favoritas.", error)
@@ -1008,17 +1009,17 @@ export default {
         }))
 
         const requests = favoriteIds.map((entry) =>
-          fetch(`/api/deezer/podcast/${entry.id}`)
+          fetch(`${API_BASE}/deezer/podcast/${entry.id}`)
             .then((res) => res.json())
             .then((podcast) => ({
               ...podcast,
               addedAt: entry.addedAt,
-            }))
+            })),
         )
 
         const results = await Promise.all(requests)
         this.favoritePodcasts = results.filter(
-          (podcast) => podcast && podcast.id
+          (podcast) => podcast && podcast.id,
         )
       } catch (error) {
         console.error("Erro ao carregar os podcasts favoritos.", error)
@@ -1033,7 +1034,7 @@ export default {
         const updated = parsed.filter((item) => item.id !== id)
         localStorage.setItem("favorites_artists", JSON.stringify(updated))
         this.favoriteArtists = this.favoriteArtists.filter(
-          (artist) => artist.id !== id
+          (artist) => artist.id !== id,
         )
 
         this.snackbarMessage = "Artista removido dos favoritos."
@@ -1054,7 +1055,7 @@ export default {
         const update = parsed.filter((item) => item.id !== id)
         localStorage.setItem("favorites_tracks", JSON.stringify(update))
         this.favoriteTracks = this.favoriteTracks.filter(
-          (track) => track.id !== id
+          (track) => track.id !== id,
         )
 
         this.snackbarMessage = "Música removida dos favoritos."
@@ -1075,7 +1076,7 @@ export default {
         const updated = parsed.filter((item) => item.id !== id)
         localStorage.setItem("favorites_albuns", JSON.stringify(updated))
         this.favoriteAlbuns = this.favoriteAlbuns.filter(
-          (album) => album.id !== id
+          (album) => album.id !== id,
         )
 
         this.snackbarMessage = "Album removido dos favoritos."
@@ -1096,7 +1097,7 @@ export default {
         const updated = parsed.filter((item) => item.id !== id)
         localStorage.setItem("favorites_playlists", JSON.stringify(updated))
         this.favoritePlaylists = this.favoritePlaylists.filter(
-          (playlist) => playlist.id !== id
+          (playlist) => playlist.id !== id,
         )
 
         this.snackbarMessage = "Playlist removido dos favoritos."
@@ -1117,7 +1118,7 @@ export default {
         const updated = parsed.filter((item) => item.id !== id)
         localStorage.setItem("favorites_podcast", JSON.stringify(updated))
         this.favoritePodcasts = this.favoritePodcasts.filter(
-          (podcast) => podcast.id !== id
+          (podcast) => podcast.id !== id,
         )
 
         this.snackbarMessage = "Podcast removido dos favoritos."
@@ -1152,7 +1153,7 @@ export default {
       const trackId = random.id
 
       try {
-        const response = await fetch(`/api/deezer/track/${trackId}`)
+        const response = await fetch(`${API_BASE}/deezer/track/${trackId}`)
         const track = await response.json()
 
         if (!track.preview) {
@@ -1177,8 +1178,10 @@ export default {
 
       const tracks = await Promise.all(
         favoriteTracks.map((track) =>
-          fetch(`/api/deezer/track/${track.id}`).then((res) => res.json())
-        )
+          fetch(`${API_BASE}/deezer/track/${track.id}`).then((res) =>
+            res.json(),
+          ),
+        ),
       )
 
       this.favoriteTracks = tracks.filter((track) => track && track.preview)

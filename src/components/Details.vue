@@ -27,6 +27,7 @@
 
 <script>
 import { formatNumber } from "../untils/formatNumber.js"
+import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Accordion from "./Accordion.vue"
@@ -58,7 +59,7 @@ export default {
     async getDetails() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`/api/deezer/artist/${id}`)
+        const response = await fetch(`${API_BASE}/deezer/artist/${id}`)
         const data = await response.json()
         this.artist = data
       } catch (error) {

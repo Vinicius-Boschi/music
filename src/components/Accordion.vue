@@ -281,6 +281,7 @@
 <script>
 import { formatDuration } from "../untils/formatDuration.js"
 import { formatNumber } from "../untils/formatNumber.js"
+import { API_BASE } from "../services/api.js"
 
 export default {
   name: "Accordion",
@@ -316,7 +317,9 @@ export default {
     async getTopTracks() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`/api/deezer/artist/${id}/top?limit=100`)
+        const response = await fetch(
+          `${API_BASE}/deezer/artist/${id}/top?limit=100`,
+        )
         const data = await response.json()
         this.tracks = data?.data || []
       } catch (error) {
@@ -328,7 +331,7 @@ export default {
       try {
         const id = this.$route.params.id
         const response = await fetch(
-          `/api/deezer/artist/${id}/albums?limit=50`
+          `${API_BASE}/deezer/artist/${id}/albums?limit=50`,
         )
         const data = await response.json()
         this.albums = data?.data || []
@@ -340,7 +343,7 @@ export default {
     async getRelated() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`/api/deezer/artist/${id}/related`)
+        const response = await fetch(`${API_BASE}/deezer/artist/${id}/related`)
         const data = await response.json()
         this.relateds = data?.data || []
       } catch (error) {
@@ -352,7 +355,7 @@ export default {
       try {
         const id = this.$route.params.id
         const response = await fetch(
-          `/api/deezer/artist/${id}/playlists?limit=50`
+          `${API_BASE}/deezer/artist/${id}/playlists?limit=50`,
         )
         const data = await response.json()
         this.playlists = data?.data || []
@@ -364,7 +367,9 @@ export default {
     async getRadio() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`/api/deezer/artist/${id}/radio?limit=50`)
+        const response = await fetch(
+          `${API_BASE}/deezer/artist/${id}/radio?limit=50`,
+        )
         const data = await response.json()
         this.radios = data?.data || []
       } catch (error) {

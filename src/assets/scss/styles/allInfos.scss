@@ -1,4 +1,4 @@
-@use "../variables" as *;  
+@use "../variables" as *;
 
 .page {
   padding: 2rem;
@@ -11,7 +11,7 @@
   &__container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 3rem;
+    gap: 3.5rem;
   }
 
   &__content {
@@ -27,10 +27,16 @@
     }
   }
 
+  a {
+    padding: 1.5rem;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
   &__name {
     &.center {
       text-align: center;
-      padding: 2rem;
       color: $white;
     }
   }

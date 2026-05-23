@@ -91,6 +91,7 @@ import { formatNumber } from "../untils/formatNumber.js"
 import { formatHours } from "../untils/formatHours.js"
 import { formatDuration } from "../untils/formatDuration.js"
 import { formatDate } from "../untils/formatDate.js"
+import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
@@ -121,7 +122,7 @@ export default {
     async getDetailsPlaylist() {
       try {
         const id = this.$route.params.id
-        const response = await fetch(`/api/deezer/playlist/${id}`)
+        const response = await fetch(`${API_BASE}/deezer/playlist/${id}`)
         const data = await response.json()
         this.playlist = data
       } catch (error) {

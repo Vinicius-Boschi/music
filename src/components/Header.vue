@@ -146,6 +146,8 @@
 </template>
 
 <script>
+import { API_BASE } from "../services/api.js"
+
 export default {
   name: "Header",
   data() {
@@ -184,14 +186,14 @@ export default {
     async performSearch() {
       try {
         const response = await fetch(
-          `/api/deezer/search?q=${this.searchQuery}`
+          `${API_BASE}/deezer/search?q=${this.searchQuery}`,
         )
         const playlistResponse = await fetch(
-          `/api/deezer/search/playlist?q=${this.searchQuery}`
+          `${API_BASE}/deezer/search/playlist?q=${this.searchQuery}`,
         )
 
         const podcastRespose = await fetch(
-          `/api/deezer/search/podcast?q=${this.searchQuery}`
+          `${API_BASE}/deezer/search/podcast?q=${this.searchQuery}`,
         )
 
         if (!response.ok || !playlistResponse.ok) {
