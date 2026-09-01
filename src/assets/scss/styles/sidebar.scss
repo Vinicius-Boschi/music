@@ -1,0 +1,133 @@
+@use "../variables" as *;  
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 200px;
+  max-width: 300px;
+  border-right: 1px solid $white-three;
+  background-color: $white-two;
+
+  &__logo {
+    padding: 1rem;
+
+    &-name {
+      display: grid;
+      color: $black;
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1rem;
+      place-content: center;
+      width: 8rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__list {
+    margin-top: 1.5rem;
+    margin-top: 0.25rem;
+  }
+
+  &__icon {
+    width: 2rem;
+  }
+
+  &__link-text {
+    margin-left: 0.3rem;
+    font-weight: bold;
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+
+  &__arrow {
+    transition-property: background-color, border-color, color, fill, stroke,
+      opacity, box-shadow, transform;
+    transition-duration: 300ms;
+
+    &-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  &__details-hide {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  &__hover {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    font-size: 1.2rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+
+    &:hover {
+      background-color: $white-three;
+    }
+
+    &.active {
+      color: $purple;
+      background-color: $light-gray;
+    }
+  }
+
+  &__announcement {
+    background-color: $purple;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 95%;
+    margin-top: 0.5rem;
+
+    &-text {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: $white;
+      margin-bottom: 1rem;
+    }
+
+    &-button {
+      background-color: $purple-two;
+      color: $white;
+      font-size: 0.875rem;
+      font-weight: bold;
+      padding: 0.4rem;
+      border-radius: 5px;
+      border: 1px solid $white;
+      cursor: pointer;
+      width: 40%;
+    }
+  }
+
+  &__playlist {
+    margin-top: 1rem;
+    border-top: 1px solid $white-three;
+
+    &-title {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 0.5rem;
+    }
+
+    &-text {
+      font-weight: normal;
+      font-size: 1rem;
+      margin-left: 0.3rem;
+    }
+  }
+}

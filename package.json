@@ -1,0 +1,32 @@
+{
+  "name": "showmusics",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:api": "node server.js",
+    "build": "vite build",
+    "start": "node server.js"
+  },  
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "genius-lyrics": "^4.4.7",
+    "node-fetch": "^3.3.2",
+    "swiper": "^12.1.4",
+    "vue": "^3.4.15",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.3",
+    "sass": "^1.71.1",
+    "vite": "^6.3.5"
+  },
+  "engines": {
+    "node": "^20.x"
+  }
+}
