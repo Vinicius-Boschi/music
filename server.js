@@ -11,25 +11,34 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.get("/api/lyrics", (req, res) => lyricsHandler(req, res));
 
-app.get("/api/test-deezer-location", async (req, res) => {
+app.get("/api/test-deezer-chart", async (req, res) => {
   try {
-    const response = await fetch("https://api.deezer.com/chart/0/artists");
+    const urls = [
+      "https://api.deezer.com/chart/0/artists",
+      "https://api.deezer.com/chart/31/artists",
+      "https://api.deezer.com/chart/BR/artists",
+    ]
 
-    const data = await response.json();
+    const results = await Promise.all(
+      urls.map(async (url) => {
+        const response = await fetch(url)
+        const data = await response.json()
 
-    res.json({
-      server: "Render/Local",
-      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
-      firstArtists: data.data?.slice(0, 10).map((artist) => ({
-        id: artist.id,
-        name: artist.name,
-      })),
-    });
+        return {
+          url,
+          status: response.status,
+          firstArtists: data?.data?.slice(0, 5).map((artist) => artist.name),
+          error: data?.error || null,
+        }
+      })
+    )
+
+    res.json(results)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.error(err)
+    res.status(500).json({ error: err.message })
   }
-});
+})
 
 app.get(/^\/api\/deezer\/(.+)/, async (req, res) => {
   try {
