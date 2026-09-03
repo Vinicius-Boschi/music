@@ -15,7 +15,7 @@
         <div class="header__user-container">
           <img
             class="header__user-icon"
-            src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/ddde9c36-3bed-4f13-989a-23e7f5972d5b"
+            src="../assets/icons/bell-regular-full.png"
             alt="icon ring"
             @click="toggleNotification"
           />
@@ -116,7 +116,7 @@
           <h1 class="header__notification-title">Notificações</h1>
           <div class="header__notification">
             <img
-              src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/43b34444-348d-4bb1-beab-7c4dfe86d8b7"
+              src="../assets/icons/user-solid-full.png"
               alt=""
               class="header__notification-photo"
             />

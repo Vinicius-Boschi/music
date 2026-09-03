@@ -65,10 +65,6 @@
               ref="trackRows"
               :class="{ highlighted: highlightedRow === index }"
             >
-              <audio
-                :ref="(el) => (audioTracks[index] = el)"
-                :src="track.preview"
-              ></audio>
               <img
                 class="accordion__picture"
                 :src="track.album.cover_small"
@@ -111,11 +107,7 @@
                   ref="trackRows"
                   :class="{ highlighted: highlightedRow === index }"
                 >
-                  <td class="accordon__track-group">
-                    <audio
-                      :ref="(el) => (audioTracks[index] = el)"
-                      :src="track.preview"
-                    ></audio>
+                  <td class="accordion__track-group">
                     <img
                       :src="track.album.cover_small"
                       :alt="track.title"
@@ -238,10 +230,6 @@
                   :class="{ highlighted: highlightedRow === index }"
                 >
                   <td class="accordion__track-group">
-                    <audio
-                      :ref="(el) => (audioRadios[index] = el)"
-                      :src="radio.preview"
-                    ></audio>
                     <img
                       :src="radio.album.cover_small"
                       :alt="radio.title"
@@ -279,9 +267,9 @@
 </template>
 
 <script>
-import { formatDuration } from "../untils/formatDuration.js";
-import { formatNumber } from "../untils/formatNumber.js";
-import { API_BASE } from "../services/api.js";
+import { formatDuration } from "../untils/formatDuration.js"
+import { formatNumber } from "../untils/formatNumber.js"
+import { API_BASE } from "../services/api.js"
 
 export default {
   name: "Accordion",
@@ -297,107 +285,115 @@ export default {
       audioRadios: [],
       currentTrackIndex: null,
       highlightedRow: null,
-    };
+    }
   },
   mounted() {
     this.getTopTracks().then(() => {
       this.audioPlayers = Array.isArray(this.$refs.audioPlayers)
         ? this.$refs.audioPlayers
-        : [this.$refs.audioPlayers];
-    });
-    this.getRelated();
-    this.getPlaylists();
-    this.getTopAlbums();
-    this.getRadio();
+        : [this.$refs.audioPlayers]
+    })
+    this.getRelated()
+    this.getPlaylists()
+    this.getTopAlbums()
+    this.getRadio()
   },
   methods: {
     switchToTopMusics() {
-      this.activeTab = "top_track";
+      this.activeTab = "top_track"
     },
     async getTopTracks() {
       try {
-        const id = this.$route.params.id;
+        const id = this.$route.params.id
         const response = await fetch(
           `${API_BASE}/deezer/artist/${id}/top?limit=100`,
-        );
-        const data = await response.json();
-        this.tracks = data?.data || [];
+        )
+        const data = await response.json()
+        this.tracks = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar as músicas.", error);
-        this.tracks = [];
+        console.error("Erro ao buscar as músicas.", error)
+        this.tracks = []
       }
     },
     async getTopAlbums() {
       try {
-        const id = this.$route.params.id;
+        const id = this.$route.params.id
         const response = await fetch(
           `${API_BASE}/deezer/artist/${id}/albums?limit=50`,
-        );
-        const data = await response.json();
-        this.albums = data?.data || [];
+        )
+        const data = await response.json()
+        this.albums = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar os albuns.", error);
-        this.albums = [];
+        console.error("Erro ao buscar os albuns.", error)
+        this.albums = []
       }
     },
     async getRelated() {
       try {
-        const id = this.$route.params.id;
-        const response = await fetch(`${API_BASE}/deezer/artist/${id}/related`);
-        const data = await response.json();
-        this.relateds = data?.data || [];
+        const id = this.$route.params.id
+        const response = await fetch(`${API_BASE}/deezer/artist/${id}/related`)
+        const data = await response.json()
+        this.relateds = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar os artistas semelhantes.", error);
-        this.relateds = [];
+        console.error("Erro ao buscar os artistas semelhantes.", error)
+        this.relateds = []
       }
     },
     async getPlaylists() {
       try {
-        const id = this.$route.params.id;
+        const id = this.$route.params.id
         const response = await fetch(
           `${API_BASE}/deezer/artist/${id}/playlists?limit=50`,
-        );
-        const data = await response.json();
-        this.playlists = data?.data || [];
+        )
+        const data = await response.json()
+        this.playlists = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar as playlists.", error);
-        this.playlists = [];
+        console.error("Erro ao buscar as playlists.", error)
+        this.playlists = []
       }
     },
     async getRadio() {
       try {
-        const id = this.$route.params.id;
+        const id = this.$route.params.id
         const response = await fetch(
           `${API_BASE}/deezer/artist/${id}/radio?limit=50`,
-        );
-        const data = await response.json();
-        this.radios = data?.data || [];
+        )
+        const data = await response.json()
+        this.radios = data?.data || []
       } catch (error) {
-        console.error("Erro ao buscar a rádio.", error);
-        this.radios = [];
+        console.error("Erro ao buscar a rádio.", error)
+        this.radios = []
       }
     },
     durationReformed(seconds) {
-      return formatDuration(seconds);
+      return formatDuration(seconds)
     },
     numberReformed(number) {
-      return formatNumber(number);
+      return formatNumber(number)
     },
     playTrack(index) {
-      const track = this.tracks[index];
+      const track = this.tracks[index]
 
-      this.audioTracks.forEach((p) => p && p.pause());
-      const player = this.audioTracks[index];
-      if (player) player.play();
+      if (!track || !track.preview) return
+
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track,
+            queue: this.tracks,
+            index,
+          },
+        }),
+      )
     },
 
     playRadio(index) {
-      const radio = this.radios[index];
+      const radio = this.radios[index]
 
-      this.audioRadios.forEach((p) => p && p.pause());
-      const player = this.audioRadios[index];
-      if (player) player.play();
+      this.audioRadios.forEach((p) => p && p.pause())
+      const player = this.audioRadios[index]
+      if (player) player.play()
     },
   },
-};
+}
 </script>

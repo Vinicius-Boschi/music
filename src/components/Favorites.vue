@@ -230,8 +230,6 @@
                             :src="track.album.cover_small"
                             :alt="track.title"
                             @click="playPreview(track)"
-                            @mouseover="currentTrackIndex = index"
-                            @mouseleave="currentTrackIndex = null"
                           />
                           <h1>
                             <router-link
@@ -589,107 +587,6 @@
           </article>
         </div>
       </article>
-      <footer class="accordion__player" v-show="true || currentTrack">
-        <div class="accordion__player-top">
-          <div class="accordion__player-info">
-            <img
-              :src="currentTrack.album?.cover_small"
-              alt="Capa"
-              class="accordion__player-info-img"
-            />
-            <div class="accordion__player-info-text">
-              <p class="accordion__player-info-title">
-                {{ currentTrack?.title }}
-              </p>
-              <p class="accordion__player-info-artist">
-                {{ currentTrack?.artist?.name }}
-              </p>
-            </div>
-          </div>
-          <div class="accordion__player-center">
-            <div class="accordion__player-controls">
-              <button
-                @click="playPreviousTrack"
-                class="accordion__player-button"
-              >
-                <img
-                  :src="previousIcon"
-                  alt="Anterior"
-                  class="accordion__player-icon"
-                />
-              </button>
-              <button @click="togglePlay" class="accordion__player-button">
-                <img
-                  :src="isPlaying ? pauseIcon : playIcon"
-                  alt="Play/Pause"
-                  class="accordion__player-icon"
-                />
-              </button>
-              <button @click="playNextTrack" class="accordion__player-button">
-                <img
-                  :src="nextIcon"
-                  alt="Próxima"
-                  class="accordion__player-icon"
-                />
-              </button>
-            </div>
-            <div class="accordion__player-progress" v-if="audioPlayer">
-              <span class="accordion__player-time">{{
-                durationReformed(currentTime)
-              }}</span>
-              <input
-                type="range"
-                min="0"
-                :max="duration"
-                step="0.1"
-                v-model="currentTime"
-                class="accordion__player-progress-bar"
-                @input="seekAudio"
-              />
-              <span class="accordion__player-time">{{
-                durationReformed(duration)
-              }}</span>
-            </div>
-          </div>
-          <div>
-            <button>
-              <img
-                :src="listIcon"
-                alt="lista de músicas"
-                class="accordion__player-icon"
-              />
-            </button>
-            <button>
-              <img
-                :src="tvIcon"
-                alt="transmitir na tv"
-                class="accordion__player-icon"
-              />
-            </button>
-            <button>
-              <img
-                :src="volumeIcon"
-                alt="volume do som"
-                class="accordion__player-icon"
-              />
-            </button>
-            <button>
-              <img
-                :src="sliderIcon"
-                alt="configuração de áudio"
-                class="accordion__player-icon"
-              />
-            </button>
-          </div>
-        </div>
-        <audio
-          :src="currentTrack?.preview"
-          ref="audioPlayer"
-          @ended="playNextTrack"
-          @play="isPlaying = true"
-          @pause="isPlaying = false"
-        ></audio>
-      </footer>
     </div>
   </div>
   <Footer />
@@ -703,14 +600,6 @@ import { API_BASE } from "../services/api.js"
 import Header from "./Header.vue"
 import Sidebar from "./Sidebar.vue"
 import Footer from "./Footer.vue"
-import playIcon from "@/assets/icons/play-solid-full.png"
-import pauseIcon from "@/assets/icons/pause-solid-full.png"
-import nextIcon from "@/assets/icons/forward-solid-full.png"
-import previousIcon from "@/assets/icons/backward-solid-full.png"
-import listIcon from "@/assets/icons/list-solid-full.png"
-import tvIcon from "@/assets/icons/tv-solid-full.png"
-import volumeIcon from "@/assets/icons/volume-high-solid-full.png"
-import sliderIcon from "@/assets/icons/sliders-solid-full.png"
 
 export default {
   name: "Favorites",
@@ -723,28 +612,12 @@ export default {
       favoriteAlbuns: [],
       favoritePlaylists: [],
       favoritePodcasts: [],
-      audioPlayers: [],
-      trackRows: [],
       snackbarVisible: false,
       snackbarMessage: "",
       highlightedRow: null,
-      currentTrackIndex: null,
-      currentTrack: "",
-      audioPlayer: null,
       sortOption: "recent",
       isOpen: false,
-      isPlaying: false,
-      currentTime: 0,
-      duration: 30,
       search: "",
-      playIcon,
-      pauseIcon,
-      nextIcon,
-      previousIcon,
-      listIcon,
-      tvIcon,
-      volumeIcon,
-      sliderIcon,
       selected: { label: "Adicionados recentemente", value: "recent" },
       sortOptions: [
         { label: "Ordem alfabética", value: "alphabetical" },
@@ -754,43 +627,10 @@ export default {
   },
   mounted() {
     this.loadFavoriteArtists()
+    this.loadFavoriteTracks()
     this.loadFavoriteAlbuns()
     this.loadFavoritePlaylists()
     this.loadFavoritePodcasts()
-    this.loadFavoriteTracks().then(() => {
-      this.audioPlayers = this.$refs.audioPlayers
-      this.trackRows = this.$refs.trackRows
-    })
-    const savedTrack = localStorage.getItem("currentTrack")
-    if (savedTrack) {
-      this.currentTrack = JSON.parse(savedTrack)
-    }
-    window.addEventListener("track-changed", () => {
-      const savedTrack = localStorage.getItem("currentTrack")
-      if (savedTrack) {
-        this.currentTrack = JSON.parse(savedTrack)
-
-        if (savedTrack) {
-          this.currentTrack = JSON.parse(savedTrack)
-
-          this.$nextTick(() => {
-            const player = this.$refs.audioPlayer
-            if (player) {
-              player.currentTime = 0
-              player.play()
-              this.isPlaying = true
-            }
-          })
-        }
-      }
-    })
-  },
-  watch: {
-    currentTime(val) {
-      if (this.audioPlayer) {
-        this.audioPlayer.currentTime = val
-      }
-    },
   },
   computed: {
     sortedArtists() {
@@ -872,20 +712,6 @@ export default {
         )
         .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
     },
-    formattedCurrentTime() {
-      return this.durationReformed(this.currentTime)
-    },
-    formattedDuration() {
-      return this.durationReformed(this.duration)
-    },
-  },
-  filteredArtists() {
-    const searchTerm = this.search.trim().toLowerCase()
-    if (!searchTerm) return this.artists
-
-    return this.artists.filter((artist) =>
-      artist.name.toLowerCase().includes(searchTerm),
-    )
   },
   methods: {
     async loadFavoriteArtists() {
@@ -1134,12 +960,7 @@ export default {
       const randomIndex = Math.floor(Math.random() * tracks.length)
       return tracks[randomIndex]
     },
-    playTrack(track) {
-      if (!track || !track.preview) return
 
-      const audio = new Audio(track.preview)
-      audio.play()
-    },
     async playRandomFavorite() {
       const favsRaw = localStorage.getItem("favorites_tracks")
       const favoriteTracks = favsRaw ? JSON.parse(favsRaw) : []
@@ -1149,23 +970,34 @@ export default {
         return
       }
 
-      const random = this.getRandomTracks(favoriteTracks)
-      const trackId = random.id
+      const tracks = await Promise.all(
+        favoriteTracks.map((track) =>
+          fetch(`${API_BASE}/deezer/track/${track.id}`).then((res) =>
+            res.json(),
+          ),
+        ),
+      )
 
-      try {
-        const response = await fetch(`${API_BASE}/deezer/track/${trackId}`)
-        const track = await response.json()
+      const playableTracks = tracks.filter((track) => track && track.preview)
 
-        if (!track.preview) {
-          alert("Esta música não tem preview disponível.")
-          return
-        }
-
-        localStorage.setItem("currentTrack", JSON.stringify(track))
-        window.dispatchEvent(new Event("track-changed"))
-      } catch (error) {
-        console.error("Erro ao buscar dados da música:", error)
+      if (playableTracks.length === 0) {
+        alert("Nenhuma das músicas favoritas tem preview disponível.")
+        return
       }
+
+      const randomIndex = Math.floor(Math.random() * playableTracks.length)
+
+      const randomTrack = playableTracks[randomIndex]
+
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track: randomTrack,
+            queue: playableTracks,
+            index: randomIndex,
+          },
+        }),
+      )
     },
     async startSequentialPlayback() {
       const favsRaw = localStorage.getItem("favorites_tracks")
@@ -1184,110 +1016,38 @@ export default {
         ),
       )
 
-      this.favoriteTracks = tracks.filter((track) => track && track.preview)
+      const playableTracks = tracks.filter((track) => track && track.preview)
 
-      if (this.favoriteTracks.length === 0) {
+      if (playableTracks.length === 0) {
         alert("Nenhuma das músicas favoritas tem preview disponível.")
         return
       }
 
-      this.currentTrackIndex = 0
-      this.currentTrack = this.favoriteTracks[0]
-
-      this.playCurrent()
-    },
-    playCurrent() {
-      const track = this.favoriteTracks[this.currentTrackIndex]
-      if (!track || !track.preview) {
-        this.playNextTrack()
-        return
-      }
-      this.currentTrack = track
-      localStorage.setItem("last_played_track", JSON.stringify(track))
-
-      if (this.audioPlayer) {
-        this.audioPlayer.pause()
-        this.audioPlayer.src = ""
-        this.audioPlayer.removeEventListener("ended", this.playNextTrack)
-      }
-      this.audioPlayer = new Audio(track.preview)
-      this.audioPlayer.addEventListener("ended", this.playNextTrack)
-      this.audioPlayer.addEventListener("timeupdate", () => {
-        this.currentTime = this.audioPlayer.currentTime
-      })
-      this.audioPlayer.addEventListener("loadedmetadata", () => {
-        this.duration = this.audioPlayer.duration || 30
-      })
-      this.audioPlayer.play().catch(console.error)
-    },
-    playNextTrack() {
-      this.currentTrackIndex++
-      if (this.currentTrackIndex >= this.favoriteTracks.length) {
-        this.currentTrack = null
-        return
-      }
-
-      this.currentTrack = this.favoriteTracks[this.currentTrackIndex]
-      this.playCurrent()
-    },
-    playPreviousTrack() {
-      if (!this.audioPlayer) return
-
-      if (this.audioPlayer.currentTime > 3 || this.currentTrackIndex === 0) {
-        this.audioPlayer.currentTime = 0
-        return
-      }
-
-      this.currentTrackIndex--
-      if (this.currentTrackIndex < 0) {
-        this.currentTrackIndex = 0
-      }
-      this.currentTrack = this.favoriteTracks[this.currentTrackIndex]
-      this.playCurrent()
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track: playableTracks[0],
+            queue: playableTracks,
+            index: 0,
+          },
+        }),
+      )
     },
     playPreview(track) {
-      this.currentTrack = track
-      localStorage.setItem("currentTrack", JSON.stringify(track))
-      window.dispatchEvent(new Event("track-changed"))
-    },
-    seekAudio() {
-      if (this.audioPlayer) {
-        this.audioPlayer.currentTime = this.currentTime
-      }
-    },
-    togglePlay() {
-      if (!this.currentTrack) {
-        this.resumeLastTrack()
-        return
-      }
+      const queue = this.sortedTracks
+      const index = queue.findIndex((item) => item.id === track.id)
 
-      if (!this.$refs.audioPlayer) return
-      const audio = this.$refs.audioPlayer
-      if (audio.paused) {
-        audio.play()
-        this.isPlaying = true
-      } else {
-        audio.pause()
-        this.isPlaying = false
-      }
-    },
-    resumeLastTrack() {
-      if (!this.currentTrack) return
-      this.$nextTick(() => {
-        const audio = this.$refs.audioPlayer
-        if (audio) {
-          audio.addEventListener("timeupdate", () => {
-            this.currentTime = audio.currentTime
-          })
-          audio.addEventListener("loadedmetadata", () => {
-            this.duration = audio.duration || 30
-          })
-          audio.addEventListener("ended", this.playNextTrack)
+      if (index === -1) return
 
-          audio.play().catch((e) => console.error("Erro ao tocar:", e))
-          this.isPlaying = true
-        }
-      })
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track,
+            queue,
+            index,
+          },
+        }),
+      )
     },
     numberReformed(number) {
       return formatNumber(number)
@@ -1309,6 +1069,6 @@ export default {
 
 <style lang="scss" scoped>
 li.active {
-  border: none;
+  border: none
 }
 </style>

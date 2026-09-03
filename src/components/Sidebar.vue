@@ -2,7 +2,9 @@
   <div>
     <div class="sidebar">
       <div class="sidebar__logo">
-        <span class="sidebar__logo-name"> Deezer </span>
+        <span class="sidebar__logo-name">
+          <router-link to="/">Deezer</router-link>
+        </span>
         <ul class="sidebar__list">
           <li>
             <router-link
@@ -60,29 +62,30 @@
 </template>
 
 <script>
+import homeIcon from "../assets/icons/house-regular-full.png";
+import exploreIcon from "../assets/icons/compass-regular-full.png";
+import favoritesIcon from "../assets/icons/heart-regular-full.png";
+import lovedIcon from "../assets/icons/heart-solid-full.png";
+import playlistIcon from "../assets/icons/plus-solid-full.png";
+
 export default {
   name: "Sidebar",
   data() {
     return {
-      home: "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/cca4a60a-03c9-410e-84bd-7e831bd58f13",
-      explore:
-        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/17df5b60-6e2e-4b32-899c-d5ba9f99e653",
-      favorites:
-        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/84ae12a9-2b9f-44f9-b81e-2283432f3d08",
-      loved:
-        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/4d23b271-0954-48e3-af60-dea71a52b445",
-      playlist:
-        "https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/02d57893-885a-4bf0-b847-c529bae5e71d",
-      user: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-    }
+      home: homeIcon,
+      explore: exploreIcon,
+      favorites: favoritesIcon,
+      loved: lovedIcon,
+      playlist: playlistIcon,
+    };
   },
   computed: {
     isHomePage() {
-      return this.$route.path === "/"
+      return this.$route.path === "/";
     },
     isFavoritesPage() {
-      return this.$route.path === "/favorites"
+      return this.$route.path === "/favorites";
     },
   },
-}
+};
 </script>

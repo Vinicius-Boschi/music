@@ -59,7 +59,7 @@
 
     &-icon {
       cursor: pointer;
-      width: 1rem;
+      width: 1.5rem;
       height: auto;
     }
 
@@ -76,8 +76,8 @@
       box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.24);
       width: 360px;
       height: auto;
-      z-index: 2;
-      max-height: 85vh;
+      z-index: 100;
+      max-height: 78vh;
       overflow-y: auto;
     }
   }

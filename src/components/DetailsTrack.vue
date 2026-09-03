@@ -36,7 +36,6 @@
     </div>
     <div class="details__group">
       <div class="details__button">
-        <audio ref="audioPlayer" :src="track.preview"></audio>
         <button @click="playPreview">
           <span>
             <img
@@ -294,19 +293,32 @@ export default {
       return formatDuration(seconds)
     },
     playPreview() {
-      const player = this.$refs.audioPlayer
-      if (!player) return
-      player.paused ? player.play() : player.pause()
+      if (!this.track?.id || !this.track?.preview) return
+
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track: this.track,
+            queue: [this.track],
+            index: 0,
+          },
+        }),
+      )
     },
     loadFavoritesFromStorage() {
       const saved = localStorage.getItem("favorites_tracks")
       this.favorites = saved ? JSON.parse(saved) : []
     },
     toggleFavorite(trackId) {
-      const index = this.favorites.indexOf(trackId)
+      const index = this.favorites.findIndex(
+        (favorite) => favorite.id === trackId,
+      )
 
       if (index === -1) {
-        this.favorites.push(trackId)
+        this.favorites.push({
+          id: trackId,
+          addedAt: new Date().toISOString(),
+        })
         this.showSnackbar("Música adicionada aos favoritos.")
       } else {
         this.favorites.splice(index, 1)
@@ -316,7 +328,7 @@ export default {
       localStorage.setItem("favorites_tracks", JSON.stringify(this.favorites))
     },
     isFavorite(trackId) {
-      return this.favorites.includes(trackId)
+      return this.favorites.some((favorite) => favorite.id === trackId)
     },
     showSnackbar(message) {
       this.snackbarMessage = message
