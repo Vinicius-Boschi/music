@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ lyrics })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: err.message })
+    console.error("Erro Genius:",err)
+    res.status(500).json({ error: err.message, details: err.response?.data || null })
   }
 }
