@@ -25,6 +25,7 @@
   &__group {
     display: flex;
     position: absolute;
+    margin-top: -1.5rem;
   }
 
   &__button {
@@ -63,8 +64,8 @@
 
   &__remove-wrapper {
     position: relative;
-    z-index: 10; /* valor alto para estar acima do fundo/modal */
-    display: inline-block; /* para evitar pegar área extra */
+    z-index: 10; 
+    display: inline-block; 
   }
 
   &__favorite-button {
@@ -138,9 +139,8 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 2rem;
-    margin: 1rem 0;
+    margin: 2rem;
     font-size: 16px;
-    line-height: 1.8;
     white-space: pre-wrap;
     color: #333;
 
@@ -149,7 +149,12 @@
       margin-bottom: 1.2rem;
       font-size: 16px;
       line-height: 2;
-      transition: all 0.3s ease;
+      transition: all .3s ease;
+
+      &.stanza {
+        height: 1rem;
+        margin: 0;
+      }
 
       &.title {
         font-weight: bold;

@@ -112,9 +112,20 @@
       <div v-else-if="lyricsError" class="details__error">
         {{ lyricsError }}
       </div>
-      <pre v-else>
-    <span :class="{ chorus: line.chorus, title: line.isTitle}" v-for="(line, index) in lyrics" :key="index">{{ line.text }}</span>
-  </pre>
+      <div v-else>
+        <template v-for="(line, index) in lyrics" :key="index">
+          <span
+            v-if="!line.stanza"
+            :class="{
+              chorus: line.chorus,
+              title: line.isTitle,
+            }"
+          >
+            {{ line.text }}
+          </span>
+          <span v-else class="stanza"></span>
+        </template>
+      </div>
     </div>
   </div>
   <Footer />
@@ -229,11 +240,16 @@ export default {
 
       try {
         const cleanTitle = this.cleanTitle(title)
-        const cleanArtist = artist.split(",")[0].split("&")[0].trim()
+        const cleanArtist = artist.trim()
 
-        const query = encodeURIComponent(`${cleanTitle} ${cleanArtist}`)
+        const params = new URLSearchParams({
+          title: cleanTitle,
+          artist: cleanArtist,
+          album: this.track?.album?.title || "",
+          duration: String(this.track?.duration || ""),
+        })
 
-        const response = await fetch(`${API_BASE}/lyrics?query=${query}`)
+        const response = await fetch(`${API_BASE}/lyrics?${params.toString()}`)
 
         const data = await response.json()
 
@@ -247,23 +263,33 @@ export default {
           return
         }
 
-        const cleanedLyrics = data.lyrics
-          .replace(/^\d+\s*Contributors.*Lyrics/i, "")
-          .replace(/You might also like/gi, "")
-          .replace(/See .* LiveGet tickets as low as \$\d+/gi, "")
-          .replace(/\d*Embed$/gi, "")
-          .split("\n")
-          .map((line) => line.trim())
-          .filter((line) => line !== "")
+        const lines = data.lyrics.split(/\r?\n/)
 
-        this.lyrics = cleanedLyrics.map((line) => ({
-          text: line,
-          isTitle:
-            /^\[.*\]$/i.test(line) ||
-            /refrão|verso|chorus|verse|bridge|intro|outro/i.test(line),
-        }))
-      } catch (err) {
-        console.error(err)
+        this.lyrics = lines.map((line) => {
+          const text = line.trim()
+
+          // Linha vazia = separação entre estrofes
+          if (text === "") {
+            return {
+              text: "",
+              stanza: true,
+              chorus: false,
+              isTitle: false,
+            }
+          }
+
+          return {
+            text,
+            stanza: false,
+            chorus: /refrão|chorus/i.test(text),
+            isTitle:
+              /^\[.*\]$/i.test(text) ||
+              /refrão|verso|chorus|verse|bridge|intro|outro/i.test(text),
+          }
+        })
+      } catch (error) {
+        console.error("Erro ao buscar letra:", error)
+
         this.lyricsError = "Erro ao buscar a letra"
       } finally {
         this.loadingLyrics = false
