@@ -110,15 +110,15 @@
 </template>
 
 <script>
-import { formatDuration } from "../untils/formatDuration.js"
-import playIcon from "@/assets/icons/play-solid-full.png"
-import pauseIcon from "@/assets/icons/pause-solid-full.png"
-import nextIcon from "@/assets/icons/forward-solid-full.png"
-import previousIcon from "@/assets/icons/backward-solid-full.png"
-import listIcon from "@/assets/icons/list-solid-full.png"
-import tvIcon from "@/assets/icons/tv-solid-full.png"
-import volumeIcon from "@/assets/icons/volume-high-solid-full.png"
-import sliderIcon from "@/assets/icons/sliders-solid-full.png"
+import { formatDuration } from "../untils/formatDuration.js";
+import playIcon from "@/assets/icons/play-solid-full.png";
+import pauseIcon from "@/assets/icons/pause-solid-full.png";
+import nextIcon from "@/assets/icons/forward-solid-full.png";
+import previousIcon from "@/assets/icons/backward-solid-full.png";
+import listIcon from "@/assets/icons/list-solid-full.png";
+import tvIcon from "@/assets/icons/tv-solid-full.png";
+import volumeIcon from "@/assets/icons/volume-high-solid-full.png";
+import sliderIcon from "@/assets/icons/sliders-solid-full.png";
 
 export default {
   name: "Player",
@@ -140,246 +140,248 @@ export default {
       tvIcon,
       volumeIcon,
       sliderIcon,
-    }
+    };
   },
 
   mounted() {
-    window.addEventListener("track-changed", this.handleTrackChanged)
+    window.addEventListener("track-changed", this.handleTrackChanged);
 
-    const savedTrack = localStorage.getItem("currentTrack")
-    const savedQueue = localStorage.getItem("playerQueue")
-    const savedIndex = localStorage.getItem("playerTrackIndex")
-    const savedCurrentTime = localStorage.getItem("playerCurrentTime")
+    const savedTrack = localStorage.getItem("currentTrack");
+    const savedQueue = localStorage.getItem("playerQueue");
+    const savedIndex = localStorage.getItem("playerTrackIndex");
+    const savedCurrentTime = localStorage.getItem("playerCurrentTime");
 
     try {
       if (savedTrack) {
-        this.currentTrack = JSON.parse(savedTrack)
+        this.currentTrack = JSON.parse(savedTrack);
       }
 
       if (savedQueue) {
-        this.queue = JSON.parse(savedQueue)
+        this.queue = JSON.parse(savedQueue);
       } else if (this.currentTrack) {
-        this.queue = [this.currentTrack]
+        this.queue = [this.currentTrack];
       }
 
       if (savedIndex !== null) {
-        this.currentTrackIndex = Number(savedIndex)
+        this.currentTrackIndex = Number(savedIndex);
       }
 
       if (savedCurrentTime !== null) {
-        this.currentTime = Number(savedCurrentTime)
+        this.currentTime = Number(savedCurrentTime);
       }
 
       this.$nextTick(() => {
-        const audio = this.$refs.audioPlayer
-        if (!audio || !this.currentTrack?.preview) return
+        const audio = this.$refs.audioPlayer;
+        if (!audio || !this.currentTrack?.preview) return;
 
         audio.addEventListener(
           "loadedmetadata",
           () => {
-            this.duration = audio.duration || 30
+            this.duration = audio.duration || 30;
 
             if (this.currentTime < this.duration) {
-              audio.currentTime = this.currentTime
+              audio.currentTime = this.currentTime;
             }
           },
           { once: true },
-        )
+        );
 
-        audio.src = this.currentTrack.preview
-        audio.load()
-      })
+        audio.src = this.currentTrack.preview;
+        audio.load();
+      });
     } catch (error) {
-      console.error("Erro ao restaurar o player:", error)
+      console.error("Erro ao restaurar o player:", error);
     }
   },
 
   beforeUnmount() {
-    window.removeEventListener("track-changed", this.handleTrackChanged)
-    const audio = this.$refs.audioPlayer
+    window.removeEventListener("track-changed", this.handleTrackChanged);
+    const audio = this.$refs.audioPlayer;
 
     if (audio) {
-      audio.pause()
+      audio.pause();
     }
   },
 
   methods: {
     handleTrackChanged(event) {
-      const detail = event.detail || {}
-      const track = detail.track
+      const detail = event.detail || {};
+      const track = detail.track;
 
-      if (!track || !track.preview) return
+      if (!track || !track.preview) return;
 
-      this.currentTrack = track
+      this.currentTrack = track;
 
-      this.queue = detail.queue && detail.queue.length ? detail.queue : [track]
+      const queue =
+        Array.isArray(detail.queue) && detail.queue.length
+          ? detail.queue
+          : [track];
 
-      this.currentTrackIndex = Number.isInteger(detail.index)
-        ? detail.index
-        : 0
+      this.queue = queue;
 
-      this.currentTime = 0
+      const foundIndex = queue.findIndex((item) => item?.id === track.id);
 
-      localStorage.setItem("currentTrack", JSON.stringify(this.currentTrack))
+      this.currentTrackIndex = foundIndex !== -1 ? foundIndex : 0;
 
-      localStorage.setItem("playerQueue", JSON.stringify(this.queue))
+      this.currentTime = 0;
 
-      localStorage.setItem("playerTrackIndex", String(this.currentTrackIndex))
+      localStorage.setItem("currentTrack", JSON.stringify(this.currentTrack));
 
-      localStorage.setItem("playerCurrentTime", "0")
+      localStorage.setItem("playerQueue", JSON.stringify(this.queue));
+
+      localStorage.setItem("playerTrackIndex", String(this.currentTrackIndex));
+
+      localStorage.setItem("playerCurrentTime", "0");
 
       this.$nextTick(() => {
-        this.playCurrent()
-      })
+        this.playCurrent();
+      });
     },
 
     playCurrent() {
-      const audio = this.$refs.audioPlayer
+      const audio = this.$refs.audioPlayer;
 
-      if (!audio || !this.currentTrack?.preview) return
+      if (!audio || !this.currentTrack?.preview) return;
 
-      audio.pause()
+      audio.pause();
 
-      audio.src = this.currentTrack.preview
-      audio.currentTime = 0
+      audio.src = this.currentTrack.preview;
+      audio.currentTime = 0;
 
-      this.currentTime = 0
-      this.duration = 30
+      this.currentTime = 0;
+      this.duration = 30;
 
-      audio.load()
+      audio.load();
 
       audio.play().catch((error) => {
-        console.error("Erro ao reproduzir música:", error)
-      })
+        console.error("Erro ao reproduzir música:", error);
+      });
     },
 
     togglePlay() {
-      const audio = this.$refs.audioPlayer
+      const audio = this.$refs.audioPlayer;
 
-      if (!audio || !this.currentTrack?.preview) return
+      if (!audio || !this.currentTrack?.preview) return;
 
       if (audio.paused) {
         audio.play().catch((error) => {
-          console.error("Erro ao continuar música:", error)
-        })
+          console.error("Erro ao continuar música:", error);
+        });
       } else {
-        audio.pause()
+        audio.pause();
       }
     },
 
     playNextTrack() {
-      const audio = this.$refs.audioPlayer
+      const audio = this.$refs.audioPlayer;
 
-      if (!audio || !this.queue.length) return
+      if (!audio || !this.queue.length) return;
 
-      const nextIndex = this.currentTrackIndex + 1
+      const nextIndex = this.currentTrackIndex + 1;
 
       if (nextIndex >= this.queue.length) {
-        this.isPlaying = false
-        return
+        this.isPlaying = false;
+        return;
       }
 
-      const nextTrack = this.queue[nextIndex]
+      const nextTrack = this.queue[nextIndex];
 
-      if (!nextTrack?.preview) return
+      if (!nextTrack?.preview) return;
 
-      this.currentTrackIndex = nextIndex
-      this.currentTrack = nextTrack
-      this.currentTime = 0
-      this.duration = 30
+      this.currentTrackIndex = nextIndex;
+      this.currentTrack = nextTrack;
+      this.currentTime = 0;
+      this.duration = 30;
 
-      localStorage.setItem("currentTrack", JSON.stringify(nextTrack))
+      localStorage.setItem("currentTrack", JSON.stringify(nextTrack));
 
-      localStorage.setItem("playerQueue", JSON.stringify(this.queue))
+      localStorage.setItem("playerQueue", JSON.stringify(this.queue));
 
-      localStorage.setItem("playerTrackIndex", String(this.currentTrackIndex))
+      localStorage.setItem("playerTrackIndex", String(this.currentTrackIndex));
 
-      localStorage.setItem("playerCurrentTime", "0")
+      localStorage.setItem("playerCurrentTime", "0");
 
-      audio.pause()
-      audio.src = nextTrack.preview
-      audio.currentTime = 0
-      audio.load()
+      audio.pause();
+      audio.src = nextTrack.preview;
+      audio.currentTime = 0;
+      audio.load();
 
       audio.play().catch((error) => {
-        console.error("Erro ao reproduzir próxima música:", error)
-      })
+        console.error("Erro ao reproduzir próxima música:", error);
+      });
     },
 
     playPreviousTrack() {
-      const audio = this.$refs.audioPlayer
+      const audio = this.$refs.audioPlayer;
 
-      if (!audio || !this.queue.length) return
+      if (!audio || !this.queue.length) return;
 
-      // Se a música já passou de 3 segundos,
-      // apenas volta para o início dela.
       if (audio.currentTime > 3) {
-        audio.currentTime = 0
-        this.currentTime = 0
+        audio.currentTime = 0;
+        this.currentTime = 0;
 
-        localStorage.setItem("playerCurrentTime", "0")
+        localStorage.setItem("playerCurrentTime", "0");
 
-        return
+        return;
       }
 
-      const previousIndex = this.currentTrackIndex - 1
+      const previousIndex = this.currentTrackIndex - 1;
 
-      // Já está na primeira música
       if (previousIndex < 0) {
-        audio.currentTime = 0
-        this.currentTime = 0
+        audio.currentTime = 0;
+        this.currentTime = 0;
 
-        localStorage.setItem("playerCurrentTime", "0")
+        localStorage.setItem("playerCurrentTime", "0");
 
-        return
+        return;
       }
 
-      const previousTrack = this.queue[previousIndex]
+      const previousTrack = this.queue[previousIndex];
 
-      if (!previousTrack?.preview) return
+      if (!previousTrack?.preview) return;
 
-      this.currentTrackIndex = previousIndex
-      this.currentTrack = previousTrack
-      this.currentTime = 0
-      this.duration = 30
+      this.currentTrackIndex = previousIndex;
+      this.currentTrack = previousTrack;
+      this.currentTime = 0;
+      this.duration = 30;
 
-      localStorage.setItem("currentTrack", JSON.stringify(previousTrack))
+      localStorage.setItem("currentTrack", JSON.stringify(previousTrack));
 
-      localStorage.setItem("playerQueue", JSON.stringify(this.queue))
+      localStorage.setItem("playerQueue", JSON.stringify(this.queue));
 
-      localStorage.setItem("playerTrackIndex", String(this.currentTrackIndex))
+      localStorage.setItem("playerTrackIndex", String(this.currentTrackIndex));
 
-      localStorage.setItem("playerCurrentTime", "0")
+      localStorage.setItem("playerCurrentTime", "0");
 
-      audio.pause()
-      audio.src = previousTrack.preview
-      audio.currentTime = 0
-      audio.load()
+      audio.pause();
+      audio.src = previousTrack.preview;
+      audio.currentTime = 0;
+      audio.load();
 
       audio.play().catch((error) => {
-        console.error("Erro ao reproduzir música anterior:", error)
-      })
+        console.error("Erro ao reproduzir música anterior:", error);
+      });
     },
 
     seekAudio() {
-      const audio = this.$refs.audioPlayer
-      if (!audio) return
-      audio.currentTime = Number(this.currentTime)
+      const audio = this.$refs.audioPlayer;
+      if (!audio) return;
+      audio.currentTime = Number(this.currentTime);
     },
 
     updateCurrentTime(event) {
-      this.currentTime = event.target.currentTime
+      this.currentTime = event.target.currentTime;
 
-      localStorage.setItem("playerCurrentTime", String(this.currentTime))
+      localStorage.setItem("playerCurrentTime", String(this.currentTime));
     },
 
     updateDuration(event) {
-      this.duration = event.target.duration || 30
+      this.duration = event.target.duration || 30;
     },
 
     durationReformed(seconds) {
-      return formatDuration(seconds)
+      return formatDuration(seconds);
     },
   },
-}
+};
 </script>

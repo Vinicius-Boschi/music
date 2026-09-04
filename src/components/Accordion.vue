@@ -281,22 +281,33 @@ export default {
       playlists: [],
       albums: [],
       radios: [],
-      audioTracks: [],
-      audioRadios: [],
       currentTrackIndex: null,
       highlightedRow: null,
     }
   },
   mounted() {
-    this.getTopTracks().then(() => {
-      this.audioPlayers = Array.isArray(this.$refs.audioPlayers)
-        ? this.$refs.audioPlayers
-        : [this.$refs.audioPlayers]
-    })
+    this.getTopTracks()
     this.getRelated()
     this.getPlaylists()
     this.getTopAlbums()
     this.getRadio()
+  },
+  watch: {
+    "$route.params.id": {
+      async handler() {
+        this.tracks = []
+        this.relateds = []
+        this.playlists = []
+        this.albums = []
+        this.radios = []
+
+        await this.getTopTracks()
+        await this.getRelated()
+        await this.getPlaylists()
+        await this.getTopAlbums()
+        await this.getRadio()
+      },
+    },
   },
   methods: {
     switchToTopMusics() {
@@ -390,9 +401,17 @@ export default {
     playRadio(index) {
       const radio = this.radios[index]
 
-      this.audioRadios.forEach((p) => p && p.pause())
-      const player = this.audioRadios[index]
-      if (player) player.play()
+      if (!radio || !radio.preview) return
+
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track: radio,
+            queue: this.radios,
+            index,
+          },
+        }),
+      )
     },
   },
 }

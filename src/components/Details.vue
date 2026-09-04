@@ -4,19 +4,21 @@
     <Sidebar />
     <div class="details">
       <div>
-        <img class="details__profile" :src="artist.picture_medium" alt="" />
+        <img
+          class="details__profile"
+          :src="artist.picture_medium"
+          :alt="artist.name || 'Artista'"
+        />
       </div>
       <div>
         <div class="details__text">
           <h1 class="details__name-artist">
-            {{
-              artist && artist.name !== undefined
-                ? artist.name
-                : "Artista não encontrado"
-            }}
+            {{ artist.name || "Artista não encontrado" }}
           </h1>
-          <p class="details__fan">{{ numberReformed(artist.nb_fan) }} fãs</p>
-          <p class="details__album">{{ artist.nb_album }} álbuns</p>
+          <p class="details__fan">
+            {{ numberReformed(artist.nb_fan || 0) }} fãs
+          </p>
+          <p class="details__album">{{ artist.nb_album || 0 }} álbuns</p>
         </div>
       </div>
     </div>
@@ -35,11 +37,6 @@ import Footer from "./Footer.vue"
 
 export default {
   name: "Details",
-  data() {
-    return {
-      artist: {},
-    }
-  },
   components: {
     Header,
     Sidebar,
@@ -52,22 +49,47 @@ export default {
       required: true,
     },
   },
-  mounted() {
-    this.getDetails()
+  data() {
+    return {
+      artist: {},
+    }
+  },
+  async mounted() {
+    await this.getDetails()
+  },
+  watch: {
+    id: {
+      immediate: false,
+      async handler() {
+        await this.getDetails()
+      },
+    },
   },
   methods: {
     async getDetails() {
       try {
-        const id = this.$route.params.id
+        const id = this.id
+
+        if (!id) {
+          this.artist = {}
+          return
+        }
+
         const response = await fetch(`${API_BASE}/deezer/artist/${id}`)
+
+        if (!response.ok) {
+          throw new Error(`Erro HTTP ${response.status}`)
+        }
+
         const data = await response.json()
         this.artist = data
       } catch (error) {
         console.error("Erro ao buscar o artista", error)
+        this.artist = {}
       }
     },
     numberReformed(number) {
-      return formatNumber(number)
+      return formatNumber(number || 0)
     },
     navigateToAccordion() {
       this.$router.push({

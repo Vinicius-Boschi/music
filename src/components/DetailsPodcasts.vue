@@ -14,7 +14,6 @@
         </div>
       </div>
     </div>
-
     <table class="accordion__track-list">
       <thead>
         <tr class="accordion__track-bottom">
@@ -31,7 +30,8 @@
       <tbody class="accordion__track-container">
         <tr
           v-for="(detail, index) in episodes"
-          :key="index"
+          :key="detail.id"
+          @click="playEpisode(index)"
           @mouseover="highlightedRow = index"
           @mouseleave="highlightedRow = null"
           ref="trackRows"
@@ -75,7 +75,7 @@ export default {
       currentTrackIndex: null,
       highlightedRow: null,
       showModal: false,
-      nextUrl: `${API_BASE}/deezer/podcast/1950252/episodes`,
+      nextUrl: null,
     }
   },
   components: {
@@ -89,8 +89,9 @@ export default {
       required: true,
     },
   },
-  mounted() {
-    (this.getDetailsPodcast(), this.getDetailsEpisodes(), this.loadEpisodes())
+  async mounted() {
+    await this.getDetailsPodcast()
+    await this.getDetailsEpisodes()
   },
   methods: {
     toggleModal() {
@@ -99,7 +100,7 @@ export default {
     async getDetailsPodcast() {
       try {
         const id = this.id
-        const response = await fetch(`${API_BASE}/deezer/podcast?query=${id}`)
+        const response = await fetch(`${API_BASE}/deezer/podcast/${id}`)
         const data = await response.json()
         this.podcast = data
       } catch (error) {
@@ -113,10 +114,13 @@ export default {
         const response = await fetch(
           `${API_BASE}/deezer/podcast/${id}/episodes`,
         )
+
         const data = await response.json()
-        this.episodes = data.data
+        this.episodes = data?.data || []
+        this.nextUrl = data?.next || null
       } catch (error) {
         console.error("Erro ao buscar o podcast", error)
+        this.episodes = []
       }
     },
     async loadEpisodes() {
@@ -124,14 +128,49 @@ export default {
       try {
         const response = await fetch(this.nextUrl)
         const data = await response.json()
-        this.episodes = this.episodes.concat(data.data)
-        this.nextUrl = data.next
+        this.episodes = this.episodes.concat(data?.data || [])
+        this.nextUrl = data?.next || null
         if (this.nextUrl) {
-          this.loadEpisodes()
+          await this.loadEpisodes()
         }
       } catch (error) {
         console.error("Erro ao carregar episódios", error)
       }
+    },
+    playEpisode(index) {
+      const episode = this.episodes[index]
+
+      if (!episode?.audio) {
+        console.warn("O episódio não possui áudio disponível.", episode)
+        return
+      }
+
+      const queue = this.episodes
+        .filter((item) => item?.audio)
+        .map((item) => ({
+          ...item,
+          preview: item.audio,
+          album: {
+            cover_small: item.picture,
+          },
+          artist: {
+            name: this.podcast.title,
+          },
+        }))
+
+      const track = queue.find((item) => item.id === episode.id)
+
+      const queueIndex = queue.findIndex((item) => item.id === episode.id)
+
+      window.dispatchEvent(
+        new CustomEvent("track-changed", {
+          detail: {
+            track,
+            queue,
+            index: queueIndex,
+          },
+        }),
+      )
     },
     numberReformed(number) {
       return formatNumber(number)

@@ -230,9 +230,7 @@ export default {
   data() {
     return {
       genre: "",
-      tracklist: "",
       genreId: null,
-      genres: [],
       artists: [],
       playlists: [],
       albuns: [],
@@ -263,57 +261,71 @@ export default {
     this.initializePageData()
   },
   watch: {
-    $route(to, from) {
-      if (to.params.id !== from.params.id) {
-        this.initializePageData()
-      }
+    "$route.params.id": {
+      async handler(newId, oldId) {
+        if (newId !== oldId) {
+          await this.initializePageData()
+        }
+      },
     },
   },
   methods: {
     async initializePageData() {
       try {
-        await this.getGenres()
+        this.navigationReady = false
+
+        this.genre = ""
+        this.genreId = null
+        this.artists = []
+        this.playlists = []
+        this.albuns = []
+        this.releases = []
+
         await this.getGenreName()
+
         await Promise.all([
           this.getArtistsBySelectedGenre(),
           this.getPlaylistsByGenre(),
           this.getAlbuns(),
           this.getReleases(),
         ])
+
         this.navigationReady = true
       } catch (error) {
         console.error("Erro na inicialização:", error)
+        this.navigationReady = true
       }
     },
-
-    async getGenres() {
-      try {
-        const res = await fetch(`${API_BASE}/deezer/radio/top`)
-        const data = await res.json()
-        this.genres = data.data || []
-      } catch (error) {
-        console.error("Erro ao carregar gêneros:", error)
-      }
-    },
-
     async getGenreName() {
       try {
-        const res = await fetch(`${API_BASE}/deezer/radio/${this.id}`)
+        const res = await fetch(`${API_BASE}/deezer/genre`)
+
+        if (!res.ok) {
+          throw new Error(`Erro HTTP ${res.status}`)
+        }
+
         const data = await res.json()
-        this.genre = data.title
-        this.tracklist = data.tracklist?.replace(
-          "https://api.deezer.com",
-          `${API_BASE}/deezer`,
+
+        const selectedGenre = (data?.data || []).find(
+          (genre) => String(genre.id) === String(this.id),
         )
+
+        if (!selectedGenre) {
+          throw new Error(`Gênero com ID ${this.id} não encontrado`)
+        }
+
+        this.genreId = selectedGenre.id
+        this.genre = selectedGenre.name
       } catch (error) {
-        console.error("Erro:", error)
+        console.error("Erro ao buscar nome do gênero:", error)
+        this.genre = "Gênero"
       }
     },
 
     async getPlaylistsByGenre() {
       try {
         const res = await fetch(
-          `${API_BASE}/deezer/search/playlist?q=${this.genre}`,
+          `${API_BASE}/deezer/search/playlist?q=${encodeURIComponent(this.genre)}`,
         )
         const data = await res.json()
         const playlists = data.data?.slice(0, 12) || []
@@ -335,50 +347,86 @@ export default {
         console.error("Erro ao buscar playlists:", error)
       }
     },
-
     async getArtistsBySelectedGenre() {
       try {
-        if (!this.tracklist) {
-          console.error("Erro: Tracklist não definida")
+        this.artists = []
+
+        if (!this.genre) {
           return
         }
-        const res = await fetch(this.tracklist)
+
+        const res = await fetch(
+          `${API_BASE}/deezer/search/track?q=${encodeURIComponent(this.genre)}`,
+        )
+
+        if (!res.ok) {
+          throw new Error(`Erro HTTP ${res.status}`)
+        }
+
         const data = await res.json()
-        const tracks = data.data || []
+        const tracks = data?.data || []
 
         const uniqueArtists = new Set()
         const artistPromises = []
 
         for (const track of tracks) {
-          const artistName = track.artist.name
-          if (!uniqueArtists.has(artistName)) {
-            uniqueArtists.add(artistName)
-            artistPromises.push(this.getArtistDetails(track.artist.id))
-          }
+          const artistId = track?.artist?.id
+
+          if (!artistId) continue
+          if (uniqueArtists.has(artistId)) continue
+
+          uniqueArtists.add(artistId)
+          artistPromises.push(this.getArtistDetails(artistId))
         }
 
         const artistDetails = await Promise.all(artistPromises)
+
         this.artists = artistDetails
-          .map((a) => ({
-            name: a.name,
-            picture: a.picture_big,
-            id: a.id,
-            fans: a.nb_fan,
-            album: a.nb_album,
+          .filter(
+            (artist) =>
+              artist &&
+              artist.id &&
+              artist.name &&
+              (artist.picture_big || artist.picture_medium || artist.picture),
+          )
+          .map((artist) => ({
+            id: artist.id,
+            name: artist.name,
+            picture:
+              artist.picture_big || artist.picture_medium || artist.picture,
+            fans: artist.nb_fan || 0,
+            album: artist.nb_album || 0,
           }))
           .slice(0, 12)
       } catch (error) {
         console.error("Erro ao buscar artistas do gênero:", error)
+        this.artists = []
       }
     },
 
     async getArtistDetails(id) {
       try {
+        if (!id) return null
+
         const res = await fetch(`${API_BASE}/deezer/artist/${id}`)
-        return await res.json()
+
+        if (!res.ok) {
+          console.warn(
+            `Erro ao buscar detalhes do artista com ID ${id}, status: ${res.status}`,
+          )
+          return null
+        }
+
+        const data = await res.json()
+
+        if (!data?.id || !data?.name) {
+          return null
+        }
+
+        return data
       } catch (error) {
-        console.error("Erro ao buscar detalhes do artista:", error)
-        return {}
+        console.error(`Erro ao buscar detalhes do artista: ${id}`, error)
+        return null
       }
     },
 
