@@ -399,7 +399,7 @@
                     alt="Sem músicas favoritas"
                   />
                   <p class="page__empty-message">
-                    📀 Você ainda não adicionou nenhuma música aos favoritos. 📀
+                    📀 Você ainda não adicionou nenhum album aos favoritos. 📀
                   </p>
                 </div>
               </div>

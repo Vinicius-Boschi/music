@@ -77,7 +77,7 @@
                 <router-link
                   :to="{ name: 'DetailsTrack', params: { id: track.id } }"
                 >
-                  {{ index + 1 }} - {{ track.title }}
+                  {{ track.title }}
                 </router-link>
               </h1>
             </div>
@@ -119,7 +119,7 @@
                       <router-link
                         :to="{ name: 'DetailsTrack', params: { id: track.id } }"
                       >
-                        {{ index + 1 }} - {{ track.title }}
+                        {{ track.title }}
                       </router-link>
                     </h1>
                   </td>

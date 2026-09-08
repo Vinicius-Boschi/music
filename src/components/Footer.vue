@@ -263,7 +263,7 @@
           class="footer__logo"
         />
         <div class="footer__rights">
-          <p class="footer__copy">&copy; 2024 Deezer</p>
+          <p class="footer__copy">&copy; {{ new Date().getFullYear() }} Deezer</p>
           <p class="footer__language">Português (br)</p>
         </div>
       </div>

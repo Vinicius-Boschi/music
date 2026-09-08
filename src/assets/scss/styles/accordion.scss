@@ -6,7 +6,7 @@
     box-sizing: border-box;
     border-bottom: 1px solid $white-three;
     margin-bottom: 2rem;
-    margin-left: 1rem;
+    margin-left: 2rem;
 
     &-content {
       padding: 1rem;
@@ -305,6 +305,7 @@
       h1 {
         min-width: 0;
         overflow: hidden;
+        margin-left: 1rem;
       }
 
       a {

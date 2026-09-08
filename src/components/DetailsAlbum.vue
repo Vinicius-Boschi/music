@@ -15,7 +15,7 @@
           </router-link>
         </div>
         <div v-else>
-          <h1>Artista não encontrado</h1>
+          <h1>Album não encontrado</h1>
         </div>
         <div class="details__info">
           <p>{{ details.nb_tracks }} faixas</p>
@@ -62,7 +62,7 @@
             <router-link
               :to="{ name: 'DetailsTrack', params: { id: detail.id } }"
             >
-              <h1>{{ index + 1 }} - {{ detail.title }}</h1>
+              <h1>{{ detail.title }}</h1>
             </router-link>
           </td>
           <td>{{ detail.album.title }}</td>
@@ -116,8 +116,13 @@ export default {
       try {
         const id = this.id
         const response = await fetch(
-          `${API_BASE}/deezer/search/album?q=${encodeURIComponent(this.genre)}`,
+          `${API_BASE}/deezer/album/${id}}`,
         )
+
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`)
+        }
+
         const data = await response.json()
         this.details = data
       } catch (error) {
