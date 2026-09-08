@@ -7,12 +7,27 @@
         {{ snackbarMessage }}
       </div>
       <!-- Accordion -->
-      <article class="accordion">
+      <div class="accordion">
         <div class="accordion__about-center">
-          <article class="accordion__about">
+          <section class="accordion__about">
             <div class="accordion__about-title">
               <h1 class="accordion__title-fav">Favoritos</h1>
-              <p class="accordion__subtitle">0 seguidor | 0 seguindo</p>
+              <div class="accordion__user-info">
+                <span class="accordion__user-picture">
+                  <img
+                    src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+                    alt="user image"
+                  />
+                </span>
+                <span class="accordion__user-name">Eric Frusciante</span>
+              </div>
+              <ul class="accordion__subtitle">
+                <li>{{ favoriteTracks.length }} faixas</li>
+                <li>{{ durationReformed(totalDuration) }}</li>
+                <li>Atualizado: {{ lastFavoriteUpdates }}</li>
+              </ul>
+            </div>
+            <div class="accordion__aleatory">
               <button class="accordion__btn-fav" @click="playRandomFavorite">
                 <img
                   src="../assets/icons/shuffle-solid-full.png"
@@ -165,9 +180,6 @@
             <transition name="accordion-fade">
               <div class="accordion__content" v-show="activeTab === 'tracks'">
                 <div class="accordion__header">
-                  <h1 class="accordion__content-title">
-                    {{ favoriteTracks.length }} mais queridas
-                  </h1>
                   <div class="accordion__buttons">
                     <div class="accordion__btns">
                       <button
@@ -238,7 +250,7 @@
                                 params: { id: track.id },
                               }"
                             >
-                              {{ index + 1 }} - {{ track.title }}
+                              {{ track.title }}
                             </router-link>
                           </h1>
                         </td>
@@ -260,17 +272,17 @@
                             </svg>
                           </button>
                         </td>
-                        <td>
+                        <td class="accordion__artist">
                           <router-link
                             :to="{
                               name: 'Details',
-                              params: { id: track.artist.id },
+                              params: { id: track.artist.id }
                             }"
                           >
                             {{ track.artist.name }}
                           </router-link>
                         </td>
-                        <td>
+                        <td class="accordion__album">
                           <router-link
                             :to="{
                               name: 'DetailsAlbum',
@@ -584,9 +596,9 @@
                 </div>
               </div>
             </transition>
-          </article>
+          </section>
         </div>
-      </article>
+      </div>
     </div>
   </div>
   <Footer />
@@ -633,6 +645,26 @@ export default {
     this.loadFavoritePodcasts()
   },
   computed: {
+    totalDuration() {
+      return this.favoriteTracks.reduce((total, track) => {
+        return total + Number(track.duration || 0)
+      }, 0)
+    },
+    lastFavoriteUpdates() {
+      if (!this.favoriteTracks.length) return "-"
+
+      const latestDate = this.favoriteTracks.reduce((latest, track) => {
+        const currentDate = new Date(track.addedAt)
+        return currentDate > latest ? currentDate : latest
+      }, new Date(0))
+
+      return latestDate.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    },
+
     sortedArtists() {
       const searchTerm = this.search.trim().toLowerCase()
       let filtered = this.favoriteArtists
@@ -1069,6 +1101,6 @@ export default {
 
 <style lang="scss" scoped>
 li.active {
-  border: none
+  border: none;
 }
 </style>
