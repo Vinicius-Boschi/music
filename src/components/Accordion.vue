@@ -115,13 +115,38 @@
                       @mouseover="currentTrackIndex = index"
                       @mouseleave="currentTrackIndex = null"
                     />
-                    <h1>
-                      <router-link
-                        :to="{ name: 'DetailsTrack', params: { id: track.id } }"
+                    <div class="accordion__track-title">
+                      <h1>
+                        <router-link
+                          :to="{
+                            name: 'DetailsTrack',
+                            params: { id: track.id },
+                          }"
+                        >
+                          {{ track.title }}
+                        </router-link>
+                      </h1>
+                      <button
+                        class="accordion__favorite"
+                        :class="{
+                          'is-favorite': isFavorite('tracks', track.id),
+                        }"
+                        @click.stop="toggleFavorite('tracks', track)"
                       >
-                        {{ track.title }}
-                      </router-link>
-                    </h1>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+        2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+        C13.09 3.81 14.76 3 16.5 3
+        19.58 3 22 5.42 22 8.5
+        c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </td>
                   <td>
                     <router-link
@@ -146,15 +171,33 @@
               v-for="(album, index) in albums || []"
               :key="index"
             >
-              <router-link
-                :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
-              >
-                <img
-                  class="accordion__picture"
-                  :src="album.cover_medium"
-                  :alt="album.title"
-                />
-              </router-link>
+              <div class="accordion__image-container">
+                <router-link
+                  :to="{ name: 'DetailsAlbum', params: { id: album.id } }"
+                >
+                  <img
+                    class="accordion__picture"
+                    :src="album.cover_medium"
+                    :alt="album.title"
+                  />
+                </router-link>
+
+                <button
+                  class="accordion__favorite"
+                  :class="{ 'is-favorite': isFavorite('albuns', album.id) }"
+                  @click.stop="toggleFavorite('albuns', album)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+        2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+        C13.09 3.81 14.76 3 16.5 3
+        19.58 3 22 5.42 22 8.5
+        c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    />
+                  </svg>
+                </button>
+              </div>
               <h1 class="accordion__playlist-text">{{ album.title }}</h1>
             </div>
           </div>
@@ -166,15 +209,34 @@
               v-for="(related, index) in relateds || []"
               :key="index"
             >
-              <router-link
-                :to="{ name: 'Details', params: { id: related.id } }"
-              >
-                <img
-                  class="accordion__picture"
-                  :src="related.picture_medium"
-                  :alt="related.name"
-                />
-              </router-link>
+              <div class="accordion__image-container">
+                <router-link
+                  :to="{ name: 'Details', params: { id: related.id } }"
+                >
+                  <img
+                    class="accordion__picture"
+                    :src="related.picture_medium"
+                    :alt="related.name"
+                  />
+                </router-link>
+                <button
+                  class="accordion__favorite"
+                  :class="{
+                    'is-favorite': isFavorite('artists', related.id),
+                  }"
+                  @click.stop="toggleFavorite('artists', related)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+      2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+      C13.09 3.81 14.76 3 16.5 3
+      19.58 3 22 5.42 22 8.5
+      c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    />
+                  </svg>
+                </button>
+              </div>
               <h1 class="accordion__related-text">{{ related.name }}</h1>
               <p class="accordion__related-fan">
                 {{ numberReformed(related.nb_fan) }} fãs
@@ -192,15 +254,34 @@
               v-for="(playlist, index) in playlists || []"
               :key="index"
             >
-              <router-link
-                :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
-              >
-                <img
-                  class="accordion__picture"
-                  :src="playlist.picture_medium"
-                  :alt="playlist.title"
-                />
-              </router-link>
+              <div class="accordion__image-container">
+                <router-link
+                  :to="{ name: 'DetailsPlaylist', params: { id: playlist.id } }"
+                >
+                  <img
+                    class="accordion__picture"
+                    :src="playlist.picture_medium"
+                    :alt="playlist.title"
+                  />
+                </router-link>
+                <button
+                  class="accordion__favorite"
+                  :class="{
+                    'is-favorite': isFavorite('playlists', playlist.id),
+                  }"
+                  @click.stop="toggleFavorite('playlists', playlist)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+      2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+      C13.09 3.81 14.76 3 16.5 3
+      19.58 3 22 5.42 22 8.5
+      c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    />
+                  </svg>
+                </button>
+              </div>
               <h1 class="accordion__playlist-text">{{ playlist.title }}</h1>
             </div>
           </div>
@@ -237,13 +318,38 @@
                       @mouseover="currentTrackIndex = index"
                       @mouseleave="currentTrackIndex = null"
                     />
-                    <h1>
-                      <router-link
-                        :to="{ name: 'DetailsTrack', params: { id: radio.id } }"
+                    <div class="accordion__track-title">
+                      <h1>
+                        <router-link
+                          :to="{
+                            name: 'DetailsTrack',
+                            params: { id: radio.id },
+                          }"
+                        >
+                          {{ radio.title }}
+                        </router-link>
+                      </h1>
+                      <button
+                        class="accordion__favorite"
+                        :class="{
+                          'is-favorite': isFavorite('tracks', radio.id),
+                        }"
+                        @click.stop="toggleFavorite('tracks', radio)"
                       >
-                        {{ index + 1 }} - {{ radio.title }}
-                      </router-link>
-                    </h1>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+      2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+      C13.09 3.81 14.76 3 16.5 3
+      19.58 3 22 5.42 22 8.5
+      c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </td>
                   <td>
                     <router-link
@@ -283,6 +389,12 @@ export default {
       radios: [],
       currentTrackIndex: null,
       highlightedRow: null,
+      favorites: {
+        tracks: [],
+        albuns: [],
+        artists: [],
+        playlists: [],
+      },
     }
   },
   mounted() {
@@ -291,6 +403,7 @@ export default {
     this.getPlaylists()
     this.getTopAlbums()
     this.getRadio()
+    this.loadFavorites()
   },
   watch: {
     "$route.params.id": {
@@ -375,6 +488,45 @@ export default {
         console.error("Erro ao buscar a rádio.", error)
         this.radios = []
       }
+    },
+    getFavorites(type) {
+      return JSON.parse(localStorage.getItem(`favorites_${type}`)) || []
+    },
+    isFavorite(type, id) {
+      return this.favorites[type].some((item) => {
+        return typeof item === "object" ? item.id === id : item === id
+      })
+    },
+    toggleFavorite(type, item) {
+      const key = `favorites_${type}`
+      const favorites = [...this.favorites[type]]
+
+      const index = favorites.findIndex((favorite) => {
+        return typeof favorite === "object"
+          ? favorite.id === item.id
+          : favorite === item.id
+      })
+
+      if (index !== -1) {
+        favorites.splice(index, 1)
+      } else {
+        favorites.push(item)
+      }
+
+      this.favorites[type] = favorites
+
+      localStorage.setItem(key, JSON.stringify(favorites))
+      window.dispatchEvent(new Event("favorites-updated"))
+    },
+    loadFavorites() {
+      this.favorites.tracks =
+        JSON.parse(localStorage.getItem("favorite_tracks")) || []
+      this.favorites.albuns =
+        JSON.parse(localStorage.getItem("favorite_albuns")) || []
+      this.favorites.playlists =
+        JSON.parse(localStorage.getItem("favorite_playlists")) || []
+      this.favorites.artists =
+        JSON.parse(localStorage.getItem("favorite_artists")) || []
     },
     durationReformed(seconds) {
       return formatDuration(seconds)
