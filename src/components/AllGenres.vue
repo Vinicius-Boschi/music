@@ -14,7 +14,7 @@
           :key="index"
         >
           <router-link :to="{ name: 'DetailsGenre', params: { id: genre.id } }">
-            <p class="page__name center">{{ genre.title }}</p>
+            <p class="page__name center">{{ genre.name }}</p>
           </router-link>
         </div>
       </div>
@@ -48,16 +48,28 @@ export default {
   methods: {
     async getAllInfos() {
       try {
-        const response = await fetch(
-          `${API_BASE}/deezer/radio/lists?limit=100`,
-        )
+        const response = await fetch(`${API_BASE}/deezer/genre`)
+
+        if (!response.ok) {
+          throw new Error(`Erro HTTP ${response.status}`)
+        }
+
         const data = await response.json()
-        this.genres = data.data.map((genre) => ({
-          ...genre,
-          color: getRandomGenreColor(),
-        }))
+
+        this.genres = (data?.data || [])
+          .filter((genre) => {
+            const name = String(genre.name || "")
+              .trim()
+              .toLowerCase()
+
+            return name !== "todos" && name !== "all"
+          })
+          .map((genre) => ({
+            ...genre,
+            color: getRandomGenreColor(),
+          }))
       } catch (error) {
-        console.error(error)
+        console.error("Erro aos buscar os gêneros", error)
       }
     },
   },

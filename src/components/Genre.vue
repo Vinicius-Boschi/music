@@ -96,10 +96,18 @@ export default {
       try {
         const response = await fetch(`${API_BASE}/deezer/genre`)
         const data = await response.json()
-        this.genres = data.data.map((genre) => ({
-          ...genre,
-          color: getRandomGenreColor(),
-        }))
+
+        this.genres = (data.data || [])
+          .filter((genre) => {
+            const name = String(genre.name || "")
+              .trim()
+              .toLowerCase()
+            return name !== "todos" && name !== "all"
+          })
+          .map((genre) => ({
+            ...genre,
+            color: getRandomGenreColor(),
+          }))
       } catch (error) {
         console.error("Erro ao buscar os gêneros.", error)
       }

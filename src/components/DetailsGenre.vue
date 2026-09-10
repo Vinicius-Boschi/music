@@ -3,7 +3,7 @@
     <Header />
     <Sidebar />
     <h1 class="chart__genre">{{ genre }}</h1>
-    <div class="chart__text">
+    <div class="chart__text" :key="key">
       <!-- Top Playlists -->
       <div class="chart__container">
         <div class="chart__header">
@@ -46,10 +46,7 @@
                 />
                 <p class="chart__name">{{ playlist.title }}</p>
               </router-link>
-              <p class="chart__followers">
-                {{ playlist.nb_tracks }} faixas -
-                {{ numberReformed(playlist.fans) }} fãs
-              </p>
+              <p class="chart__followers">{{ playlist.nb_tracks }} faixas</p>
             </div>
           </swiper-slide>
         </swiper>
@@ -236,6 +233,7 @@ export default {
       albuns: [],
       releases: [],
       navigationReady: false,
+      key: 0,
       carouselId: {
         playlists: "playlists",
         artists: "artists",
@@ -290,6 +288,7 @@ export default {
           this.getReleases(),
         ])
 
+        this.key++
         this.navigationReady = true
       } catch (error) {
         console.error("Erro na inicialização:", error)
@@ -324,27 +323,22 @@ export default {
 
     async getPlaylistsByGenre() {
       try {
-        const res = await fetch(
-          `${API_BASE}/deezer/search/playlist?q=${encodeURIComponent(this.genre)}`,
-        )
-        const data = await res.json()
-        const playlists = data.data?.slice(0, 12) || []
+        const url = `${API_BASE}/deezer/search/playlist?q=${encodeURIComponent(
+          this.genre,
+        )}`
 
-        const detailsPlaylists = await Promise.all(
-          playlists.map(async (playlist) => {
-            const details = await fetch(
-              `${API_BASE}/deezer/playlist/${playlist.id}`,
-            )
-            const detailsData = await details.json()
-            return {
-              ...playlist,
-              fans: detailsData.fans,
-            }
-          }),
-        )
-        this.playlists = detailsPlaylists
+        const res = await fetch(url)
+
+        if (!res.ok) {
+          throw new Error(`Erro HTTP ${res.status}`)
+        }
+
+        const data = await res.json()
+
+        this.playlists = data?.data || []
       } catch (error) {
         console.error("Erro ao buscar playlists:", error)
+        this.playlists = []
       }
     },
     async getArtistsBySelectedGenre() {
@@ -364,69 +358,74 @@ export default {
         }
 
         const data = await res.json()
+
         const tracks = data?.data || []
 
-        const uniqueArtists = new Set()
-        const artistPromises = []
+        const uniqueArtists = []
 
         for (const track of tracks) {
-          const artistId = track?.artist?.id
+          if (!track.artist) {
+            continue
+          }
 
-          if (!artistId) continue
-          if (uniqueArtists.has(artistId)) continue
+          const alreadyExists = uniqueArtists.some(
+            (artist) => artist.id === track.artist.id,
+          )
 
-          uniqueArtists.add(artistId)
-          artistPromises.push(this.getArtistDetails(artistId))
+          if (!alreadyExists) {
+            uniqueArtists.push(track.artist)
+          }
+
+          if (uniqueArtists.length === 12) {
+            break
+          }
         }
 
-        const artistDetails = await Promise.all(artistPromises)
+        const artistsDetails = await Promise.all(
+          uniqueArtists.map(async (artist) => {
+            try {
+              const response = await fetch(
+                `${API_BASE}/deezer/artist/${artist.id}`,
+              )
 
-        this.artists = artistDetails
-          .filter(
-            (artist) =>
-              artist &&
-              artist.id &&
-              artist.name &&
-              (artist.picture_big || artist.picture_medium || artist.picture),
-          )
-          .map((artist) => ({
-            id: artist.id,
-            name: artist.name,
-            picture:
-              artist.picture_big || artist.picture_medium || artist.picture,
-            fans: artist.nb_fan || 0,
-            album: artist.nb_album || 0,
-          }))
-          .slice(0, 12)
+              if (!response.ok) {
+                throw new Error(`Erro HTTP ${response.status}`)
+              }
+
+              const details = await response.json()
+
+              return {
+                id: details.id,
+                name: details.name,
+                picture:
+                  details.picture_big ||
+                  details.picture_medium ||
+                  details.picture,
+                fans: details.nb_fan || 0,
+                album: details.nb_album || 0,
+              }
+            } catch (error) {
+              console.error(
+                `Erro ao buscar detalhes do artista ${artist.name}`,
+                error,
+              )
+
+              return {
+                id: artist.id,
+                name: artist.name,
+                picture:
+                  artist.picture_big || artist.picture_medium || artist.picture,
+                fans: 0,
+                album: 0,
+              }
+            }
+          }),
+        )
+
+        this.artists = artistsDetails
       } catch (error) {
         console.error("Erro ao buscar artistas do gênero:", error)
         this.artists = []
-      }
-    },
-
-    async getArtistDetails(id) {
-      try {
-        if (!id) return null
-
-        const res = await fetch(`${API_BASE}/deezer/artist/${id}`)
-
-        if (!res.ok) {
-          console.warn(
-            `Erro ao buscar detalhes do artista com ID ${id}, status: ${res.status}`,
-          )
-          return null
-        }
-
-        const data = await res.json()
-
-        if (!data?.id || !data?.name) {
-          return null
-        }
-
-        return data
-      } catch (error) {
-        console.error(`Erro ao buscar detalhes do artista: ${id}`, error)
-        return null
       }
     },
 
