@@ -96,8 +96,7 @@ A interface também identifica visualmente os itens que já estão favoritados.
 ## 🔮 Próximas melhorias
 
 - [ ] Aprimorar a responsividade em todas as páginas
-- [ ] Melhorar o sistema de reprodução do player
-- [ ] Aprimorar a experiência de busca
+- [ ] Arrumar data de música adicionada
 - [ ] Melhorar carregamento e tratamento de erros
 - [ ] Evoluir a integração com letras sincronizadas
 - [ ] Expandir funcionalidades do sistema de favoritos
@@ -284,16 +283,6 @@ npm run preview
 ## 🔌 API
 
 O projeto utiliza o servidor Express como intermediário para algumas requisições externas.
-
-## 🔮 Próximas melhorias
-
-- [ ] Aprimorar a responsividade em todas as páginas
-- [ ] Arrumar data de música adicionada
-- [ ] Melhorar carregamento e tratamento de erros
-- [ ] Evoluir a integração com letras sincronizadas
-- [ ] Expandir funcionalidades do sistema de favoritos
-- [ ] Melhorar acessibilidade
-- [ ] Otimizar desempenho
 
 As requisições para a Deezer são encaminhadas através da rota:
 
